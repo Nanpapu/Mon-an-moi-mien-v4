@@ -217,7 +217,7 @@ export default function ProfileScreen() {
       // Kiểm tra email có tồn tại trong auth không
       const methods = await fetchSignInMethodsForEmail(auth, resetEmail);
       if (methods.length === 0) {
-        Alert.alert("L���i", "Email này chưa được đăng ký");
+        Alert.alert("Lỗi", "Email này chưa được đăng ký");
         return;
       }
 
@@ -423,6 +423,20 @@ export default function ProfileScreen() {
               {isRegistering ? "Đăng ký" : "Đăng nhập"}
             </Text>
           )}
+        </TouchableOpacity>
+
+        <View style={styles.divider}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>HOẶC</Text>
+          <View style={styles.dividerLine} />
+        </View>
+
+        <TouchableOpacity 
+          style={styles.googleButton}
+          onPress={handleGoogleSignIn}
+        >
+          <Ionicons name="logo-google" size={24} color="white" />
+          <Text style={styles.buttonText}>Đăng nhập với Google</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -767,5 +781,35 @@ const styles = StyleSheet.create({
 
   confirmButton: {
     backgroundColor: "#4CAF50",
+  },
+
+  divider: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginVertical: 10,
+  },
+
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#ccc",
+  },
+
+  dividerText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#666",
+    marginHorizontal: 10,
+  },
+
+  googleButton: {
+    backgroundColor: "#DB4437",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 16,
+    borderRadius: 12,
+    marginTop: 15,
   },
 });

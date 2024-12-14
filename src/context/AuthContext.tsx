@@ -79,7 +79,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithGoogle = async () => {
     try {
       const { response, promptAsync } = GoogleAuthService.useGoogleAuth();
+      console.log('Google Auth Response:', response);
+      
       const result = await promptAsync();
+      console.log('Prompt Result:', result);
       
       if (result?.type === 'success') {
         const { id_token } = result.params;
@@ -87,7 +90,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(user);
       }
     } catch (error: any) {
-      throw new Error(error.message);
+      console.log('Sign In With Google Error:', error);
+      throw error;
     }
   };
 
