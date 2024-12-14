@@ -5,9 +5,11 @@ import { Ionicons } from '@expo/vector-icons';
 
 interface ReviewsListProps {
   reviews: Review[];
+  averageRating: number;
+  totalReviews: number;
 }
 
-export const ReviewsList = ({ reviews }: ReviewsListProps) => {
+export const ReviewsList = ({ reviews, averageRating, totalReviews }: ReviewsListProps) => {
   const renderStars = (rating: number) => {
     return [...Array(5)].map((_, index) => (
       <Ionicons

@@ -8,7 +8,7 @@ import { useAuth } from "../context/AuthContext";
 import { ReviewService } from "../services/reviewService";
 import { Ionicons } from "@expo/vector-icons";
 import { ReviewModal } from "./ReviewModal";
-import { ReviewsList } from './ReviewsList';
+import { ReviewsList } from "./ReviewsList";
 
 // Props của component
 interface Props {
@@ -43,7 +43,10 @@ export function RecipeCard({
         setStats(recipeStats);
         setAllReviews(reviews);
         if (user) {
-          const review = await ReviewService.getUserReviewForRecipe(recipe.id, user.uid);
+          const review = await ReviewService.getUserReviewForRecipe(
+            recipe.id,
+            user.uid
+          );
           setExistingReview(review);
         }
       };
@@ -65,25 +68,33 @@ export function RecipeCard({
       {/* Phần thông tin chi tiết */}
       <View style={styles.content}>
         {/* Header luôn hiển thị */}
-        <View style={[styles.header, showDetails && { borderBottomWidth: 1, borderBottomColor: '#e1e1e1' }]}>
+        <View
+          style={[
+            styles.header,
+            showDetails && {
+              borderBottomWidth: 1,
+              borderBottomColor: "#e1e1e1",
+            },
+          ]}
+        >
           <View>
             <Text style={styles.name}>{recipe.name}</Text>
             <Text style={styles.region}>Vùng miền: {recipe.region}</Text>
           </View>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={styles.expandButton}
             onPress={() => setShowDetails(!showDetails)}
           >
-            <Ionicons 
-              name={showDetails ? "chevron-up" : "chevron-down"} 
-              size={24} 
+            <Ionicons
+              name={showDetails ? "chevron-up" : "chevron-down"}
+              size={24}
               color="#666"
             />
           </TouchableOpacity>
         </View>
 
-        {/* Phần chi tiết c�� thể ẩn/hiện */}
+        {/* Phần chi tiết có thể ẩn/hiện */}
         {showDetails && (
           <View style={styles.details}>
             <Text style={styles.sectionTitle}>Nguyên liệu:</Text>
@@ -99,56 +110,65 @@ export function RecipeCard({
                 {index + 1}. {instruction}
               </Text>
             ))}
-
-            {showActions && (
-              <View style={styles.actions}>
-                {onSave && (
-                  <TouchableOpacity style={styles.saveButton} onPress={onSave}>
-                    <Text style={styles.buttonText}>Lưu công thức</Text>
-                  </TouchableOpacity>
-                )}
-                {onDelete && (
-                  <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
-                    <Text style={styles.buttonText}>Xóa công thức</Text>
-                  </TouchableOpacity>
-                )}
-              </View>
+          </View>
+        )}
+        {/* Di chuyển phần actions ra ngoài */}
+        {showActions && (
+          <View style={styles.actions}>
+            {onSave && (
+              <TouchableOpacity style={styles.saveButton} onPress={onSave}>
+                <Text style={styles.buttonText}>Lưu công thức</Text>
+              </TouchableOpacity>
+            )}
+            {onDelete && (
+              <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
+                <Text style={styles.buttonText}>Xóa công thức</Text>
+              </TouchableOpacity>
             )}
           </View>
         )}
-
         {showReviews && (
           <View style={styles.ratingContainer}>
             <View style={styles.ratingHeader}>
               <View style={styles.ratingScore}>
-                <Text style={styles.averageRating}>{stats.averageRating.toFixed(1)}</Text>
+                <Text style={styles.averageRating}>
+                  {stats.averageRating.toFixed(1)}
+                </Text>
                 <View style={styles.starsRow}>
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Ionicons
                       key={star}
-                      name={star <= stats.averageRating ? "star" : "star-outline"}
+                      name={
+                        star <= stats.averageRating ? "star" : "star-outline"
+                      }
                       size={16}
                       color="#FFD700"
                     />
                   ))}
                 </View>
-                <Text style={styles.totalReviews}>{stats.totalReviews} đánh giá</Text>
+                <Text style={styles.totalReviews}>
+                  {stats.totalReviews} đánh giá
+                </Text>
               </View>
-              
+
               {user && (
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.addReviewButton}
                   onPress={() => setModalVisible(true)}
                 >
-                  <Ionicons name={existingReview ? "create" : "add"} size={20} color="white" />
+                  <Ionicons
+                    name={existingReview ? "create" : "add"}
+                    size={20}
+                    color="white"
+                  />
                   <Text style={styles.addReviewText}>
-                    {existingReview ? 'Sửa đánh giá' : 'Đánh giá'}
+                    {existingReview ? "Sửa đánh giá" : "Đánh giá"}
                   </Text>
                 </TouchableOpacity>
               )}
             </View>
 
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.viewAllButton}
               onPress={() => setShowReviewsList(true)}
             >
@@ -170,7 +190,10 @@ export function RecipeCard({
             const recipeStats = await ReviewService.getRecipeStats(recipe.id);
             setStats(recipeStats);
             if (user) {
-              const review = await ReviewService.getUserReviewForRecipe(recipe.id, user.uid);
+              const review = await ReviewService.getUserReviewForRecipe(
+                recipe.id,
+                user.uid
+              );
               setExistingReview(review);
             }
             setModalVisible(false);
@@ -188,7 +211,7 @@ export function RecipeCard({
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Đánh giá</Text>
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => setShowReviewsList(false)}
                 style={styles.closeButton}
               >
@@ -237,28 +260,28 @@ const styles = StyleSheet.create({
 
   // Style cho header
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingBottom: 12,
   },
 
   name: {
     fontSize: 22,
     fontWeight: "700",
-    color: '#1a1a1a',
+    color: "#1a1a1a",
     marginBottom: 4,
   },
 
   region: {
     fontSize: 15,
-    color: '#666',
+    color: "#666",
     fontWeight: "500",
   },
 
   expandButton: {
     padding: 8,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
     borderRadius: 20,
   },
 
@@ -271,14 +294,14 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: '#1a1a1a',
+    color: "#1a1a1a",
     marginBottom: 12,
     marginTop: 16,
   },
 
   listItem: {
     fontSize: 15,
-    color: '#333',
+    color: "#333",
     lineHeight: 22,
     marginBottom: 8,
     paddingLeft: 8,
@@ -297,7 +320,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#4CAF50",
     padding: 12,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
   },
 
   deleteButton: {
@@ -305,7 +328,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f44336",
     padding: 12,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
   },
 
   buttonText: {
@@ -316,43 +339,43 @@ const styles = StyleSheet.create({
 
   ratingContainer: {
     marginTop: 15,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: "#f8f9fa",
     borderRadius: 12,
     padding: 15,
   },
 
   ratingHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 12,
   },
 
   ratingScore: {
-    alignItems: 'center',
+    alignItems: "center",
   },
 
   averageRating: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: '#1a1a1a',
+    fontWeight: "bold",
+    color: "#1a1a1a",
   },
 
   starsRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 2,
     marginVertical: 4,
   },
 
   totalReviews: {
     fontSize: 12,
-    color: '#666',
+    color: "#666",
   },
 
   addReviewButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#007AFF',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#007AFF",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
@@ -360,53 +383,53 @@ const styles = StyleSheet.create({
   },
 
   addReviewText: {
-    color: 'white',
+    color: "white",
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 
   viewAllButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: '#e1e1e1',
+    borderTopColor: "#e1e1e1",
     marginTop: 4,
   },
 
   viewAllText: {
     fontSize: 14,
-    color: '#007AFF',
-    fontWeight: '500',
+    color: "#007AFF",
+    fontWeight: "500",
   },
 
   modalContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'flex-end',
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "flex-end",
   },
 
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    maxHeight: '80%',
+    maxHeight: "80%",
   },
 
   modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e1e1e1',
+    borderBottomColor: "#e1e1e1",
   },
 
   modalTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#1a1a1a',
+    fontWeight: "600",
+    color: "#1a1a1a",
   },
 
   closeButton: {
