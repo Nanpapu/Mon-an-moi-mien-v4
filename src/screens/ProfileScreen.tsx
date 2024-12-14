@@ -182,7 +182,7 @@ export default function ProfileScreen() {
         user.email || ""
       );
       if (success) {
-        Alert.alert("Thành công", "Đã tạo thông tin ngư��i dùng");
+        Alert.alert("Thành công", "Đã tạo thông tin người dùng");
       }
     } catch (error) {
       Alert.alert("Lỗi", "Không thể tạo thông tin người dùng");
@@ -362,31 +362,12 @@ export default function ProfileScreen() {
           <View style={styles.dividerLine} />
         </View>
 
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.googleButton}
           onPress={handleGoogleSignIn}
         >
           <Ionicons name="logo-google" size={24} color="white" />
           <Text style={styles.buttonText}>Đăng nhập với Google</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.switchAuthButton}
-          onPress={toggleAuthMode}
-        >
-          <Text style={styles.switchAuthText}>
-            {isRegistering ? "Đã có tài khoản? " : "Chưa có tài khoản? "}
-            <Text style={styles.switchAuthHighlight}>
-              {isRegistering ? "Đăng nhập" : "Đăng ký"}
-            </Text>
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.forgotPasswordButton}
-          onPress={() => setShowResetPassword(true)}
-        >
-          <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
         </TouchableOpacity>
       </Animated.View>
     );
@@ -486,7 +467,7 @@ export default function ProfileScreen() {
           <View style={styles.dividerLine} />
         </View>
 
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.googleButton}
           onPress={handleGoogleSignIn}
         >
