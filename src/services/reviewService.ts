@@ -13,6 +13,7 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { Review } from "../types";
+import { UserService } from "./userService";
 
 export const ReviewService = {
   // Tạo đánh giá mới
@@ -113,10 +114,22 @@ export const ReviewService = {
       );
 
       const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Review[];
+      const reviews = await Promise.all(querySnapshot.docs.map(async (doc) => {
+        const data = doc.data();
+        const userInfo = await UserService.getUserInfo(data.userId);
+        return {
+          id: doc.id,
+          recipeId: data.recipeId,
+          userId: data.userId,
+          rating: data.rating,
+          comment: data.comment,
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt,
+          userInfo: userInfo
+        } as Review;
+      }));
+
+      return reviews;
     } catch (error) {
       console.error("Lỗi khi lấy danh sách đánh giá:", error);
       return [];
@@ -131,35 +144,34 @@ export const ReviewService = {
     comment: string
   ): Promise<void> => {
     try {
-      const reviewRef = doc(db, "reviews", reviewId);
-      const reviewDoc = await getDoc(reviewRef);
-
-      if (!reviewDoc.exists()) {
-        throw new Error("Không tìm thấy đánh giá");
-      }
-
-      const oldRating = reviewDoc.data().rating;
-
       await runTransaction(db, async (transaction) => {
-        // Cập nhật review
+        // Đọc review và recipe trước
+        const reviewRef = doc(db, "reviews", reviewId);
+        const recipeRef = doc(db, "recipes", recipeId);
+        
+        const reviewDoc = await transaction.get(reviewRef);
+        const recipeDoc = await transaction.get(recipeRef);
+
+        if (!reviewDoc.exists()) {
+          throw new Error("Không tìm thấy đánh giá");
+        }
+        if (!recipeDoc.exists()) {
+          throw new Error("Không tìm thấy công thức");
+        }
+
+        const oldRating = reviewDoc.data().rating;
+        const recipeData = recipeDoc.data();
+        
+        // Sau khi đọc xong mới thực hiện write
+        const currentTotal = recipeData.averageRating * recipeData.totalReviews;
+        const newTotal = currentTotal - oldRating + rating;
+        const newAverageRating = newTotal / recipeData.totalReviews;
+
         transaction.update(reviewRef, {
           rating,
           comment,
           updatedAt: Timestamp.now(),
         });
-
-        // Cập nhật averageRating của recipe
-        const recipeRef = doc(db, "recipes", recipeId);
-        const recipeDoc = await transaction.get(recipeRef);
-
-        if (!recipeDoc.exists()) {
-          throw new Error("Không tìm thấy công thức");
-        }
-
-        const recipeData = recipeDoc.data();
-        const currentTotal = recipeData.averageRating * recipeData.totalReviews;
-        const newTotal = currentTotal - oldRating + rating;
-        const newAverageRating = newTotal / recipeData.totalReviews;
 
         transaction.update(recipeRef, {
           averageRating: newAverageRating,

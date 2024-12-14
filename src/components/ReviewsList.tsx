@@ -1,94 +1,111 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import { Review } from '../types';
 import { Ionicons } from '@expo/vector-icons';
 
-type Props = {
+interface ReviewsListProps {
   reviews: Review[];
-  averageRating: number;
-  totalReviews: number;
-};
+}
 
-export const ReviewsList = ({ reviews, averageRating, totalReviews }: Props) => {
+export const ReviewsList = ({ reviews }: ReviewsListProps) => {
+  const renderStars = (rating: number) => {
+    return [...Array(5)].map((_, index) => (
+      <Ionicons
+        key={index}
+        name={index < rating ? "star" : "star-outline"}
+        size={16}
+        color="#FFD700"
+      />
+    ));
+  };
+
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.statsContainer}>
-        <Text style={styles.averageRating}>{averageRating.toFixed(1)}</Text>
-        <View style={styles.starsContainer}>
-          {[1, 2, 3, 4, 5].map((star) => (
-            <Ionicons
-              key={star}
-              name={star <= averageRating ? "star" : "star-outline"}
-              size={20}
-              color="#FFD700"
-            />
-          ))}
-        </View>
-        <Text style={styles.totalReviews}>{totalReviews} đánh giá</Text>
-      </View>
-
+    <View style={styles.container}>
       {reviews.map((review) => (
         <View key={review.id} style={styles.reviewItem}>
-          <View style={styles.reviewHeader}>
-            <View style={styles.starsContainer}>
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Ionicons
-                  key={star}
-                  name={star <= review.rating ? "star" : "star-outline"}
-                  size={16}
-                  color="#FFD700"
-                />
-              ))}
+          <View style={styles.userInfo}>
+            {review.userInfo?.photoURL ? (
+              <Image 
+                source={{ uri: review.userInfo.photoURL }} 
+                style={styles.avatar} 
+              />
+            ) : (
+              <Ionicons name="person-circle" size={40} color="#007AFF" />
+            )}
+            <View style={styles.userDetails}>
+              <Text style={styles.userName}>
+                {review.userInfo?.displayName || "Người dùng"}
+              </Text>
+              <Text style={styles.userEmail}>{review.userInfo?.email}</Text>
             </View>
-            <Text style={styles.reviewDate}>
-              {review.createdAt.toDate().toLocaleDateString()}
+          </View>
+          
+          <View style={styles.ratingContainer}>
+            {renderStars(review.rating)}
+            <Text style={styles.date}>
+              {new Date(review.createdAt.toDate()).toLocaleDateString()}
             </Text>
           </View>
-          <Text style={styles.reviewComment}>{review.comment}</Text>
+          
+          <Text style={styles.comment}>{review.comment}</Text>
         </View>
       ))}
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-  },
-  statsContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  averageRating: {
-    fontSize: 36,
-    fontWeight: 'bold',
-  },
-  starsContainer: {
-    flexDirection: 'row',
-    gap: 2,
-    marginVertical: 4,
-  },
-  totalReviews: {
-    color: '#666',
+    padding: 10,
   },
   reviewItem: {
-    backgroundColor: '#f8f8f8',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 12,
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
   },
-  reviewHeader: {
+  userInfo: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 10,
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  userDetails: {
+    marginLeft: 10,
+  },
+  userName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  userEmail: {
+    fontSize: 12,
+    color: '#666',
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 8,
   },
-  reviewDate: {
-    color: '#666',
+  date: {
     fontSize: 12,
+    color: '#666',
   },
-  reviewComment: {
+  comment: {
     fontSize: 14,
+    color: '#333',
     lineHeight: 20,
   },
 });

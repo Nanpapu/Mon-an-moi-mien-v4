@@ -40,12 +40,17 @@ export interface ValidationState {
 // Thêm interface Review
 export interface Review {
   id: string;
-  recipeId: string; 
+  recipeId: string;
   userId: string;
   rating: number;
   comment: string;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
+  createdAt: any; // Timestamp
+  updatedAt: any; // Timestamp
+  userInfo?: {
+    displayName: string;
+    email: string;
+    photoURL?: string;
+  };
 }
 
 export interface RecipeStats {

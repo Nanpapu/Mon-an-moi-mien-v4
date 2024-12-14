@@ -1,5 +1,5 @@
 import { db, storage } from "../config/firebase";
-import { doc, updateDoc, setDoc } from "firebase/firestore";
+import { doc, updateDoc, setDoc, getDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export const UserService = {
@@ -59,4 +59,30 @@ export const UserService = {
       return false;
     }
   },
+
+  getUserInfo: async (userId: string) => {
+    try {
+      const userRef = doc(db, "users", userId);
+      const userDoc = await getDoc(userRef);
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        return {
+          displayName: userData.displayName || "Người dùng",
+          email: maskEmail(userData.email),
+          photoURL: userData.photoURL
+        };
+      }
+      return null;
+    } catch (error) {
+      console.error("Lỗi khi lấy thông tin user:", error);
+      return null;
+    }
+  },
+};
+
+// Hàm để ẩn một phần email
+const maskEmail = (email: string) => {
+  const [username, domain] = email.split('@');
+  const maskedUsername = username.slice(0, 3) + '*'.repeat(username.length - 3);
+  return `${maskedUsername}@${domain}`;
 };
