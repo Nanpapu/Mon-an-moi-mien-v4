@@ -171,34 +171,55 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           </View>
 
-          {isEditing ? (
-            <TextInput
-              style={styles.nameInput}
-              value={displayName}
-              onChangeText={setDisplayName}
-              placeholder="Nhập tên hiển thị"
-            />
-          ) : (
-            <Text style={styles.displayNameText}>
-              {displayName || "Chưa có tên hiển thị"}
-            </Text>
-          )}
+          <View style={styles.nameContainer}>
+            {isEditing ? (
+              <>
+                <TextInput
+                  style={styles.nameInput}
+                  value={displayName}
+                  onChangeText={setDisplayName}
+                  placeholder="Nhập tên hiển thị"
+                />
+                <View style={styles.editButtonsContainer}>
+                  <TouchableOpacity 
+                    style={[styles.editButton, styles.cancelButton]}
+                    onPress={() => {
+                      setIsEditing(false);
+                      setDisplayName(user?.displayName || displayName);
+                    }}
+                  >
+                    <Ionicons name="close-outline" size={20} color="white" />
+                    <Text style={styles.buttonText}>Hủy</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    style={[styles.editButton, styles.saveButton]}
+                    onPress={handleSaveProfile}
+                  >
+                    <Ionicons name="checkmark-outline" size={20} color="white" />
+                    <Text style={styles.buttonText}>Lưu</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : (
+              <>
+                <Text style={styles.displayNameText}>
+                  {displayName || "Chưa có tên hiển thị"}
+                </Text>
+                <TouchableOpacity 
+                  style={styles.editNameButton}
+                  onPress={() => setIsEditing(true)}
+                >
+                  <Ionicons name="pencil" size={18} color="#007AFF" />
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
 
           <Text style={styles.emailText}>{user.email}</Text>
 
-          <TouchableOpacity 
-            style={styles.editButton}
-            onPress={() => {
-              if (isEditing) {
-                handleSaveProfile();
-              } else {
-                setIsEditing(true);
-              }
-            }}
-          >
-            <Text style={styles.editButtonText}>
-              {isEditing ? 'Lưu thông tin' : 'Chỉnh sửa'}
-            </Text>
+          <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+            <Ionicons name="log-out-outline" size={24} color="white" />
+            <Text style={styles.buttonText}>Đăng xuất</Text>
           </TouchableOpacity>
         </View>
 
@@ -216,10 +237,6 @@ export default function ProfileScreen() {
           >
             <Ionicons name="person-add-outline" size={24} color="white" />
             <Text style={styles.buttonText}>Tạo thông tin người dùng</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-            <Ionicons name="log-out-outline" size={24} color="white" />
-            <Text style={styles.buttonText}>Đăng xuất</Text>
           </TouchableOpacity>
         </View>
       </Animated.View>
@@ -507,34 +524,58 @@ const styles = StyleSheet.create({
     color: "#666",
   },
 
-  editButton: {
-    marginTop: 20,
-    backgroundColor: "#007AFF",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-  },
-
-  editButtonText: {
-    color: "white",
-    fontWeight: "bold",
+  nameContainer: {
+    alignItems: 'center',
+    marginVertical: 15,
+    width: '100%',
   },
 
   nameInput: {
     width: '80%',
-    padding: 10,
+    padding: 12,
     borderWidth: 1,
     borderColor: '#ddd',
-    borderRadius: 5,
-    marginVertical: 10,
+    borderRadius: 8,
     fontSize: 16,
-    textAlign: 'center'
+    backgroundColor: 'white',
+    marginBottom: 10,
+  },
+
+  editButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 10,
+    width: '80%',
+  },
+
+  editButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 8,
+    minWidth: 90,
+    justifyContent: 'center',
+  },
+
+  cancelButton: {
+    backgroundColor: '#ff6b6b',
+  },
+
+  saveButton: {
+    backgroundColor: '#4CAF50',
+  },
+
+  editNameButton: {
+    marginLeft: 10,
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: '#f0f0f0',
   },
 
   displayNameText: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginVertical: 10,
-    color: '#333'
+    color: '#333',
   }
 });
