@@ -57,7 +57,7 @@ export interface RecipeStats {
 // Thông tin người dùng
 export interface User {
   uid: string;
-  displayName: string | null;
-  photoURL: string | null;
-  email: string | null;
+  email: string;
+  displayName?: string;
+  photoURL?: string;
 } 

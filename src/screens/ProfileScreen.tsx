@@ -18,8 +18,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
 import { ImportButton } from "../components/ImportButton";
 import { RegionService } from "../services/regionService";
-import * as ImagePicker from 'expo-image-picker';
-import { UserService } from '../services/userService';
+import * as ImagePicker from "expo-image-picker";
+import { UserService } from "../services/userService";
 
 export default function ProfileScreen() {
   // HOOKS & STATE
@@ -30,10 +30,12 @@ export default function ProfileScreen() {
   const [isRegistering, setIsRegistering] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
+  const [displayName, setDisplayName] = useState(user?.displayName || "");
+  const [isEditing, setIsEditing] = useState(false);
+
   // Animation
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
-  
+
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -70,7 +72,11 @@ export default function ProfileScreen() {
     } else {
       Alert.alert(
         "Lỗi",
-        `${!emailValid ? "Email không hợp lệ" : "Mật khẩu phải có ít nhất 6 ký tự"}`
+        `${
+          !emailValid
+            ? "Email không hợp lệ"
+            : "Mật khẩu phải có ít nhất 6 ký tự"
+        }`
       );
     }
   };
@@ -88,35 +94,82 @@ export default function ProfileScreen() {
     }
   };
 
+  // Hàm chọn ảnh từ thư viện
+  const pickImage = async () => {
+    if (!user) return;
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: "images",
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets[0].uri) {
+      try {
+        const downloadURL = await UserService.uploadAvatar(
+          user.uid,
+          result.assets[0].uri
+        );
+        if (downloadURL) {
+          Alert.alert("Thành công", "Đã cập nhật ảnh đại diện");
+        }
+      } catch (error) {
+        Alert.alert("Lỗi", "Không thể cập nhật ảnh đại diện");
+      }
+    }
+  };
+
+  // Hàm lưu thông tin profile
+  const handleSaveProfile = async () => {
+    if (!user) return;
+
+    try {
+      const success = await UserService.updateProfile(user.uid, {
+        displayName,
+      });
+      if (success) {
+        Alert.alert("Thành công", "Đã cập nhật thông tin");
+        setIsEditing(false);
+      }
+    } catch (error) {
+      Alert.alert("Lỗi", "Không thể cập nhật thông tin");
+    }
+  };
+
   // RENDER
   if (user) {
     return (
-      <Animated.View 
-        style={[
-          styles.container,
-          { opacity: fadeAnim }
-        ]}
-      >
+      <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
         <View style={styles.userInfoContainer}>
           <View style={styles.avatarContainer}>
-            <Ionicons name="person-circle" size={80} color="#007AFF" />
+            <TouchableOpacity
+              onPress={pickImage}
+              style={styles.avatarContainer}
+            >
+              {user?.photoURL ? (
+                <Image source={{ uri: user.photoURL }} style={styles.avatar} />
+              ) : (
+                <Ionicons name="person-circle" size={80} color="#007AFF" />
+              )}
+              <View style={styles.editIconContainer}>
+                <Ionicons name="camera" size={20} color="white" />
+              </View>
+            </TouchableOpacity>
           </View>
           <Text style={styles.welcomeText}>Xin chào,</Text>
           <Text style={styles.emailText}>{user.email}</Text>
         </View>
-        
+
         <View style={styles.actionsContainer}>
-          <TouchableOpacity 
-            style={styles.importButton} 
+          <TouchableOpacity
+            style={styles.importButton}
             onPress={handleImportData}
           >
             <Ionicons name="cloud-upload-outline" size={24} color="white" />
             <Text style={styles.buttonText}>Import Data</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.logoutButton} 
-            onPress={logout}
-          >
+          <TouchableOpacity style={styles.logoutButton} onPress={logout}>
             <Ionicons name="log-out-outline" size={24} color="white" />
             <Text style={styles.buttonText}>Đăng xuất</Text>
           </TouchableOpacity>
@@ -126,16 +179,11 @@ export default function ProfileScreen() {
   }
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <Animated.View 
-        style={[
-          styles.formContainer,
-          { opacity: fadeAnim }
-        ]}
-      >
+      <Animated.View style={[styles.formContainer, { opacity: fadeAnim }]}>
         <Text style={styles.title}>
           {isRegistering ? "Đăng ký" : "Đăng nhập"}
         </Text>
@@ -161,14 +209,14 @@ export default function ProfileScreen() {
             onChangeText={setPassword}
             secureTextEntry={!showPassword}
           />
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => setShowPassword(!showPassword)}
             style={styles.eyeIcon}
           >
-            <Ionicons 
-              name={showPassword ? "eye-outline" : "eye-off-outline"} 
-              size={24} 
-              color="#666" 
+            <Ionicons
+              name={showPassword ? "eye-outline" : "eye-off-outline"}
+              size={24}
+              color="#666"
             />
           </TouchableOpacity>
         </View>
@@ -183,24 +231,21 @@ export default function ProfileScreen() {
               onChangeText={setConfirmPassword}
               secureTextEntry={!showConfirmPassword}
             />
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => setShowConfirmPassword(!showConfirmPassword)}
               style={styles.eyeIcon}
             >
-              <Ionicons 
-                name={showConfirmPassword ? "eye-outline" : "eye-off-outline"} 
-                size={24} 
-                color="#666" 
+              <Ionicons
+                name={showConfirmPassword ? "eye-outline" : "eye-off-outline"}
+                size={24}
+                color="#666"
               />
             </TouchableOpacity>
           </View>
         )}
 
-        <TouchableOpacity 
-          style={[
-            styles.button,
-            isLoading && styles.buttonDisabled
-          ]} 
+        <TouchableOpacity
+          style={[styles.button, isLoading && styles.buttonDisabled]}
           onPress={handleLogin}
           disabled={isLoading}
         >
@@ -240,7 +285,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
     padding: 20,
   },
-  
+
   formContainer: {
     backgroundColor: "white",
     padding: 20,
@@ -256,7 +301,7 @@ const styles = StyleSheet.create({
   },
 
   userInfoContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 30,
   },
 
@@ -264,22 +309,22 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#E8E8E8',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#E8E8E8",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 15,
   },
 
   welcomeText: {
     fontSize: 24,
     fontWeight: "500",
-    color: '#333',
+    color: "#333",
   },
 
   emailText: {
     fontSize: 18,
-    color: '#007AFF',
-    fontWeight: '600',
+    color: "#007AFF",
+    fontWeight: "600",
   },
 
   actionsContainer: {
@@ -291,7 +336,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 30,
     textAlign: "center",
-    color: '#333',
+    color: "#333",
   },
 
   inputContainer: {
@@ -337,9 +382,9 @@ const styles = StyleSheet.create({
 
   logoutButton: {
     backgroundColor: "#ff4444",
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 16,
     borderRadius: 12,
     marginTop: 15,
@@ -348,12 +393,12 @@ const styles = StyleSheet.create({
   switchAuthButton: {
     marginTop: 20,
     paddingVertical: 10,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#e0e0e0',
-    shadowColor: '#000',
+    borderColor: "#e0e0e0",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 1,
@@ -365,21 +410,83 @@ const styles = StyleSheet.create({
 
   switchAuthText: {
     fontSize: 15,
-    color: '#666',
+    color: "#666",
   },
 
   switchAuthHighlight: {
-    color: '#007AFF',
-    fontWeight: 'bold',
+    color: "#007AFF",
+    fontWeight: "bold",
   },
 
   importButton: {
     backgroundColor: "#4CAF50",
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 16,
     borderRadius: 12,
     marginTop: 15,
   },
+
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
+
+  editIconContainer: {
+    position: "absolute",
+    right: 0,
+    bottom: 0,
+    backgroundColor: "#007AFF",
+    borderRadius: 15,
+    padding: 5,
+  },
+
+  infoContainer: {
+    width: "100%",
+    marginTop: 20,
+    alignItems: "center",
+  },
+
+  displayName: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+
+  email: {
+    color: "#666",
+  },
+
+  editButton: {
+    marginTop: 20,
+    backgroundColor: "#007AFF",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+
+  editButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+
+  nameInput: {
+    width: '80%',
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    marginVertical: 10,
+    fontSize: 16,
+    textAlign: 'center'
+  },
+
+  displayNameText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 10,
+    color: '#333'
+  }
 });

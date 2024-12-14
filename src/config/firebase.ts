@@ -1,7 +1,7 @@
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
-import { getStorage } from 'firebase/storage';
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDrPleO8BaXwOwvCn8qlbORdG7SggOFnCg",
@@ -9,7 +9,7 @@ const firebaseConfig = {
   projectId: "mon-an-moi-mien-v2",
   storageBucket: "mon-an-moi-mien-v2.firebasestorage.app",
   messagingSenderId: "977479607170",
-  appId: "1:977479607170:android:a3d2c3cb4927a9ec49e59b"
+  appId: "1:977479607170:android:a3d2c3cb4927a9ec49e59b",
 };
 
 const app = initializeApp(firebaseConfig);
