@@ -3,6 +3,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { User } from 'firebase/auth';
 import { AuthService } from '../services/authService';
 import { auth } from '../config/firebase';
+import { sendPasswordResetEmail } from "firebase/auth";
 
 // Định nghĩa các hàm và state có trong context
 interface AuthContextType {
@@ -11,6 +12,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
 }
 
 // Tạo context
@@ -63,9 +65,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Xử lý đặt lại mật khẩu
+  const resetPassword = async (email: string) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+    } catch (error) {
+      throw error;
+    }
+  };
+
   // RENDER
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, logout, resetPassword }}>
       {!isLoading && children}
     </AuthContext.Provider>
   );

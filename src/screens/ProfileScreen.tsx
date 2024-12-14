@@ -13,6 +13,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  Modal,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
@@ -24,12 +25,14 @@ import { useAuthForm } from '../hooks/useAuthForm';
 
 export default function ProfileScreen() {
   // HOOKS & STATE
-  const { login, isLoading, user, logout, register } = useAuth();
+  const { login, isLoading, user, logout, register, resetPassword } = useAuth();
   const [isRegistering, setIsRegistering] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [displayName, setDisplayName] = useState(user?.displayName || "");
   const [isEditing, setIsEditing] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
 
   // Animation
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
@@ -193,6 +196,20 @@ export default function ProfileScreen() {
     setPassword("");
     setConfirmPassword("");
     animateFormTransition();
+  };
+
+  // Thêm handler
+  const handleResetPassword = async () => {
+    try {
+      await resetPassword(resetEmail);
+      Alert.alert(
+        "Thành công",
+        "Email khôi phục mật khẩu đã được gửi. Vui lòng kiểm tra hộp thư."
+      );
+      setShowResetPassword(false);
+    } catch (error: any) {
+      Alert.alert("Lỗi", error.message);
+    }
   };
 
   // RENDER
@@ -387,7 +404,53 @@ export default function ProfileScreen() {
             </Text>
           </Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.forgotPasswordButton}
+          onPress={() => setShowResetPassword(true)}
+        >
+          <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
+        </TouchableOpacity>
       </Animated.View>
+
+      <Modal
+        visible={showResetPassword}
+        animationType="slide"
+        transparent={true}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Khôi phục mật khẩu</Text>
+            
+            <View style={styles.inputContainer}>
+              <Ionicons name="mail-outline" size={24} color="#666" />
+              <TextInput
+                style={styles.input}
+                placeholder="Nhập email của bạn"
+                value={resetEmail}
+                onChangeText={setResetEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            </View>
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => setShowResetPassword(false)}
+              >
+                <Text style={styles.buttonText}>Hủy</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.confirmButton]}
+                onPress={handleResetPassword}
+              >
+                <Text style={styles.buttonText}>Gửi</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   );
 }
@@ -625,5 +688,52 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
-  }
+  },
+
+  forgotPasswordButton: {
+    marginTop: 10,
+    alignItems: 'center',
+  },
+
+  forgotPasswordText: {
+    color: '#007AFF',
+  },
+
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+  },
+
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+
+  modalButton: {
+    flex: 1,
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginHorizontal: 5,
+  },
+
+  confirmButton: {
+    backgroundColor: '#4CAF50',
+  },
 });
