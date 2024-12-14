@@ -27,7 +27,15 @@ import { auth } from "../config/firebase";
 
 export default function ProfileScreen() {
   // HOOKS & STATE
-  const { login, isLoading, user, logout, register, resetPassword, signInWithGoogle } = useAuth();
+  const {
+    login,
+    isLoading,
+    user,
+    logout,
+    register,
+    resetPassword,
+    signInWithGoogle,
+  } = useAuth();
   const [isRegistering, setIsRegistering] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -174,7 +182,7 @@ export default function ProfileScreen() {
         user.email || ""
       );
       if (success) {
-        Alert.alert("Thành công", "Đã tạo thông tin người dùng");
+        Alert.alert("Thành công", "Đã tạo thông tin ngư��i dùng");
       }
     } catch (error) {
       Alert.alert("Lỗi", "Không thể tạo thông tin người dùng");
@@ -236,7 +244,7 @@ export default function ProfileScreen() {
     try {
       await signInWithGoogle();
     } catch (error) {
-      Alert.alert('Lỗi', 'Không thể đăng nhập với Google');
+      Alert.alert("Lỗi", "Không thể đăng nhập với Google");
     }
   };
 
@@ -333,6 +341,53 @@ export default function ProfileScreen() {
             <Text style={styles.buttonText}>Tạo thông tin người dùng</Text>
           </TouchableOpacity>
         </View>
+
+        <TouchableOpacity
+          style={[styles.button, isLoading && styles.buttonDisabled]}
+          onPress={handleLogin}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.buttonText}>
+              {isRegistering ? "Đăng ký" : "Đăng nhập"}
+            </Text>
+          )}
+        </TouchableOpacity>
+
+        <View style={styles.divider}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>HOẶC</Text>
+          <View style={styles.dividerLine} />
+        </View>
+
+        <TouchableOpacity 
+          style={styles.googleButton}
+          onPress={handleGoogleSignIn}
+        >
+          <Ionicons name="logo-google" size={24} color="white" />
+          <Text style={styles.buttonText}>Đăng nhập với Google</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.switchAuthButton}
+          onPress={toggleAuthMode}
+        >
+          <Text style={styles.switchAuthText}>
+            {isRegistering ? "Đã có tài khoản? " : "Chưa có tài khoản? "}
+            <Text style={styles.switchAuthHighlight}>
+              {isRegistering ? "Đăng nhập" : "Đăng ký"}
+            </Text>
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.forgotPasswordButton}
+          onPress={() => setShowResetPassword(true)}
+        >
+          <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
+        </TouchableOpacity>
       </Animated.View>
     );
   }

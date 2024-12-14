@@ -76,21 +76,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const [request, response, promptAsync] = GoogleAuthService.useGoogleAuth();
+
   const signInWithGoogle = async () => {
     try {
-      const { response, promptAsync } = GoogleAuthService.useGoogleAuth();
-      console.log('Google Auth Response:', response);
-      
       const result = await promptAsync();
-      console.log('Prompt Result:', result);
-      
-      if (result?.type === 'success') {
-        const { id_token } = result.params;
-        const user = await GoogleAuthService.signInWithGoogle(id_token);
+      if (result?.type === 'success' && result.params?.id_token) {
+        const user = await GoogleAuthService.signInWithGoogle(result.params.id_token);
         setUser(user);
       }
-    } catch (error: any) {
-      console.log('Sign In With Google Error:', error);
+    } catch (error) {
       throw error;
     }
   };

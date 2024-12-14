@@ -5,18 +5,9 @@ import { auth } from '../config/firebase';
 export const GoogleAuthService = {
   // Config Google Sign In
   useGoogleAuth: () => {
-    const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-        // clientId: 'YOUR_GOOGLE_CLIENT_ID',
-        // iosClientId: 'YOUR_IOS_CLIENT_ID',
+    return Google.useIdTokenAuthRequest({
       androidClientId: "968081313298-aa36cfggjg48bm2p0pbj5ak00e3iaq5b.apps.googleusercontent.com",
-      // Thêm các clientId khác nếu cần (iOS, web)
     });
-
-    return {
-      request,
-      response,
-      promptAsync
-    };
   },
 
   // Xử lý đăng nhập với Google
