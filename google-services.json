@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "977479607170",
+    "project_id": "mon-an-moi-mien-v2",
+    "storage_bucket": "mon-an-moi-mien-v2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977479607170:android:a3d2c3cb4927a9ec49e59b",
+        "android_client_info": {
+          "package_name": "com.monanmoimien.v2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrPleO8BaXwOwvCn8qlbORdG7SggOFnCg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

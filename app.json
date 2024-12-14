@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "Mon-an-moi-mien-v2",
+    "slug": "Mon-an-moi-mien-v2",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/viet-icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/viet-splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/viet-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "YOUR_GOOGLE_MAPS_API_KEY"
+        }
+      },
+      "package": "com.nanpa.Monanmoimienv2"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "813e424c-768f-4912-8a6c-a2d599d22d93"
+      }
+    }
+  }
+}
