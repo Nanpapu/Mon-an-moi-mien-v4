@@ -171,57 +171,57 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.nameContainer}>
-            {isEditing ? (
-              <>
-                <TextInput
-                  style={styles.nameInput}
-                  value={displayName}
-                  onChangeText={setDisplayName}
-                  placeholder="Nhập tên hiển thị"
-                />
-                <View style={styles.editButtonsContainer}>
+            <View style={styles.nameContainer}>
+              {isEditing ? (
+                <>
+                  <TextInput
+                    style={styles.nameInput}
+                    value={displayName}
+                    onChangeText={setDisplayName}
+                    placeholder="Nhập tên hiển thị"
+                  />
+                  <View style={styles.editButtonsContainer}>
+                    <TouchableOpacity 
+                      style={[styles.editButton, styles.cancelButton]}
+                      onPress={() => {
+                        setIsEditing(false);
+                        setDisplayName(user?.displayName || displayName);
+                      }}
+                    >
+                      <Ionicons name="close-outline" size={20} color="white" />
+                      <Text style={styles.buttonText}>Hủy</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                      style={[styles.editButton, styles.saveButton]}
+                      onPress={handleSaveProfile}
+                    >
+                      <Ionicons name="checkmark-outline" size={20} color="white" />
+                      <Text style={styles.buttonText}>Lưu</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.displayNameText}>
+                    {displayName || "Chưa có tên hiển thị"}
+                  </Text>
                   <TouchableOpacity 
-                    style={[styles.editButton, styles.cancelButton]}
-                    onPress={() => {
-                      setIsEditing(false);
-                      setDisplayName(user?.displayName || displayName);
-                    }}
+                    style={styles.editNameButton}
+                    onPress={() => setIsEditing(true)}
                   >
-                    <Ionicons name="close-outline" size={20} color="white" />
-                    <Text style={styles.buttonText}>Hủy</Text>
+                    <Ionicons name="pencil" size={18} color="#007AFF" />
                   </TouchableOpacity>
-                  <TouchableOpacity 
-                    style={[styles.editButton, styles.saveButton]}
-                    onPress={handleSaveProfile}
-                  >
-                    <Ionicons name="checkmark-outline" size={20} color="white" />
-                    <Text style={styles.buttonText}>Lưu</Text>
-                  </TouchableOpacity>
-                </View>
-              </>
-            ) : (
-              <>
-                <Text style={styles.displayNameText}>
-                  {displayName || "Chưa có tên hiển thị"}
-                </Text>
-                <TouchableOpacity 
-                  style={styles.editNameButton}
-                  onPress={() => setIsEditing(true)}
-                >
-                  <Ionicons name="pencil" size={18} color="#007AFF" />
-                </TouchableOpacity>
-              </>
-            )}
+                </>
+              )}
+            </View>
+
+            <Text style={styles.emailText}>{user.email}</Text>
+
+            <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+              <Ionicons name="log-out-outline" size={24} color="white" />
+              <Text style={styles.buttonText}>Đăng xuất</Text>
+            </TouchableOpacity>
           </View>
-
-          <Text style={styles.emailText}>{user.email}</Text>
-
-          <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-            <Ionicons name="log-out-outline" size={24} color="white" />
-            <Text style={styles.buttonText}>Đăng xuất</Text>
-          </TouchableOpacity>
-        </View>
 
         <View style={styles.actionsContainer}>
           <TouchableOpacity
