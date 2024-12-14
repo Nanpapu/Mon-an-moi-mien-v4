@@ -21,7 +21,9 @@ import { ImportButton } from "../components/ImportButton";
 import { RegionService } from "../services/regionService";
 import * as ImagePicker from "expo-image-picker";
 import { UserService } from "../services/userService";
-import { useAuthForm } from '../hooks/useAuthForm';
+import { useAuthForm } from "../hooks/useAuthForm";
+import { fetchSignInMethodsForEmail } from "firebase/auth";
+import { auth } from "../config/firebase";
 
 export default function ProfileScreen() {
   // HOOKS & STATE
@@ -48,7 +50,7 @@ export default function ProfileScreen() {
     errors,
     validateEmail,
     validatePassword,
-    validateConfirmPassword
+    validateConfirmPassword,
   } = useAuthForm();
 
   React.useEffect(() => {
@@ -83,9 +85,12 @@ export default function ProfileScreen() {
   const handleLogin = async () => {
     const isEmailValid = validateEmail(email);
     const isPasswordValid = validatePassword(password);
-    
+
     if (isRegistering) {
-      const isConfirmPasswordValid = validateConfirmPassword(password, confirmPassword);
+      const isConfirmPasswordValid = validateConfirmPassword(
+        password,
+        confirmPassword
+      );
       if (!isEmailValid || !isPasswordValid || !isConfirmPasswordValid) return;
     } else {
       if (!isEmailValid || !isPasswordValid) return;
@@ -164,7 +169,10 @@ export default function ProfileScreen() {
   const handleCreateUserDocument = async () => {
     if (!user) return;
     try {
-      const success = await UserService.createUserDocument(user.uid, user.email || '');
+      const success = await UserService.createUserDocument(
+        user.uid,
+        user.email || ""
+      );
       if (success) {
         Alert.alert("Thành công", "Đã tạo thông tin người dùng");
       }
@@ -201,6 +209,18 @@ export default function ProfileScreen() {
   // Thêm handler
   const handleResetPassword = async () => {
     try {
+      if (!validateEmail(resetEmail)) {
+        Alert.alert("Lỗi", "Email không hợp lệ");
+        return;
+      }
+
+      // Kiểm tra email có tồn tại trong auth không
+      const methods = await fetchSignInMethodsForEmail(auth, resetEmail);
+      if (methods.length === 0) {
+        Alert.alert("Lỗi", "Email này chưa được đăng ký");
+        return;
+      }
+
       await resetPassword(resetEmail);
       Alert.alert(
         "Thành công",
@@ -208,7 +228,7 @@ export default function ProfileScreen() {
       );
       setShowResetPassword(false);
     } catch (error: any) {
-      Alert.alert("Lỗi", error.message);
+      Alert.alert("Lỗi", "Có lỗi xảy ra khi gửi email khôi phục");
     }
   };
 
@@ -233,57 +253,61 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           </View>
 
-            <View style={styles.nameContainer}>
-              {isEditing ? (
-                <>
-                  <TextInput
-                    style={styles.nameInput}
-                    value={displayName}
-                    onChangeText={setDisplayName}
-                    placeholder="Nhập tên hiển thị"
-                  />
-                  <View style={styles.editButtonsContainer}>
-                    <TouchableOpacity 
-                      style={[styles.editButton, styles.cancelButton]}
-                      onPress={() => {
-                        setIsEditing(false);
-                        setDisplayName(user?.displayName || displayName);
-                      }}
-                    >
-                      <Ionicons name="close-outline" size={20} color="white" />
-                      <Text style={styles.buttonText}>Hủy</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity 
-                      style={[styles.editButton, styles.saveButton]}
-                      onPress={handleSaveProfile}
-                    >
-                      <Ionicons name="checkmark-outline" size={20} color="white" />
-                      <Text style={styles.buttonText}>Lưu</Text>
-                    </TouchableOpacity>
-                  </View>
-                </>
-              ) : (
-                <>
-                  <Text style={styles.displayNameText}>
-                    {displayName || "Chưa có tên hiển thị"}
-                  </Text>
-                  <TouchableOpacity 
-                    style={styles.editNameButton}
-                    onPress={() => setIsEditing(true)}
+          <View style={styles.nameContainer}>
+            {isEditing ? (
+              <>
+                <TextInput
+                  style={styles.nameInput}
+                  value={displayName}
+                  onChangeText={setDisplayName}
+                  placeholder="Nhập tên hiển thị"
+                />
+                <View style={styles.editButtonsContainer}>
+                  <TouchableOpacity
+                    style={[styles.editButton, styles.cancelButton]}
+                    onPress={() => {
+                      setIsEditing(false);
+                      setDisplayName(user?.displayName || displayName);
+                    }}
                   >
-                    <Ionicons name="pencil" size={18} color="#007AFF" />
+                    <Ionicons name="close-outline" size={20} color="white" />
+                    <Text style={styles.buttonText}>Hủy</Text>
                   </TouchableOpacity>
-                </>
-              )}
-            </View>
-
-            <Text style={styles.emailText}>{user.email}</Text>
-
-            <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-              <Ionicons name="log-out-outline" size={24} color="white" />
-              <Text style={styles.buttonText}>Đăng xuất</Text>
-            </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.editButton, styles.saveButton]}
+                    onPress={handleSaveProfile}
+                  >
+                    <Ionicons
+                      name="checkmark-outline"
+                      size={20}
+                      color="white"
+                    />
+                    <Text style={styles.buttonText}>Lưu</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : (
+              <>
+                <Text style={styles.displayNameText}>
+                  {displayName || "Chưa có tên hiển thị"}
+                </Text>
+                <TouchableOpacity
+                  style={styles.editNameButton}
+                  onPress={() => setIsEditing(true)}
+                >
+                  <Ionicons name="pencil" size={18} color="#007AFF" />
+                </TouchableOpacity>
+              </>
+            )}
           </View>
+
+          <Text style={styles.emailText}>{user.email}</Text>
+
+          <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+            <Ionicons name="log-out-outline" size={24} color="white" />
+            <Text style={styles.buttonText}>Đăng xuất</Text>
+          </TouchableOpacity>
+        </View>
 
         <View style={styles.actionsContainer}>
           <TouchableOpacity
@@ -310,13 +334,13 @@ export default function ProfileScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <Animated.View 
+      <Animated.View
         style={[
-          styles.formContainer, 
+          styles.formContainer,
           {
             opacity: fadeAnim,
-            transform: [{ translateY: slideAnim }]
-          }
+            transform: [{ translateY: slideAnim }],
+          },
         ]}
       >
         <Text style={styles.title}>
@@ -421,7 +445,7 @@ export default function ProfileScreen() {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Khôi phục mật khẩu</Text>
-            
+
             <View style={styles.inputContainer}>
               <Ionicons name="mail-outline" size={24} color="#666" />
               <TextInput
@@ -636,92 +660,92 @@ const styles = StyleSheet.create({
   },
 
   nameContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 15,
-    width: '100%',
+    width: "100%",
   },
 
   nameInput: {
-    width: '80%',
+    width: "80%",
     padding: 12,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 8,
     fontSize: 16,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     marginBottom: 10,
   },
 
   editButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     gap: 10,
-    width: '80%',
+    width: "80%",
   },
 
   editButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 15,
     paddingVertical: 8,
     borderRadius: 8,
     minWidth: 90,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
 
   cancelButton: {
-    backgroundColor: '#ff6b6b',
+    backgroundColor: "#ff6b6b",
   },
 
   saveButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
   },
 
   editNameButton: {
     marginLeft: 10,
     padding: 8,
     borderRadius: 20,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
   },
 
   displayNameText: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
 
   forgotPasswordButton: {
     marginTop: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
 
   forgotPasswordText: {
-    color: '#007AFF',
+    color: "#007AFF",
   },
 
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
 
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 20,
     borderRadius: 10,
-    width: '80%',
+    width: "80%",
   },
 
   modalTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
 
   modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 10,
   },
 
@@ -729,11 +753,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     marginHorizontal: 5,
   },
 
   confirmButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
   },
 });
