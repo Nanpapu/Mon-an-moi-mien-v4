@@ -182,7 +182,7 @@ export default function ProfileScreen() {
         user.email || ""
       );
       if (success) {
-        Alert.alert("Thành công", "Đã tạo thông tin người dùng");
+        Alert.alert("Thành công", "Đã tạo thông tin ngư��i dùng");
       }
     } catch (error) {
       Alert.alert("Lỗi", "Không thể tạo thông tin người dùng");
@@ -341,34 +341,6 @@ export default function ProfileScreen() {
             <Text style={styles.buttonText}>Tạo thông tin người dùng</Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity
-          style={[styles.button, isLoading && styles.buttonDisabled]}
-          onPress={handleLogin}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <ActivityIndicator color="white" />
-          ) : (
-            <Text style={styles.buttonText}>
-              {isRegistering ? "Đăng ký" : "Đăng nhập"}
-            </Text>
-          )}
-        </TouchableOpacity>
-
-        <View style={styles.divider}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>HOẶC</Text>
-          <View style={styles.dividerLine} />
-        </View>
-
-        <TouchableOpacity
-          style={styles.googleButton}
-          onPress={handleGoogleSignIn}
-        >
-          <Ionicons name="logo-google" size={24} color="white" />
-          <Text style={styles.buttonText}>Đăng nhập với Google</Text>
-        </TouchableOpacity>
       </Animated.View>
     );
   }
