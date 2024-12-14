@@ -13,7 +13,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "your.app.bundle"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,7 +26,8 @@
           "apiKey": "YOUR_GOOGLE_MAPS_API_KEY"
         }
       },
-      "package": "com.nanpa.Monanmoimienv2"
+      "package": "your.app.package",
+      "scheme": "your.app.scheme"
     },
     "web": {
       "favicon": "./assets/favicon.png"

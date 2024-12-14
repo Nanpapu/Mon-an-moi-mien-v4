@@ -27,7 +27,7 @@ import { auth } from "../config/firebase";
 
 export default function ProfileScreen() {
   // HOOKS & STATE
-  const { login, isLoading, user, logout, register, resetPassword } = useAuth();
+  const { login, isLoading, user, logout, register, resetPassword, signInWithGoogle } = useAuth();
   const [isRegistering, setIsRegistering] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -217,7 +217,7 @@ export default function ProfileScreen() {
       // Kiểm tra email có tồn tại trong auth không
       const methods = await fetchSignInMethodsForEmail(auth, resetEmail);
       if (methods.length === 0) {
-        Alert.alert("Lỗi", "Email này chưa được đăng ký");
+        Alert.alert("L���i", "Email này chưa được đăng ký");
         return;
       }
 
@@ -229,6 +229,14 @@ export default function ProfileScreen() {
       setShowResetPassword(false);
     } catch (error: any) {
       Alert.alert("Lỗi", "Có lỗi xảy ra khi gửi email khôi phục");
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      Alert.alert('Lỗi', 'Không thể đăng nhập với Google');
     }
   };
 

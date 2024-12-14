@@ -4,6 +4,7 @@ import { User } from 'firebase/auth';
 import { AuthService } from '../services/authService';
 import { auth } from '../config/firebase';
 import { sendPasswordResetEmail } from "firebase/auth";
+import { GoogleAuthService } from '../services/googleAuthService';
 
 // Định nghĩa các hàm và state có trong context
 interface AuthContextType {
@@ -13,6 +14,7 @@ interface AuthContextType {
   register: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
 }
 
 // Tạo context
@@ -74,9 +76,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const signInWithGoogle = async () => {
+    try {
+      const { response, promptAsync } = GoogleAuthService.useGoogleAuth();
+      const result = await promptAsync();
+      
+      if (result?.type === 'success') {
+        const { id_token } = result.params;
+        const user = await GoogleAuthService.signInWithGoogle(id_token);
+        setUser(user);
+      }
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  };
+
   // RENDER
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout, resetPassword }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, logout, resetPassword, signInWithGoogle }}>
       {!isLoading && children}
     </AuthContext.Provider>
   );
