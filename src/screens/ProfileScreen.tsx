@@ -20,13 +20,11 @@ import { ImportButton } from "../components/ImportButton";
 import { RegionService } from "../services/regionService";
 import * as ImagePicker from "expo-image-picker";
 import { UserService } from "../services/userService";
+import { useAuthForm } from '../hooks/useAuthForm';
 
 export default function ProfileScreen() {
   // HOOKS & STATE
   const { login, isLoading, user, logout, register } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -35,6 +33,20 @@ export default function ProfileScreen() {
 
   // Animation
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
+  const slideAnim = React.useRef(new Animated.Value(0)).current;
+
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
+    errors,
+    validateEmail,
+    validatePassword,
+    validateConfirmPassword
+  } = useAuthForm();
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -44,40 +56,48 @@ export default function ProfileScreen() {
     }).start();
   }, [isRegistering]);
 
-  // HANDLERS
-  const validateEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  // Animation khi chuyển form
+  const animateFormTransition = () => {
+    // Reset về 0
+    fadeAnim.setValue(0);
+    slideAnim.setValue(40);
+
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start();
   };
 
+  // HANDLERS
   const handleLogin = async () => {
-    const emailValid = validateEmail(email);
-    const passwordValid = password.length >= 6;
-
-    if (emailValid && passwordValid) {
-      try {
-        if (isRegistering) {
-          if (password !== confirmPassword) {
-            Alert.alert("Lỗi", "Mật khẩu nhập lại không khớp");
-            return;
-          }
-          await register(email, password);
-          Alert.alert("Thành công", "Đăng ký tài khoản thành công");
-        } else {
-          await login(email, password);
-          Alert.alert("Thành công", "Đăng nhập thành công");
-        }
-      } catch (error: any) {
-        Alert.alert("Lỗi", error.message);
-      }
+    const isEmailValid = validateEmail(email);
+    const isPasswordValid = validatePassword(password);
+    
+    if (isRegistering) {
+      const isConfirmPasswordValid = validateConfirmPassword(password, confirmPassword);
+      if (!isEmailValid || !isPasswordValid || !isConfirmPasswordValid) return;
     } else {
-      Alert.alert(
-        "Lỗi",
-        `${
-          !emailValid
-            ? "Email không hợp lệ"
-            : "Mật khẩu phải có ít nhất 6 ký tự"
-        }`
-      );
+      if (!isEmailValid || !isPasswordValid) return;
+    }
+
+    try {
+      if (isRegistering) {
+        await register(email, password);
+        Alert.alert("Thành công", "Đăng ký tài khoản thành công");
+      } else {
+        await login(email, password);
+        Alert.alert("Thành công", "Đăng nhập thành công");
+      }
+    } catch (error: any) {
+      Alert.alert("Lỗi", error.message);
     }
   };
 
@@ -148,6 +168,31 @@ export default function ProfileScreen() {
     } catch (error) {
       Alert.alert("Lỗi", "Không thể tạo thông tin người dùng");
     }
+  };
+
+  // Thêm validation realtime
+  const handleEmailChange = (text: string) => {
+    setEmail(text);
+    validateEmail(text);
+  };
+
+  const handlePasswordChange = (text: string) => {
+    setPassword(text);
+    validatePassword(text);
+  };
+
+  const handleConfirmPasswordChange = (text: string) => {
+    setConfirmPassword(text);
+    validateConfirmPassword(password, text);
+  };
+
+  // Sửa lại hàm chuyển form
+  const toggleAuthMode = () => {
+    setIsRegistering(!isRegistering);
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    animateFormTransition();
   };
 
   // RENDER
@@ -248,7 +293,15 @@ export default function ProfileScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <Animated.View style={[styles.formContainer, { opacity: fadeAnim }]}>
+      <Animated.View 
+        style={[
+          styles.formContainer, 
+          {
+            opacity: fadeAnim,
+            transform: [{ translateY: slideAnim }]
+          }
+        ]}
+      >
         <Text style={styles.title}>
           {isRegistering ? "Đăng ký" : "Đăng nhập"}
         </Text>
@@ -259,7 +312,7 @@ export default function ProfileScreen() {
             style={styles.input}
             placeholder="Email"
             value={email}
-            onChangeText={setEmail}
+            onChangeText={handleEmailChange}
             keyboardType="email-address"
             autoCapitalize="none"
           />
@@ -271,7 +324,7 @@ export default function ProfileScreen() {
             style={styles.input}
             placeholder="Mật khẩu"
             value={password}
-            onChangeText={setPassword}
+            onChangeText={handlePasswordChange}
             secureTextEntry={!showPassword}
           />
           <TouchableOpacity
@@ -293,7 +346,7 @@ export default function ProfileScreen() {
               style={styles.input}
               placeholder="Nhập lại mật khẩu"
               value={confirmPassword}
-              onChangeText={setConfirmPassword}
+              onChangeText={handleConfirmPasswordChange}
               secureTextEntry={!showConfirmPassword}
             />
             <TouchableOpacity
@@ -325,12 +378,7 @@ export default function ProfileScreen() {
 
         <TouchableOpacity
           style={styles.switchAuthButton}
-          onPress={() => {
-            setIsRegistering(!isRegistering);
-            setEmail("");
-            setPassword("");
-            setConfirmPassword("");
-          }}
+          onPress={toggleAuthMode}
         >
           <Text style={styles.switchAuthText}>
             {isRegistering ? "Đã có tài khoản? " : "Chưa có tài khoản? "}
