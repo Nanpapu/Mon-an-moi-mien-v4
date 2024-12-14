@@ -1,10 +1,11 @@
-import { auth } from '../config/firebase';
+import { auth, db } from '../config/firebase';
 import { 
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
   User
 } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 
 export const AuthService = {
   // Đăng nhập
@@ -21,6 +22,15 @@ export const AuthService = {
   register: async (email: string, password: string) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      
+      // Tạo document user trong Firestore
+      await setDoc(doc(db, 'users', userCredential.user.uid), {
+        email: userCredential.user.email,
+        displayName: '',
+        photoURL: '',
+        createdAt: new Date()
+      });
+
       return userCredential.user;
     } catch (error: any) {
       throw new Error(error.message);

@@ -137,6 +137,19 @@ export default function ProfileScreen() {
     }
   };
 
+  // Thêm hàm xử lý
+  const handleCreateUserDocument = async () => {
+    if (!user) return;
+    try {
+      const success = await UserService.createUserDocument(user.uid, user.email || '');
+      if (success) {
+        Alert.alert("Thành công", "Đã tạo thông tin người dùng");
+      }
+    } catch (error) {
+      Alert.alert("Lỗi", "Không thể tạo thông tin người dùng");
+    }
+  };
+
   // RENDER
   if (user) {
     return (
@@ -157,8 +170,36 @@ export default function ProfileScreen() {
               </View>
             </TouchableOpacity>
           </View>
-          <Text style={styles.welcomeText}>Xin chào,</Text>
+
+          {isEditing ? (
+            <TextInput
+              style={styles.nameInput}
+              value={displayName}
+              onChangeText={setDisplayName}
+              placeholder="Nhập tên hiển thị"
+            />
+          ) : (
+            <Text style={styles.displayNameText}>
+              {displayName || "Chưa có tên hiển thị"}
+            </Text>
+          )}
+
           <Text style={styles.emailText}>{user.email}</Text>
+
+          <TouchableOpacity 
+            style={styles.editButton}
+            onPress={() => {
+              if (isEditing) {
+                handleSaveProfile();
+              } else {
+                setIsEditing(true);
+              }
+            }}
+          >
+            <Text style={styles.editButtonText}>
+              {isEditing ? 'Lưu thông tin' : 'Chỉnh sửa'}
+            </Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.actionsContainer}>
@@ -168,6 +209,13 @@ export default function ProfileScreen() {
           >
             <Ionicons name="cloud-upload-outline" size={24} color="white" />
             <Text style={styles.buttonText}>Import Data</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.importButton}
+            onPress={handleCreateUserDocument}
+          >
+            <Ionicons name="person-add-outline" size={24} color="white" />
+            <Text style={styles.buttonText}>Tạo thông tin người dùng</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.logoutButton} onPress={logout}>
             <Ionicons name="log-out-outline" size={24} color="white" />

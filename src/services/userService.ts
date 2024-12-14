@@ -1,12 +1,15 @@
 import { db, storage } from "../config/firebase";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, setDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export const UserService = {
-  updateProfile: async (userId: string, data: {
-    displayName?: string;
-    photoURL?: string;
-  }) => {
+  updateProfile: async (
+    userId: string,
+    data: {
+      displayName?: string;
+      photoURL?: string;
+    }
+  ) => {
     try {
       const userRef = doc(db, "users", userId);
       await updateDoc(userRef, data);
@@ -21,24 +24,39 @@ export const UserService = {
     try {
       // Tạo reference đến storage
       const storageRef = ref(storage, `avatars/${userId}`);
-      
+
       // Convert imageUri thành blob
       const response = await fetch(imageUri);
       const blob = await response.blob();
-      
+
       // Upload file
       await uploadBytes(storageRef, blob);
-      
+
       // Lấy URL download
       const downloadURL = await getDownloadURL(storageRef);
-      
+
       // Cập nhật photoURL trong profile
       await UserService.updateProfile(userId, { photoURL: downloadURL });
-      
+
       return downloadURL;
     } catch (error) {
       console.error("Lỗi khi upload avatar:", error);
       return null;
     }
-  }
+  },
+
+  createUserDocument: async (userId: string, email: string) => {
+    try {
+      await setDoc(doc(db, "users", userId), {
+        email: email,
+        displayName: "",
+        photoURL: "",
+        createdAt: new Date(),
+      });
+      return true;
+    } catch (error) {
+      console.error("Lỗi khi tạo user document:", error);
+      return false;
+    }
+  },
 };
