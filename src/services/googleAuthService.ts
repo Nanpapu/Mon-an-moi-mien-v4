@@ -7,7 +7,8 @@ export const GoogleAuthService = {
   useGoogleAuth: () => {
     return Google.useIdTokenAuthRequest({
       androidClientId: "977479607170-vapfgpk2si1nfk0t9o6lr57a1c84nk35.apps.googleusercontent.com",
-      webClientId: "977479607170-4tr2n8qvv757q3lchd96mic5nq805gfa.apps.googleusercontent.com"
+      webClientId: "977479607170-4tr2n8qvv757q3lchd96mic5nq805gfa.apps.googleusercontent.com",
+      redirectUri: "monanmoimien://oauth2redirect/google"
     });
   },
 

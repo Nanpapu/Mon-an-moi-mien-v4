@@ -1,10 +1,10 @@
 // Context quản lý trạng thái đăng nhập và xác thực người dùng
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { User } from 'firebase/auth';
-import { AuthService } from '../services/authService';
-import { auth } from '../config/firebase';
+import React, { createContext, useState, useContext, useEffect } from "react";
+import { User } from "firebase/auth";
+import { AuthService } from "../services/authService";
+import { auth } from "../config/firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
-import { GoogleAuthService } from '../services/googleAuthService';
+import { GoogleAuthService } from "../services/googleAuthService";
 
 // Định nghĩa các hàm và state có trong context
 interface AuthContextType {
@@ -80,19 +80,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithGoogle = async () => {
     try {
+      setIsLoading(true);
       const result = await promptAsync();
-      if (result?.type === 'success' && result.params?.id_token) {
-        const user = await GoogleAuthService.signInWithGoogle(result.params.id_token);
-        setUser(user);
+      console.log("Google Sign In Result:", result);
+      
+      if (result?.type === 'success') {
+        const { id_token } = result.params;
+        const credential = await GoogleAuthService.signInWithGoogle(id_token);
+        setUser(credential);
       }
     } catch (error) {
+      console.error("Google Sign In Error:", error);
       throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
   // RENDER
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout, resetPassword, signInWithGoogle }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isLoading,
+        login,
+        register,
+        logout,
+        resetPassword,
+        signInWithGoogle,
+      }}
+    >
       {!isLoading && children}
     </AuthContext.Provider>
   );
@@ -102,7 +119,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
