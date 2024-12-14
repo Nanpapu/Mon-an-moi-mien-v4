@@ -6,7 +6,8 @@ export const GoogleAuthService = {
   // Config Google Sign In
   useGoogleAuth: () => {
     return Google.useIdTokenAuthRequest({
-      androidClientId: "968081313298-aa36cfggjg48bm2p0pbj5ak00e3iaq5b.apps.googleusercontent.com",
+      androidClientId: "977479607170-vapfgpk2si1nfk0t9o6lr57a1c84nk35.apps.googleusercontent.com",
+      webClientId: "977479607170-4tr2n8qvv757q3lchd96mic5nq805gfa.apps.googleusercontent.com"
     });
   },
 

@@ -26,8 +26,8 @@
           "apiKey": "YOUR_GOOGLE_MAPS_API_KEY"
         }
       },
-      "package": "your.app.package",
-      "scheme": "your.app.scheme"
+      "package": "com.monanmoimien.v2",
+      "scheme": "monanmoimien"
     },
     "web": {
       "favicon": "./assets/favicon.png"
