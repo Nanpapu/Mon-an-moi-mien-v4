@@ -4,6 +4,7 @@ import { TextInput } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import { User } from 'firebase/auth';
 import { styles } from '../styles';
+import { IMAGES } from '../../../constants/assets';
 
 interface Props {
   user: User;
@@ -36,11 +37,7 @@ export const UserProfile = ({
         <TouchableOpacity onPress={onPickImage}>
           <View>
             <Image
-              source={
-                user?.photoURL
-                  ? { uri: user.photoURL }
-                  : require("../../../assets/default-avatar.png")
-              }
+              source={user?.photoURL ? { uri: user.photoURL } : IMAGES.defaultAvatar}
               style={styles.avatar}
             />
             <View style={styles.editIconContainer}>
