@@ -2,23 +2,24 @@ import { db } from '../config/firebase';
 import { collection, getDocs, doc, getDoc, query, where, setDoc, addDoc, Timestamp, writeBatch } from 'firebase/firestore';
 import { Region, Recipe } from '../types';
 import { regions } from '../data/regions';
+import { COLLECTIONS } from '../constants/collections';
 
 export const RegionService = {
-  // Lấy tất cả vùng miền
   getAllRegions: async (): Promise<Region[]> => {
     try {
-      const regionsSnapshot = await getDocs(collection(db, 'regions'));
+      const regionsSnapshot = await getDocs(collection(db, COLLECTIONS.REGIONS));
       const regions: Region[] = [];
       
       for (const doc of regionsSnapshot.docs) {
         const regionData = doc.data();
         const recipesSnapshot = await getDocs(
-          query(collection(db, 'recipes'), where('regionId', '==', doc.id))
+          query(collection(db, COLLECTIONS.RECIPES), where('regionId', '==', doc.id))
         );
         
         const recipes = recipesSnapshot.docs.map(recipeDoc => recipeDoc.data() as Recipe);
         
         regions.push({
+          id: doc.id, // Thêm id từ document
           ...regionData,
           recipes
         } as Region);
@@ -31,20 +32,23 @@ export const RegionService = {
     }
   },
 
-  // Lấy chi tiết một vùng miền 
   getRegionById: async (regionId: string): Promise<Region | null> => {
     try {
-      const regionDoc = await getDoc(doc(db, 'regions', regionId));
+      const regionDoc = await getDoc(doc(db, COLLECTIONS.REGIONS, regionId));
       if (!regionDoc.exists()) return null;
 
       const regionData = regionDoc.data();
       const recipesSnapshot = await getDocs(
-        query(collection(db, 'recipes'), where('regionId', '==', regionId))
+        query(collection(db, COLLECTIONS.RECIPES), where('regionId', '==', regionId))
       );
       
-      const recipes = recipesSnapshot.docs.map(doc => doc.data() as Recipe);
+      const recipes = recipesSnapshot.docs.map(doc => ({
+        id: doc.id, // Thêm id từ document
+        ...doc.data()
+      }) as Recipe);
       
       return {
+        id: regionDoc.id, // Thêm id từ document
         ...regionData,
         recipes
       } as Region;
@@ -58,36 +62,35 @@ export const RegionService = {
     try {
       const batch = writeBatch(db);
 
-      // 1. Import regions và recipes
       for (const region of regions) {
         const { recipes: regionRecipes, ...regionData } = region;
         
-        // Import region
-        const regionRef = doc(db, 'regions', region.id);
+        const regionRef = doc(db, COLLECTIONS.REGIONS, region.id);
         batch.set(regionRef, regionData);
         
-        // Import recipes và tạo stats mặc định
         for (const recipe of regionRecipes) {
-          const recipeRef = doc(db, 'recipes', recipe.id);
+          const recipeRef = doc(db, COLLECTIONS.RECIPES, recipe.id);
           batch.set(recipeRef, {
             ...recipe,
-            regionId: region.id
+            regionId: region.id,
+            createdAt: Timestamp.now(), // Thêm timestamp
+            updatedAt: Timestamp.now()
           });
 
-          // Tạo stats mặc định cho recipe mới
-          const statRef = doc(db, 'recipeStats', recipe.id); 
+          const statRef = doc(db, COLLECTIONS.RECIPE_STATS, recipe.id); 
           batch.set(statRef, {
             id: recipe.id,
             averageRating: 0,
-            totalReviews: 0
+            totalReviews: 0,
+            createdAt: Timestamp.now(),
+            updatedAt: Timestamp.now()
           });
         }
       }
 
       await batch.commit();
 
-      // 3. Tính toán lại stats từ reviews hiện có
-      const reviewsSnapshot = await getDocs(collection(db, 'reviews'));
+      const reviewsSnapshot = await getDocs(collection(db, COLLECTIONS.REVIEWS));
       const recipeStatsMap = new Map();
 
       reviewsSnapshot.docs.forEach(doc => {
@@ -102,18 +105,17 @@ export const RegionService = {
         recipeStatsMap.set(review.recipeId, stats);
       });
 
-      // 4. Update recipeStats
       const statsUpdateBatch = writeBatch(db);
       for (const [recipeId, stats] of recipeStatsMap) {
-        const statRef = doc(db, 'recipeStats', recipeId);
+        const statRef = doc(db, COLLECTIONS.RECIPE_STATS, recipeId);
         statsUpdateBatch.set(statRef, {
           id: recipeId,
           totalReviews: stats.totalReviews,
-          averageRating: stats.totalRating / stats.totalReviews
-        });
+          averageRating: stats.totalRating / stats.totalReviews,
+          updatedAt: Timestamp.now()
+        }, { merge: true });
       }
 
-      // 5. Commit batch update stats
       await statsUpdateBatch.commit();
       
       console.log('Import dữ liệu thành công!');
@@ -123,4 +125,4 @@ export const RegionService = {
       return false;
     }
   }
-}; 
+};
