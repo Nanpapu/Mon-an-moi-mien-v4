@@ -1,7 +1,7 @@
 // Component hiển thị thông tin chi tiết của một công thức nấu ăn
 // Bao gồm hình ảnh, tên món, vùng miền, nguyên liệu và cách làm
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, ActivityIndicator } from "react-native";
 import { Image } from "expo-image";
 import { Recipe, Review } from "../../types";
 import { useAuth } from "../../context/AuthContext";
@@ -29,6 +29,7 @@ export function RecipeCard({
   const { user } = useAuth();
   const [modalVisible, setModalVisible] = useState(false);
   const [stats, setStats] = useState({ averageRating: 0, totalReviews: 0 });
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [existingReview, setExistingReview] = useState<any>(null);
   const [showReviewsList, setShowReviewsList] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
@@ -37,22 +38,21 @@ export function RecipeCard({
   // Load thông tin đánh giá nếu showReviews = true
   useEffect(() => {
     if (showReviews) {
-      const loadReviewData = async () => {
-        const recipeStats = await ReviewService.getRecipeStats(recipe.id);
-        const reviews = await ReviewService.getRecipeReviews(recipe.id);
-        setStats(recipeStats);
-        setAllReviews(reviews);
-        if (user) {
-          const review = await ReviewService.getUserReviewForRecipe(
-            recipe.id,
-            user.uid
-          );
-          setExistingReview(review);
-        }
-      };
-      loadReviewData();
+      loadReviewStats();
     }
-  }, [recipe.id, user, showReviews]);
+  }, [showReviews]);
+
+  const loadReviewStats = async () => {
+    setIsLoadingStats(true);
+    try {
+      const recipeStats = await ReviewService.getRecipeStats(recipe.id);
+      setStats(recipeStats);
+    } catch (error) {
+      console.error("Lỗi khi tải thống kê đánh giá:", error);
+    } finally {
+      setIsLoadingStats(false);
+    }
+  };
 
   // RENDER
   return (
@@ -131,24 +131,30 @@ export function RecipeCard({
           <View style={styles.ratingContainer}>
             <View style={styles.ratingHeader}>
               <View style={styles.ratingScore}>
-                <Text style={styles.averageRating}>
-                  {stats.averageRating.toFixed(1)}
-                </Text>
-                <View style={styles.starsRow}>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Ionicons
-                      key={star}
-                      name={
-                        star <= stats.averageRating ? "star" : "star-outline"
-                      }
-                      size={16}
-                      color="#FFD700"
-                    />
-                  ))}
-                </View>
-                <Text style={styles.totalReviews}>
-                  {stats.totalReviews} đánh giá
-                </Text>
+                {!isLoadingStats && (stats.totalReviews > 0) ? (
+                  <>
+                    <Text style={styles.averageRating}>
+                      {stats.averageRating.toFixed(1)}
+                    </Text>
+                    <View style={styles.starsRow}>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Ionicons
+                          key={star}
+                          name={star <= stats.averageRating ? "star" : "star-outline"}
+                          size={16}
+                          color="#FFD700"
+                        />
+                      ))}
+                    </View>
+                    <Text style={styles.totalReviews}>
+                      {stats.totalReviews} đánh giá
+                    </Text>
+                  </>
+                ) : isLoadingStats ? (
+                  <ActivityIndicator size="small" color="#007AFF" />
+                ) : (
+                  <Text style={styles.noReviews}>Chưa có đánh giá</Text>
+                )}
               </View>
 
               {user && (

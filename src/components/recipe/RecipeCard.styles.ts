@@ -158,7 +158,6 @@ export const styles = StyleSheet.create({
     borderTopLeftRadius: spacing.lg,
     borderTopRightRadius: spacing.lg,
     maxHeight: '80%',
-    minHeight: '50%',
     paddingBottom: spacing.md,
   },
   modalHeader: {
@@ -184,10 +183,9 @@ export const styles = StyleSheet.create({
     maxHeight: width * 1.2,
   },
   noReviews: {
-    ...typography.body1,
-    color: colors.text.secondary,
-    textAlign: 'center',
-    padding: spacing.xl,
+    color: '#666',
+    fontSize: 14,
+    fontStyle: 'italic'
   },
   pressableHighlight: {
     opacity: 0.7,

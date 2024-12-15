@@ -14,6 +14,7 @@ import {
 } from "firebase/firestore";
 import { Review } from "../types";
 import { UserService } from "./userService";
+import { CacheService, CACHE_KEYS, CACHE_EXPIRY } from './cacheService';
 
 export const ReviewService = {
   // Tạo đánh giá mới
@@ -65,6 +66,9 @@ export const ReviewService = {
           totalReviews: newTotalReviews,
         });
       });
+
+      // Clear cache sau khi tạo review mới
+      await ReviewService.clearRecipeStatsCache(recipeId);
 
       return {
         id: docRef.id,
@@ -176,28 +180,56 @@ export const ReviewService = {
           averageRating: newAverageRating,
         });
       });
+
+      // Clear cache sau khi update
+      await ReviewService.clearRecipeStatsCache(recipeId);
     } catch (error: any) {
       throw new Error(error.message);
     }
   },
 
+  // Lấy stats (số sao trung bình và tổng đánh giá) của recipe
   getRecipeStats: async (recipeId: string) => {
     try {
-      const statsRef = doc(db, "recipeStats", recipeId);
-      const statsDoc = await getDoc(statsRef);
+      // Check cache trước
+      const cacheKey = `${CACHE_KEYS.RECIPE_REVIEWS}stats_${recipeId}`;
+      const cachedStats = await CacheService.getCache(
+        cacheKey,
+        CACHE_EXPIRY.RECIPE_REVIEWS
+      );
       
-      if (!statsDoc.exists()) {
-        return { averageRating: 0, totalReviews: 0 };
+      if (cachedStats) {
+        return cachedStats;
       }
+
+      // Nếu không có cache thì query từ Firestore
+      const q = query(
+        collection(db, "reviews"),
+        where("recipeId", "==", recipeId)
+      );
       
-      const data = statsDoc.data();
-      return {
-        averageRating: data.averageRating || 0,
-        totalReviews: data.totalReviews || 0
+      const querySnapshot = await getDocs(q);
+      const reviews = querySnapshot.docs.map(doc => doc.data());
+      
+      const stats = {
+        averageRating: reviews.length > 0 
+          ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length 
+          : 0,
+        totalReviews: reviews.length
       };
+
+      // Lưu vào cache
+      await CacheService.setCache(cacheKey, stats);
+      
+      return stats;
     } catch (error) {
-      console.error('Lỗi khi lấy thống kê:', error);
+      console.error("Lỗi khi lấy thống kê đánh giá:", error);
       return { averageRating: 0, totalReviews: 0 };
     }
-  }
+  },
+
+  // Clear cache khi có đánh giá mới hoặc update
+  clearRecipeStatsCache: async (recipeId: string) => {
+    await CacheService.clearCache(`${CACHE_KEYS.RECIPE_REVIEWS}stats_${recipeId}`);
+  },
 };
