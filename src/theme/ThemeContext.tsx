@@ -1,9 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { useColorScheme } from 'react-native';
 import { lightColors, darkColors } from './colors';
 import { typography } from './typography';
 import { spacing, layout } from './spacing';
 import { shadows } from './shadows';
+import { Animated } from 'react-native';
 
 type Theme = {
   colors: typeof lightColors;
@@ -24,10 +25,24 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const colorScheme = useColorScheme();
   const [isDark, setIsDark] = useState(colorScheme === 'dark');
+  const fadeAnim = useRef(new Animated.Value(1)).current;
 
-  useEffect(() => {
-    setIsDark(colorScheme === 'dark');
-  }, [colorScheme]);
+  const toggleTheme = () => {
+    Animated.sequence([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setIsDark(!isDark);
+    });
+  };
 
   const theme: Theme = {
     colors: isDark ? darkColors : lightColors,
@@ -38,13 +53,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     isDark,
   };
 
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-  };
-
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
+      <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
+        {children}
+      </Animated.View>
     </ThemeContext.Provider>
   );
 };

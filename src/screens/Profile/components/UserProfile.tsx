@@ -4,6 +4,7 @@ import { Card, Typography, Button, Input } from '../../../components/shared';
 import { useTheme } from '../../../theme/ThemeContext';
 import { Ionicons } from "@expo/vector-icons";
 import { User } from "firebase/auth";
+import { ThemeToggle } from './ThemeToggle';
 
 interface Props {
   user: User;
@@ -111,6 +112,8 @@ export const UserProfile = ({
             </Button>
           </View>
         )}
+
+        <ThemeToggle />
 
         <Button
           variant="secondary"
