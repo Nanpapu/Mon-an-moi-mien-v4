@@ -1,9 +1,7 @@
 import { db } from '../config/firebase';
-import { collection, getDocs, doc, getDoc, query, where, setDoc, addDoc, Timestamp } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, query, where, setDoc, addDoc, Timestamp, writeBatch } from 'firebase/firestore';
 import { Region, Recipe } from '../types';
 import { regions } from '../data/regions';
-import { recipeStats } from '../data/recipeStats';
-import { reviews } from '../data/reviews';
 
 export const RegionService = {
   // Lấy tất cả vùng miền
@@ -58,39 +56,58 @@ export const RegionService = {
 
   importDataToFirestore: async () => {
     try {
-      // Import regions và recipes
+      const batch = writeBatch(db);
+
+      // 1. Import regions và recipes
       for (const region of regions) {
         const { recipes: regionRecipes, ...regionData } = region;
         
         // Import region
-        await setDoc(doc(db, 'regions', region.id), {
-          id: region.id,
-          name: region.name,
-          coordinate: region.coordinate
-        });
+        const regionRef = doc(db, 'regions', region.id);
+        batch.set(regionRef, regionData);
         
         // Import recipes
         for (const recipe of regionRecipes) {
-          await setDoc(doc(db, 'recipes', recipe.id), {
+          const recipeRef = doc(db, 'recipes', recipe.id);
+          batch.set(recipeRef, {
             ...recipe,
             regionId: region.id
           });
         }
       }
 
-      // Import recipeStats
-      for (const stat of recipeStats) {
-        await setDoc(doc(db, 'recipeStats', stat.id), stat);
-      }
+      // 2. Commit batch write đầu tiên
+      await batch.commit();
 
-      // Import reviews (nếu có)
-      for (const review of reviews) {
-        await addDoc(collection(db, 'reviews'), {
-          ...review,
-          createdAt: Timestamp.fromDate(review.createdAt),
-          updatedAt: Timestamp.fromDate(review.updatedAt)
+      // 3. Tính toán lại stats từ reviews hiện có
+      const reviewsSnapshot = await getDocs(collection(db, 'reviews'));
+      const recipeStatsMap = new Map();
+
+      reviewsSnapshot.docs.forEach(doc => {
+        const review = doc.data();
+        const stats = recipeStatsMap.get(review.recipeId) || {
+          totalReviews: 0,
+          totalRating: 0
+        };
+        
+        stats.totalReviews++;
+        stats.totalRating += review.rating;
+        recipeStatsMap.set(review.recipeId, stats);
+      });
+
+      // 4. Update recipeStats
+      const statsUpdateBatch = writeBatch(db);
+      for (const [recipeId, stats] of recipeStatsMap) {
+        const statRef = doc(db, 'recipeStats', recipeId);
+        statsUpdateBatch.set(statRef, {
+          id: recipeId,
+          totalReviews: stats.totalReviews,
+          averageRating: stats.totalRating / stats.totalReviews
         });
       }
+
+      // 5. Commit batch update stats
+      await statsUpdateBatch.commit();
       
       console.log('Import dữ liệu thành công!');
       return true;

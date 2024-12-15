@@ -46,22 +46,21 @@ export const ReviewService = {
       // Thêm vào collection reviews
       const docRef = await addDoc(collection(db, "reviews"), reviewData);
 
-      // Cập nhật averageRating và totalReviews của recipe
+      // Cập nhật averageRating và totalReviews trong recipeStats
       await runTransaction(db, async (transaction) => {
-        const recipeRef = doc(db, "recipes", recipeId);
-        const recipeDoc = await transaction.get(recipeRef);
+        const statsRef = doc(db, "recipeStats", recipeId);
+        const statsDoc = await transaction.get(statsRef);
 
-        if (!recipeDoc.exists()) {
-          throw new Error("Không tìm thấy công thức");
+        if (!statsDoc.exists()) {
+          throw new Error("Không tìm thấy stats");
         }
 
-        const recipeData = recipeDoc.data();
-        const newTotalReviews = (recipeData.totalReviews || 0) + 1;
-        const currentTotal =
-          (recipeData.averageRating || 0) * (recipeData.totalReviews || 0);
+        const statsData = statsDoc.data();
+        const newTotalReviews = (statsData.totalReviews || 0) + 1;
+        const currentTotal = (statsData.averageRating || 0) * (statsData.totalReviews || 0);
         const newAverageRating = (currentTotal + rating) / newTotalReviews;
 
-        transaction.update(recipeRef, {
+        transaction.update(statsRef, {
           averageRating: newAverageRating,
           totalReviews: newTotalReviews,
         });
