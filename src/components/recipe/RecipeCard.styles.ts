@@ -158,6 +158,7 @@ export const styles = StyleSheet.create({
     borderTopLeftRadius: spacing.lg,
     borderTopRightRadius: spacing.lg,
     maxHeight: '80%',
+    minHeight: '50%',
     paddingBottom: spacing.md,
   },
   modalHeader: {

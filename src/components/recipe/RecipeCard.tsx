@@ -1,14 +1,14 @@
 // Component hiển thị thông tin chi tiết của một công thức nấu ăn
 // Bao gồm hình ảnh, tên món, vùng miền, nguyên liệu và cách làm
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView } from "react-native";
 import { Image } from "expo-image";
 import { Recipe, Review } from "../../types";
 import { useAuth } from "../../context/AuthContext";
 import { ReviewService } from "../../services/reviewService";
 import { Ionicons } from "@expo/vector-icons";
 import { ReviewModal, ReviewsList } from "../reviews";
-import { styles } from './RecipeCard.styles';
+import { styles } from "./RecipeCard.styles";
 
 // Props của component
 interface Props {
@@ -208,7 +208,7 @@ export function RecipeCard({
         onRequestClose={() => setShowReviewsList(false)}
       >
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
+          <View style={[styles.modalContent, { flex: 1 }]}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Đánh giá</Text>
               <TouchableOpacity
@@ -218,11 +218,13 @@ export function RecipeCard({
                 <Ionicons name="close" size={24} color="#666" />
               </TouchableOpacity>
             </View>
-            <ReviewsList
-              reviews={allReviews}
-              averageRating={stats.averageRating}
-              totalReviews={stats.totalReviews}
-            />
+            <ScrollView style={{ flex: 1 }}>
+              <ReviewsList
+                reviews={allReviews}
+                averageRating={stats.averageRating}
+                totalReviews={stats.totalReviews}
+              />
+            </ScrollView>
           </View>
         </View>
       </Modal>

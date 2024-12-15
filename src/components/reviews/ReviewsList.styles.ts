@@ -1,7 +1,7 @@
-import { StyleSheet } from 'react-native';
-import { colors } from '../../theme/colors';
-import { spacing } from '../../theme/spacing';
-import { typography } from '../../theme/typography';
+import { StyleSheet } from "react-native";
+import { colors } from "../../theme/colors";
+import { spacing } from "../../theme/spacing";
+import { typography } from "../../theme/typography";
 
 export const styles = StyleSheet.create({
   container: {
@@ -14,8 +14,8 @@ export const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   userInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: spacing.sm,
   },
   avatar: {
@@ -30,21 +30,22 @@ export const styles = StyleSheet.create({
   userName: {
     ...typography.body1,
     color: colors.text.primary,
-    fontWeight: '600' as const,
+    fontWeight: "600" as const,
   },
   userEmail: {
     ...typography.caption,
     color: colors.text.secondary,
   },
   ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.xs,
     marginBottom: spacing.sm,
   },
   date: {
     ...typography.caption,
     color: colors.text.secondary,
+    marginLeft: "auto",
   },
   comment: {
     ...typography.body2,
@@ -52,8 +53,8 @@ export const styles = StyleSheet.create({
   },
   emptyContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: spacing.xl,
     minHeight: 300,
   },
@@ -66,6 +67,6 @@ export const styles = StyleSheet.create({
   emptyText: {
     ...typography.body2,
     color: colors.text.secondary,
-    textAlign: 'center',
+    textAlign: "center",
   },
-}); 
+});
