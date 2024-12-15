@@ -1,6 +1,7 @@
-import React from "react";
-import { ScrollView, TouchableOpacity, Text } from "react-native";
-import { styles } from "../styles";
+import React from 'react';
+import { ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { Typography } from '../../../components/shared';
+import { useTheme } from '../../../theme/ThemeContext';
 
 interface Props {
   regions: string[];
@@ -8,38 +9,71 @@ interface Props {
   onSelectRegion: (region: string | null) => void;
 }
 
-export const RegionFilter = ({
-  regions,
-  selectedRegion,
-  onSelectRegion,
-}: Props) => {
+export const RegionFilter = ({ regions, selectedRegion, onSelectRegion }: Props) => {
+  const { theme } = useTheme();
+
   return (
     <ScrollView
       horizontal
-      style={styles.filterContainer}
       showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.container}
     >
       <TouchableOpacity
         style={[
-          styles.filterButton,
-          !selectedRegion && styles.filterButtonActive,
+          styles.chip,
+          {
+            backgroundColor: !selectedRegion 
+              ? theme.colors.primary.main 
+              : theme.colors.background.paper,
+            borderColor: theme.colors.primary.main,
+          },
         ]}
         onPress={() => onSelectRegion(null)}
       >
-        <Text style={styles.filterText}>Tất cả</Text>
+        <Typography
+          variant="button"
+          color={!selectedRegion ? "contrast" : "primary"}
+        >
+          Tất cả
+        </Typography>
       </TouchableOpacity>
+
       {regions.map((region) => (
         <TouchableOpacity
           key={region}
           style={[
-            styles.filterButton,
-            selectedRegion === region && styles.filterButtonActive,
+            styles.chip,
+            {
+              backgroundColor: selectedRegion === region 
+                ? theme.colors.primary.main 
+                : theme.colors.background.paper,
+              borderColor: theme.colors.primary.main,
+            },
           ]}
           onPress={() => onSelectRegion(region)}
         >
-          <Text style={styles.filterText}>{region}</Text>
+          <Typography
+            variant="button"
+            color={selectedRegion === region ? "contrast" : "primary"}
+          >
+            {region}
+          </Typography>
         </TouchableOpacity>
       ))}
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+    gap: 8,
+  },
+  chip: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+});

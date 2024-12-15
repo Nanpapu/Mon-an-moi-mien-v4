@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, TextInput, TouchableOpacity, Text, Animated } from 'react-native';
-import { Ionicons } from "@expo/vector-icons";
-import { styles } from '../styles';
+import { View, Animated } from 'react-native';
+import { Input, Button, Typography } from '../../../components/shared';
+import { useTheme } from '../../../theme/ThemeContext';
 
 interface Props {
   isRegistering: boolean;
@@ -42,98 +42,85 @@ export const AuthForm = ({
   onForgotPassword,
   onToggleAuthMode
 }: Props) => {
+  const { theme } = useTheme();
+
   return (
-    <Animated.View 
+    <Animated.View
       style={[
-        styles.formContainer,
         {
           opacity: fadeAnim,
-          transform: [{ translateY: slideAnim }]
+          transform: [{ translateX: slideAnim }],
+          width: '100%',
         }
       ]}
     >
-      <View style={styles.inputContainer}>
-        <Ionicons name="mail" size={24} color="#666" />
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={onEmailChange}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-      </View>
-      {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+      <Typography variant="h2" style={{ marginBottom: theme.spacing.lg }}>
+        {isRegistering ? "Đăng ký" : "Đăng nhập"}
+      </Typography>
 
-      <View style={styles.inputContainer}>
-        <Ionicons name="lock-closed" size={24} color="#666" />
-        <TextInput
-          style={styles.input}
-          placeholder="Mật khẩu"
-          value={password}
-          onChangeText={onPasswordChange}
-          secureTextEntry={!showPassword}
-        />
-        <TouchableOpacity onPress={onTogglePassword}>
-          <Ionicons
-            name={showPassword ? "eye-off" : "eye"}
-            size={24}
-            color="#666"
-          />
-        </TouchableOpacity>
-      </View>
-      {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+      <Input
+        label="Email"
+        value={email}
+        onChangeText={onEmailChange}
+        keyboardType="email-address"
+        autoCapitalize="none"
+        leftIcon="mail-outline"
+        error={errors.email}
+        placeholder="Nhập email của bạn"
+      />
+
+      <Input
+        label="Mật khẩu"
+        value={password}
+        onChangeText={onPasswordChange}
+        secureTextEntry={!showPassword}
+        leftIcon="lock-closed-outline"
+        rightIcon={showPassword ? "eye-off-outline" : "eye-outline"}
+        onRightIconPress={onTogglePassword}
+        error={errors.password}
+        placeholder="Nhập mật khẩu"
+      />
 
       {isRegistering && (
-        <>
-          <View style={styles.inputContainer}>
-            <Ionicons name="lock-closed" size={24} color="#666" />
-            <TextInput
-              style={styles.input}
-              placeholder="Xác nhận mật khẩu"
-              value={confirmPassword}
-              onChangeText={onConfirmPasswordChange}
-              secureTextEntry={!showConfirmPassword}
-            />
-            <TouchableOpacity onPress={onToggleConfirmPassword}>
-              <Ionicons
-                name={showConfirmPassword ? "eye-off" : "eye"}
-                size={24}
-                color="#666"
-              />
-            </TouchableOpacity>
-          </View>
-          {errors.confirmPassword && (
-            <Text style={styles.errorText}>{errors.confirmPassword}</Text>
-          )}
-        </>
+        <Input
+          label="Xác nhận mật khẩu"
+          value={confirmPassword}
+          onChangeText={onConfirmPasswordChange}
+          secureTextEntry={!showConfirmPassword}
+          leftIcon="lock-closed-outline"
+          rightIcon={showConfirmPassword ? "eye-off-outline" : "eye-outline"}
+          onRightIconPress={onToggleConfirmPassword}
+          error={errors.confirmPassword}
+          placeholder="Nhập lại mật khẩu"
+        />
       )}
 
-      <TouchableOpacity style={styles.button} onPress={onSubmit}>
-        <Text style={styles.buttonText}>
-          {isRegistering ? "Đăng ký" : "Đăng nhập"}
-        </Text>
-      </TouchableOpacity>
+      <Button
+        onPress={onSubmit}
+        style={{ marginTop: theme.spacing.md }}
+      >
+        {isRegistering ? "Đăng ký" : "Đăng nhập"}
+      </Button>
 
       {!isRegistering && (
-        <TouchableOpacity
-          style={styles.forgotPasswordButton}
+        <Button
+          variant="text"
           onPress={onForgotPassword}
+          style={{ marginTop: theme.spacing.sm }}
         >
-          <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
-        </TouchableOpacity>
+          Quên mật khẩu?
+        </Button>
       )}
 
-      <TouchableOpacity
-        style={styles.switchAuthButton}
+      <Button
+        variant="outline"
         onPress={onToggleAuthMode}
+        style={{ marginTop: theme.spacing.lg }}
       >
-        <Text style={styles.switchAuthText}>
-          {isRegistering
-            ? "Đã có tài khoản? Đăng nhập"
-            : "Chưa có tài khoản? Đăng ký"}
-        </Text>
-      </TouchableOpacity>
+        {isRegistering
+          ? "Đã có tài khoản? Đăng nhập"
+          : "Chưa có tài khoản? Đăng ký"}
+      </Button>
     </Animated.View>
   );
 };

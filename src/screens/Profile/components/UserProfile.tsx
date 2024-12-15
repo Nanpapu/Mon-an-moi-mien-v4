@@ -1,10 +1,9 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
-import { TextInput } from "react-native";
+import { View, TouchableOpacity, Image } from "react-native";
+import { Card, Typography, Button, Input } from '../../../components/shared';
+import { useTheme } from '../../../theme/ThemeContext';
 import { Ionicons } from "@expo/vector-icons";
 import { User } from "firebase/auth";
-import { styles } from "../styles";
-import { IMAGES } from "../../../constants/assets";
 
 interface Props {
   user: User;
@@ -31,71 +30,108 @@ export const UserProfile = ({
   onLogout,
   onImportData,
 }: Props) => {
+  const { theme } = useTheme();
+
   return (
-    <View style={styles.container}>
-      <View style={styles.infoContainer}>
+    <Card style={{ padding: theme.spacing.lg }}>
+      <View style={{ alignItems: 'center' }}>
         <TouchableOpacity onPress={onPickImage}>
-          <View>
-            <Image
-              source={
-                user?.photoURL ? { uri: user.photoURL } : IMAGES.defaultAvatar
-              }
-              style={styles.avatar}
-            />
-            <View style={styles.editIconContainer}>
-              <Ionicons name="camera" size={20} color="white" />
-            </View>
+          <View
+            style={{
+              width: 100,
+              height: 100,
+              borderRadius: 50,
+              backgroundColor: theme.colors.background.paper,
+              ...theme.shadows.md,
+              marginBottom: theme.spacing.md,
+            }}
+          >
+            {user?.photoURL ? (
+              <Image
+                source={{ uri: user.photoURL }}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: 50,
+                }}
+              />
+            ) : (
+              <View
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Ionicons
+                  name="person"
+                  size={40}
+                  color={theme.colors.text.secondary}
+                />
+              </View>
+            )}
           </View>
         </TouchableOpacity>
 
-        <View style={styles.nameContainer}>
-          {isEditing ? (
-            <>
-              <TextInput
-                style={styles.nameInput}
-                value={displayName}
-                onChangeText={onDisplayNameChange}
-                placeholder="Nhập tên hiển thị"
-              />
-              <View style={styles.editButtonsContainer}>
-                <TouchableOpacity
-                  style={[styles.editButton, styles.cancelButton]}
-                  onPress={onCancelPress}
-                >
-                  <Text style={styles.buttonText}>Hủy</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.editButton, styles.saveButton]}
-                  onPress={onSavePress}
-                >
-                  <Text style={styles.buttonText}>Lưu</Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          ) : (
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={styles.displayNameText}>{displayName}</Text>
-              <TouchableOpacity
-                style={styles.editNameButton}
-                onPress={onEditPress}
-              >
-                <Ionicons name="pencil" size={20} color="#666" />
-              </TouchableOpacity>
+        {isEditing ? (
+          <View style={{ width: '100%' }}>
+            <Input
+              value={displayName}
+              onChangeText={onDisplayNameChange}
+              placeholder="Nhập tên hiển thị"
+            />
+            <View style={{ flexDirection: 'row', justifyContent: 'center', gap: theme.spacing.sm }}>
+              <Button variant="outline" onPress={onCancelPress}>
+                Hủy
+              </Button>
+              <Button onPress={onSavePress}>
+                Lưu
+              </Button>
             </View>
-          )}
-        </View>
-        <Text style={styles.email}>{user?.email}</Text>
+          </View>
+        ) : (
+          <View style={{ alignItems: 'center' }}>
+            <Typography variant="h3" style={{ marginBottom: theme.spacing.xs }}>
+              {displayName || "Người dùng"}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="secondary"
+              style={{ marginBottom: theme.spacing.md }}
+            >
+              {user?.email}
+            </Typography>
+            <Button
+              variant="outline"
+              icon="create-outline"
+              onPress={onEditPress}
+            >
+              Chỉnh sửa thông tin
+            </Button>
+          </View>
+        )}
 
-        <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
-          <Text style={styles.buttonText}>Đăng xuất</Text>
-        </TouchableOpacity>
+        <Button
+          variant="secondary"
+          icon="log-out-outline"
+          onPress={onLogout}
+          style={{ marginTop: theme.spacing.lg }}
+        >
+          Đăng xuất
+        </Button>
 
-        {user.email === "21521059@gm.uit.edu.vn" && onImportData && (
-          <TouchableOpacity style={styles.importButton} onPress={onImportData}>
-            <Text style={styles.buttonText}>Import Dữ Liệu</Text>
-          </TouchableOpacity>
+        {user?.email === "21521059@gm.uit.edu.vn" && onImportData && (
+          <Button
+            variant="outline"
+            icon="cloud-upload-outline"
+            onPress={onImportData}
+            style={{ marginTop: theme.spacing.md }}
+          >
+            Import Dữ Liệu
+          </Button>
         )}
       </View>
-    </View>
+    </Card>
   );
 };

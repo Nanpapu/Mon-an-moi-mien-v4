@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import { View, Alert, KeyboardAvoidingView, Platform } from "react-native";
+import { View, Alert } from "react-native";
+import { useTheme } from "../../theme/ThemeContext";
+import { Loading, Typography } from "../../components/shared";
+import { AuthForm } from "./components/AuthForm";
+import { UserProfile } from "./components/UserProfile";
+import { GoogleSignInButton } from "./components/GoogleSignInButton";
 import { useAuth } from "../../context/AuthContext";
-import { styles } from "./styles";
+import { useAuthForm } from "./hooks/useAuthForm";
 import { useAuthAnimation } from "./hooks/useAuthAnimation";
 import { useProfileActions } from "./hooks/useProfileActions";
-import { useAuthForm } from "./hooks/useAuthForm";
-import { UserProfile } from "./components/UserProfile";
-import { AuthForm } from "./components/AuthForm";
-import { ResetPasswordModal } from "./components/ResetPasswordModal";
-import { GoogleSignInButton } from "./components/GoogleSignInButton";
 
 export default function ProfileScreen() {
-  // Auth context
+  const { theme } = useTheme();
   const {
     login,
     isLoading,
@@ -92,11 +92,14 @@ export default function ProfileScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      {user ? (
+    <View style={{ 
+      flex: 1, 
+      backgroundColor: theme.colors.background.default,
+      padding: theme.spacing.lg 
+    }}>
+      {isLoading ? (
+        <Loading text="Đang tải..." />
+      ) : user ? (
         <UserProfile
           user={user}
           displayName={displayName}
@@ -108,11 +111,11 @@ export default function ProfileScreen() {
           onPickImage={pickImage}
           onLogout={logout}
           onImportData={
-            user.email === ("21521059@gm.uit.edu.vn") ? handleImportData : undefined
+            user.email === "21521059@gm.uit.edu.vn" ? handleImportData : undefined
           }
         />
       ) : (
-        <View style={styles.container}>
+        <>
           <AuthForm
             isRegistering={isRegistering}
             email={email}
@@ -127,25 +130,14 @@ export default function ProfileScreen() {
             onPasswordChange={setPassword}
             onConfirmPasswordChange={setConfirmPassword}
             onTogglePassword={() => setShowPassword(!showPassword)}
-            onToggleConfirmPassword={() =>
-              setShowConfirmPassword(!showConfirmPassword)
-            }
+            onToggleConfirmPassword={() => setShowConfirmPassword(!showConfirmPassword)}
             onSubmit={handleLogin}
             onForgotPassword={() => setShowResetPassword(true)}
             onToggleAuthMode={toggleAuthMode}
           />
-
           <GoogleSignInButton onPress={signInWithGoogle} />
-        </View>
+        </>
       )}
-
-      <ResetPasswordModal
-        visible={showResetPassword}
-        email={resetEmail}
-        onEmailChange={setResetEmail}
-        onClose={() => setShowResetPassword(false)}
-        onSubmit={handleResetPassword}
-      />
-    </KeyboardAvoidingView>
+    </View>
   );
 }

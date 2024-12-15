@@ -1,13 +1,15 @@
 import React from "react";
 import { View } from "react-native";
+import { useTheme } from '../../theme/ThemeContext';
+import { Loading } from '../../components/shared';
 import { SearchBar } from "../../components/inputs";
-import { styles } from "./styles";
 import { useMenuData } from "./hooks/useMenuData";
 import { useRecipeFilter } from "./hooks/useRecipeFilter";
 import { RegionFilter } from "./components/RegionFilter";
 import { RecipeList } from "./components/RecipeList";
 
 export default function MenuScreen() {
+  const { theme } = useTheme();
   const { 
     savedRecipes, 
     isRefreshing, 
@@ -26,7 +28,10 @@ export default function MenuScreen() {
   } = useRecipeFilter(savedRecipes);
 
   return (
-    <View style={styles.container}>
+    <View style={{ 
+      flex: 1, 
+      backgroundColor: theme.colors.background.default 
+    }}>
       <SearchBar
         value={searchQuery}
         onChangeText={setSearchQuery}
@@ -39,14 +44,17 @@ export default function MenuScreen() {
         onSelectRegion={setSelectedRegion}
       />
 
-      <RecipeList
-        isLoading={isLoading}
-        isRefreshing={isRefreshing}
-        filteredRecipes={filteredRecipes}
-        savedRecipes={savedRecipes}
-        onRefresh={refreshSavedRecipes}
-        onDeleteRecipe={handleDeleteRecipe}
-      />
+      {isLoading ? (
+        <Loading text="Đang tải..." />
+      ) : (
+        <RecipeList
+          isRefreshing={isRefreshing}
+          filteredRecipes={filteredRecipes}
+          savedRecipes={savedRecipes}
+          onRefresh={refreshSavedRecipes}
+          onDeleteRecipe={handleDeleteRecipe}
+        />
+      )}
     </View>
   );
 }
