@@ -7,8 +7,7 @@ import { Recipe, Review } from "../types";
 import { useAuth } from "../context/AuthContext";
 import { ReviewService } from "../services/reviewService";
 import { Ionicons } from "@expo/vector-icons";
-import { ReviewModal } from "./ReviewModal";
-import { ReviewsList } from "./ReviewsList";
+import { ReviewModal, ReviewsList } from "./reviews";
 
 // Props của component
 interface Props {

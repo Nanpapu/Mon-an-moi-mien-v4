@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { RandomRecipeButton } from "../../../components/RandomRecipeButton";
+import { RandomRecipeButton } from "../../../components/buttons";
 import { Region, Recipe } from "../../../types";
 import { styles } from "../styles";
 

@@ -8,7 +8,7 @@ import {
   View,
   ActivityIndicator 
 } from 'react-native';
-import { RegionService } from '../services/regionService';
+import { RegionService } from '../../services/regionService';
 
 export function ImportButton() {
   const [isImporting, setIsImporting] = useState(false);

@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import { SearchBar } from "../../components/SearchBar";
+import { SearchBar } from "../../components/inputs";
 import { styles } from "./styles";
 import { useMenuData } from "./hooks/useMenuData";
 import { useRecipeFilter } from "./hooks/useRecipeFilter";

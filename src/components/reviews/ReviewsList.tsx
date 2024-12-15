@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { Review } from '../types';
+import { Review } from '../../types';
 import { Ionicons } from '@expo/vector-icons';
 
 interface ReviewsListProps {
