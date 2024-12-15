@@ -9,7 +9,7 @@ import { Animated } from 'react-native';
 
 import MapScreen from "./src/screens/Map";
 import MenuScreen from "./src/screens/Menu";
-import ProfileScreen from "./src/screens/ProfileScreen";
+import ProfileScreen from "./src/screens/Profile";
 import { RecipeProvider } from './src/context/RecipeContext';
 import { AuthProvider } from './src/context/AuthContext';
 
