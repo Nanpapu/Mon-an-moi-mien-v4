@@ -1,6 +1,7 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { Button } from "../../../components/shared";
+import { RandomRecipeButton } from '../../../components/buttons';
+import { SearchBar } from '../../../components/shared';
 import { useTheme } from "../../../theme/ThemeContext";
 import { Region } from "../../../types";
 
@@ -18,45 +19,35 @@ export function MapControls({ onRefresh, regions, onRandomSelect }: Props) {
   const { theme } = useTheme();
 
   return (
-    <View style={styles.container}>
-      <Button
-        variant="outline"
-        icon="refresh"
-        onPress={onRefresh}
-        style={[styles.button, { marginRight: theme.spacing.sm }]}
-      >
-        Làm mới
-      </Button>
+    <>
+      <View style={[
+        styles.searchContainer,
+        {
+          backgroundColor: theme.colors.background.paper,
+          ...theme.shadows.sm
+        }
+      ]}>
+        <SearchBar
+          value=""
+          onChangeText={() => {}}
+          placeholder="Tìm kiếm địa điểm..."
+        />
+      </View>
 
-      <Button
-        icon="dice"
-        onPress={() => {
-          const allRegions = regions.filter(region => region.recipes.length > 0);
-          if (allRegions.length === 0) return;
-          
-          const randomRegion = allRegions[Math.floor(Math.random() * allRegions.length)];
-          onRandomSelect(
-            randomRegion.coordinate.latitude,
-            randomRegion.coordinate.longitude,
-            randomRegion.recipes
-          );
-        }}
-        style={styles.button}
-      >
-        Ngẫu nhiên
-      </Button>
-    </View>
+      <RandomRecipeButton
+        regions={regions}
+        onRandomSelect={onRandomSelect}
+      />
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  searchContainer: {
     position: 'absolute',
     top: 20,
-    right: 20,
-    flexDirection: 'row',
-  },
-  button: {
-    borderRadius: 20,
+    left: 0,
+    right: 0,
+    zIndex: 1,
   },
 });

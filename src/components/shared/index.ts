@@ -5,3 +5,4 @@ export * from './Modal';
 export * from './Loading';
 export * from './Typography';
 export * from './Toast';
+export * from './SearchBar';

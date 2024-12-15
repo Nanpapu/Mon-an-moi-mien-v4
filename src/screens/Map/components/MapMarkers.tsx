@@ -1,6 +1,6 @@
 import React from 'react';
+import { View } from 'react-native';
 import { Marker } from 'react-native-maps';
-import { View, StyleSheet } from 'react-native';
 import { Typography } from '../../../components/shared';
 import { useTheme } from '../../../theme/ThemeContext';
 import { Region } from '../../../types';
@@ -22,7 +22,7 @@ export function MapMarkers({
 }: Props) {
   const { theme } = useTheme();
 
-  if (!isMapReady) return null;
+  if (!isMapReady || !shouldShowMarker(currentZoom)) return null;
 
   return (
     <>
@@ -33,49 +33,40 @@ export function MapMarkers({
           onPress={() => onMarkerPress(region.recipes)}
         >
           <View style={[
-            styles.markerContainer,
             {
               backgroundColor: theme.colors.primary.main,
-              ...theme.shadows.sm,
-            }
+              paddingHorizontal: theme.spacing.md,
+              paddingVertical: theme.spacing.sm,
+              borderRadius: theme.spacing.lg,
+              minWidth: 80,
+              alignItems: 'center',
+            },
+            theme.shadows.sm
           ]}>
             <Typography
-              variant="caption"
-              style={{ color: '#FFFFFF' }}
+              variant="button"
+              style={{ color: theme.colors.primary.contrast }}
             >
               {region.name}
             </Typography>
-            <View style={[
-              styles.markerArrow,
-              { borderTopColor: theme.colors.primary.main }
-            ]} />
+            <View style={{
+              position: 'absolute',
+              bottom: -8,
+              width: 0,
+              height: 0,
+              borderLeftWidth: 8,
+              borderRightWidth: 8,
+              borderTopWidth: 8,
+              borderStyle: 'solid',
+              backgroundColor: 'transparent',
+              borderLeftColor: 'transparent',
+              borderRightColor: 'transparent',
+              borderTopColor: theme.colors.primary.main,
+              alignSelf: 'center',
+            }} />
           </View>
         </Marker>
       ))}
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  markerContainer: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    alignItems: 'center',
-    minWidth: 80,
-  },
-  markerArrow: {
-    position: 'absolute',
-    bottom: -8,
-    width: 0,
-    height: 0,
-    borderLeftWidth: 8,
-    borderRightWidth: 8,
-    borderTopWidth: 8,
-    borderStyle: 'solid',
-    backgroundColor: 'transparent',
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    alignSelf: 'center',
-  },
-});

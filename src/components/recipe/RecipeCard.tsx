@@ -1,7 +1,7 @@
 // Component hiển thị thông tin chi tiết của một công thức nấu ăn
 // Bao gồm hình ảnh, tên món, vùng miền, nguyên liệu và cách làm
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Card, Typography, Button } from '../shared';
 import { useTheme } from '../../theme/ThemeContext';
 import { Recipe } from '../../types';
@@ -19,24 +19,31 @@ export function RecipeCard({
   recipe,
   onSave,
   onDelete,
-  showActions = true,
+  showActions = false,
   showReviews = false,
 }: Props) {
   const { theme } = useTheme();
 
   return (
-    <Card style={styles.container}>
-      <Image
-        source={{ uri: recipe.image }}
-        style={styles.image}
-        resizeMode="cover"
-      />
-      
+    <Card style={{ marginBottom: theme.spacing.md }}>
+      {recipe.imageUrl && (
+        <Image
+          source={{ uri: recipe.imageUrl }}
+          style={{
+            width: '100%',
+            height: 200,
+            borderTopLeftRadius: theme.spacing.sm,
+            borderTopRightRadius: theme.spacing.sm,
+          }}
+          resizeMode="cover"
+        />
+      )}
+
       <View style={{ padding: theme.spacing.md }}>
         <Typography variant="h3" style={{ marginBottom: theme.spacing.xs }}>
           {recipe.name}
         </Typography>
-        
+
         <Typography 
           variant="body2" 
           color="secondary"
@@ -45,75 +52,67 @@ export function RecipeCard({
           {recipe.region}
         </Typography>
 
-        <Typography variant="body1" numberOfLines={3}>
-          {recipe.description}
+        {showReviews && (
+          <View style={{ 
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: theme.spacing.sm 
+          }}>
+            {[1, 2, 3, 4, 5].map((star, index) => (
+              <Ionicons
+                key={index}
+                name={star <= (recipe.rating || 0) ? "star" : "star-outline"}
+                size={16}
+                color="#FFD700"
+                style={{ marginRight: 2 }}
+              />
+            ))}
+            <Typography 
+              variant="caption" 
+              color="secondary"
+              style={{ marginLeft: theme.spacing.xs }}
+            >
+              ({recipe.totalReviews || 0} đánh giá)
+            </Typography>
+          </View>
+        )}
+
+        <Typography 
+          variant="subtitle2" 
+          style={{ marginBottom: theme.spacing.xs }}
+        >
+          Nguyên liệu chính:
+        </Typography>
+        <Typography 
+          variant="body2" 
+          color="secondary"
+          style={{ marginBottom: theme.spacing.md }}
+        >
+          {recipe.mainIngredients.join(', ')}
         </Typography>
 
         {showActions && (
-          <View style={styles.actions}>
-            {onSave && (
-              <Button
-                variant="primary"
-                icon="bookmark-outline"
-                onPress={onSave}
-                style={{ flex: 1, marginRight: theme.spacing.sm }}
-              >
-                Lưu công thức
-              </Button>
-            )}
-            {onDelete && (
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+            {onDelete ? (
               <Button
                 variant="secondary"
                 icon="trash-outline"
                 onPress={onDelete}
-                style={{ flex: 1 }}
               >
-                Xóa công thức
+                Xóa
+              </Button>
+            ) : onSave && (
+              <Button
+                variant="primary"
+                icon="bookmark-outline"
+                onPress={onSave}
+              >
+                Lưu
               </Button>
             )}
-          </View>
-        )}
-
-        {showReviews && (
-          <View style={styles.reviews}>
-            <View style={styles.rating}>
-              <Ionicons name="star" size={20} color="#FFD700" />
-              <Typography variant="h3" style={{ marginLeft: 4 }}>
-                {recipe.rating?.toFixed(1) || "N/A"}
-              </Typography>
-            </View>
-            <Typography variant="body2" color="secondary">
-              ({recipe.numReviews || 0} đánh giá)
-            </Typography>
           </View>
         )}
       </View>
     </Card>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: 16,
-    marginVertical: 8,
-    overflow: 'hidden',
-  },
-  image: {
-    width: '100%',
-    height: 200,
-  },
-  actions: {
-    flexDirection: 'row',
-    marginTop: 16,
-  },
-  reviews: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 16,
-    gap: 8,
-  },
-  rating: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-});

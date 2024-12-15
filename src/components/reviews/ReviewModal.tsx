@@ -11,6 +11,8 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { ReviewService } from "../../services/reviewService";
 import { styles } from './ReviewModal.styles';
+import { useTheme } from '../../theme/ThemeContext';
+import { Typography, Button } from '../shared';
 
 interface Props {
   visible: boolean;
@@ -33,6 +35,7 @@ export const ReviewModal = ({
   onClose,
   onSubmit,
 }: Props) => {
+  const { theme } = useTheme();
   const [rating, setRating] = useState(existingReview?.rating || 0);
   const [comment, setComment] = useState(existingReview?.comment || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -65,51 +68,66 @@ export const ReviewModal = ({
   };
 
   return (
-    <Modal visible={visible} transparent animationType="slide">
-      <View style={styles.container}>
-        <View style={styles.content}>
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Ionicons name="close" size={24} color="#000" />
-          </TouchableOpacity>
+    <Modal 
+      visible={visible} 
+      onClose={onClose}
+      style={{ margin: theme.spacing.lg }}
+    >
+      <View style={{ padding: theme.spacing.lg }}>
+        <Typography 
+          variant="h3" 
+          style={{ marginBottom: theme.spacing.md }}
+        >
+          {existingReview ? "Sửa đánh giá" : "Đánh giá món ăn"}
+        </Typography>
 
-          <Text style={styles.title}>
-            {existingReview ? "Sửa đánh giá" : "Đánh giá món ăn"}
-          </Text>
-
-          {/* Star Rating */}
-          <View style={styles.starsContainer}>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <TouchableOpacity key={star} onPress={() => setRating(star)}>
-                <Ionicons
-                  name={star <= rating ? "star" : "star-outline"}
-                  size={32}
-                  color="#FFD700"
-                />
-              </TouchableOpacity>
-            ))}
-          </View>
-
-          {/* Comment Input */}
-          <TextInput
-            style={styles.input}
-            placeholder="Nhập nhận xét của bạn..."
-            value={comment}
-            onChangeText={setComment}
-            multiline
-            numberOfLines={4}
-          />
-
-          {/* Submit Button */}
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={handleSubmit}
-            disabled={isSubmitting}
-          >
-            <Text style={styles.submitText}>
-              {isSubmitting ? "Đang xử lý..." : "Gửi đánh giá"}
-            </Text>
-          </TouchableOpacity>
+        <View style={{ 
+          flexDirection: 'row', 
+          justifyContent: 'center',
+          marginBottom: theme.spacing.lg 
+        }}>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <TouchableOpacity 
+              key={star} 
+              onPress={() => setRating(star)}
+              style={{ padding: theme.spacing.xs }}
+            >
+              <Ionicons
+                name={star <= rating ? "star" : "star-outline"}
+                size={32}
+                color="#FFD700"
+              />
+            </TouchableOpacity>
+          ))}
         </View>
+
+        <TextInput
+          style={{
+            borderWidth: 1,
+            borderColor: theme.colors.divider,
+            borderRadius: theme.spacing.sm,
+            padding: theme.spacing.md,
+            marginBottom: theme.spacing.lg,
+            color: theme.colors.text.primary,
+            backgroundColor: theme.colors.background.default,
+            textAlignVertical: 'top'
+          }}
+          placeholder="Nhập nhận xét của bạn..."
+          placeholderTextColor={theme.colors.text.secondary}
+          value={comment}
+          onChangeText={setComment}
+          multiline
+          numberOfLines={4}
+        />
+
+        <Button
+          variant="primary"
+          onPress={handleSubmit}
+          disabled={isSubmitting}
+          style={{ width: '100%' }}
+        >
+          {isSubmitting ? "Đang xử lý..." : "Gửi đánh giá"}
+        </Button>
       </View>
     </Modal>
   );

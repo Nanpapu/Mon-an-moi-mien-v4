@@ -1,6 +1,7 @@
 import React from 'react';
-import { Modal, View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { styles } from '../styles';
+import { View, TextInput } from 'react-native';
+import { Modal, Typography, Button } from '../../../components/shared';
+import { useTheme } from '../../../theme/ThemeContext';
 
 interface Props {
   visible: boolean;
@@ -17,38 +18,59 @@ export const ResetPasswordModal = ({
   onClose,
   onSubmit
 }: Props) => {
+  const { theme } = useTheme();
+
   return (
     <Modal
       visible={visible}
-      transparent={true}
-      animationType="fade"
-      onRequestClose={onClose}
+      onClose={onClose}
+      style={{ margin: theme.spacing.lg }}
     >
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Đặt lại mật khẩu</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Nhập email của bạn"
-            value={email}
-            onChangeText={onEmailChange}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-          <View style={styles.modalButtons}>
-            <TouchableOpacity
-              style={[styles.modalButton, { backgroundColor: '#ff6b6b' }]}
-              onPress={onClose}
-            >
-              <Text style={styles.buttonText}>Hủy</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.modalButton, styles.confirmButton]}
-              onPress={onSubmit}
-            >
-              <Text style={styles.buttonText}>Gửi</Text>
-            </TouchableOpacity>
-          </View>
+      <View style={{ padding: theme.spacing.lg }}>
+        <Typography 
+          variant="h3" 
+          style={{ marginBottom: theme.spacing.lg }}
+        >
+          Đặt lại mật khẩu
+        </Typography>
+
+        <TextInput
+          style={{
+            borderWidth: 1,
+            borderColor: theme.colors.divider,
+            borderRadius: theme.spacing.sm,
+            padding: theme.spacing.md,
+            marginBottom: theme.spacing.lg,
+            color: theme.colors.text.primary,
+            backgroundColor: theme.colors.background.default,
+          }}
+          placeholder="Nhập email của bạn"
+          placeholderTextColor={theme.colors.text.secondary}
+          value={email}
+          onChangeText={onEmailChange}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+
+        <View style={{ 
+          flexDirection: 'row', 
+          justifyContent: 'flex-end',
+          gap: theme.spacing.md
+        }}>
+          <Button
+            variant="outline"
+            onPress={onClose}
+            style={{ flex: 1 }}
+          >
+            Hủy
+          </Button>
+          <Button
+            variant="primary"
+            onPress={onSubmit}
+            style={{ flex: 1 }}
+          >
+            Gửi
+          </Button>
         </View>
       </View>
     </Modal>
