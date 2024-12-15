@@ -66,17 +66,24 @@ export const RegionService = {
         const regionRef = doc(db, 'regions', region.id);
         batch.set(regionRef, regionData);
         
-        // Import recipes
+        // Import recipes và tạo stats mặc định
         for (const recipe of regionRecipes) {
           const recipeRef = doc(db, 'recipes', recipe.id);
           batch.set(recipeRef, {
             ...recipe,
             regionId: region.id
           });
+
+          // Tạo stats mặc định cho recipe mới
+          const statRef = doc(db, 'recipeStats', recipe.id); 
+          batch.set(statRef, {
+            id: recipe.id,
+            averageRating: 0,
+            totalReviews: 0
+          });
         }
       }
 
-      // 2. Commit batch write đầu tiên
       await batch.commit();
 
       // 3. Tính toán lại stats từ reviews hiện có
