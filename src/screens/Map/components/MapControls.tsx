@@ -1,9 +1,8 @@
 import React from "react";
-import { TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { RandomRecipeButton } from "../../../components/buttons";
-import { Region, Recipe } from "../../../types";
-import { styles } from "../styles";
+import { View, StyleSheet } from "react-native";
+import { Button } from "../../../components/shared";
+import { useTheme } from "../../../theme/ThemeContext";
+import { Region } from "../../../types";
 
 interface Props {
   onRefresh: () => void;
@@ -11,18 +10,53 @@ interface Props {
   onRandomSelect: (
     latitude: number,
     longitude: number,
-    recipes: Recipe[]
+    recipes: any[]
   ) => void;
 }
 
-export const MapControls = ({ onRefresh, regions, onRandomSelect }: Props) => {
-  return (
-    <>
-      <TouchableOpacity style={styles.refreshButton} onPress={onRefresh}>
-        <Ionicons name="refresh" size={24} color="#007AFF" />
-      </TouchableOpacity>
+export function MapControls({ onRefresh, regions, onRandomSelect }: Props) {
+  const { theme } = useTheme();
 
-      <RandomRecipeButton regions={regions} onRandomSelect={onRandomSelect} />
-    </>
+  return (
+    <View style={styles.container}>
+      <Button
+        variant="outline"
+        icon="refresh"
+        onPress={onRefresh}
+        style={[styles.button, { marginRight: theme.spacing.sm }]}
+      >
+        Làm mới
+      </Button>
+
+      <Button
+        icon="dice"
+        onPress={() => {
+          const allRegions = regions.filter(region => region.recipes.length > 0);
+          if (allRegions.length === 0) return;
+          
+          const randomRegion = allRegions[Math.floor(Math.random() * allRegions.length)];
+          onRandomSelect(
+            randomRegion.coordinate.latitude,
+            randomRegion.coordinate.longitude,
+            randomRegion.recipes
+          );
+        }}
+        style={styles.button}
+      >
+        Ngẫu nhiên
+      </Button>
+    </View>
   );
-};
+}
+
+const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    flexDirection: 'row',
+  },
+  button: {
+    borderRadius: 20,
+  },
+});

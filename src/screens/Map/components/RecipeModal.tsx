@@ -1,9 +1,9 @@
 import React from 'react';
-import { Modal, Animated, TouchableOpacity, ScrollView, View } from 'react-native';
-import { Ionicons } from "@expo/vector-icons";
-import { Recipe } from '../../../types';
+import { View, ScrollView, Animated } from 'react-native';
+import { Modal, Typography, Button } from '../../../components/shared';
 import { RecipeCard } from '../../../components/recipe';
-import { styles } from '../styles';
+import { useTheme } from '../../../theme/ThemeContext';
+import { Recipe } from '../../../types';
 
 interface Props {
   visible: boolean;
@@ -13,43 +13,53 @@ interface Props {
   slideAnim: Animated.Value;
 }
 
-export const RecipeModal = ({ visible, onClose, recipes, onSaveRecipe, slideAnim }: Props) => {
+export function RecipeModal({
+  visible,
+  onClose,
+  recipes,
+  onSaveRecipe,
+  slideAnim,
+}: Props) {
+  const { theme } = useTheme();
+
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
+    <Modal 
       visible={visible}
-      onRequestClose={onClose}
+      onClose={onClose}
+      animationType="slide"
     >
-      <Animated.View 
-        style={[
-          styles.modalView,
-          {
-            transform: [{
-              translateY: slideAnim
-            }]
-          }
-        ]}
-      >
-        <TouchableOpacity
-          style={styles.closeButton}
-          onPress={onClose}
+      <View style={{ flex: 1 }}>
+        <Typography
+          variant="h2"
+          style={{ 
+            marginBottom: theme.spacing.md,
+            paddingHorizontal: theme.spacing.md 
+          }}
         >
-          <Ionicons name="close-circle" size={32} color="#666" />
-        </TouchableOpacity>
-        <ScrollView style={styles.modalScroll}>
+          Các món ăn trong vùng
+        </Typography>
+
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{ padding: theme.spacing.md }}
+        >
           {recipes.map((recipe) => (
-            <View key={recipe.id} style={styles.recipeCard}>
+            <Animated.View
+              key={recipe.id}
+              style={{
+                transform: [{ translateY: slideAnim }],
+              }}
+            >
               <RecipeCard
                 recipe={recipe}
                 onSave={() => onSaveRecipe(recipe)}
                 showActions={true}
                 showReviews={true}
               />
-            </View>
+            </Animated.View>
           ))}
         </ScrollView>
-      </Animated.View>
+      </View>
     </Modal>
   );
-};
+}

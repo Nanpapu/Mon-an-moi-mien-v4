@@ -15,8 +15,11 @@ import { RecipeModal } from "./components/RecipeModal";
 import { RandomRecipeButton } from "../../components/buttons";
 import { RippleButton } from "../../components/buttons";
 import { ImportButton } from "../../components/buttons";
+import { useTheme } from '../../theme/ThemeContext';
+import { Loading } from '../../components/shared';
 
 export default function MapScreen({ navigation }: { navigation: any }) {
+  const { theme } = useTheme();
   const { refreshSavedRecipes } = useRecipes();
   const [selectedRecipes, setSelectedRecipes] = useState<Recipe[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -77,11 +80,11 @@ export default function MapScreen({ navigation }: { navigation: any }) {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex: 1 }}>
       <MapView
         ref={mapRef}
         provider="google"
-        style={styles.map}
+        style={{ flex: 1 }}
         initialRegion={region}
         onRegionChange={(newRegion) => {
           setRegion(newRegion);
@@ -101,11 +104,23 @@ export default function MapScreen({ navigation }: { navigation: any }) {
         />
       </MapView>
 
-      {!isMapReady && (
-        <View style={styles.loadingContainer}>
-          <LoadingOverlay isLoading={true} />
-        </View>
-      )}
+      <MapControls
+        onRefresh={refreshRegions}
+        regions={regions}
+        onRandomSelect={(lat, lng, recipes) => {
+          mapRef.current?.animateToRegion({
+            latitude: lat,
+            longitude: lng,
+            latitudeDelta: 0.5,
+            longitudeDelta: 0.5,
+          }, 1000);
+          
+          setTimeout(() => {
+            setSelectedRecipes(recipes);
+            setModalVisible(true);
+          }, 1000);
+        }}
+      />
 
       <RecipeModal
         visible={modalVisible}
@@ -115,13 +130,7 @@ export default function MapScreen({ navigation }: { navigation: any }) {
         slideAnim={slideAnim}
       />
 
-      <MapControls
-        onRefresh={refreshRegions}
-        regions={regions}
-        onRandomSelect={handleRandomRecipe}
-      />
-
-      <LoadingOverlay isLoading={isLoading} />
+      {isLoading && <Loading overlay text="Đang tải..." />}
     </View>
   );
 }
