@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Animated, TouchableOpacity, ScrollView, View } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import { Recipe } from '../../../types';
-import { RecipeCard } from '../../../components/RecipeCard';
+import { RecipeCard } from '../../../components/recipe';
 import { styles } from '../styles';
 
 interface Props {

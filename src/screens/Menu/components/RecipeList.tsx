@@ -1,8 +1,8 @@
 import React from 'react';
 import { ScrollView, View, RefreshControl } from 'react-native';
 import { Recipe } from '../../../types';
-import { RecipeCard } from '../../../components/RecipeCard';
-import { RecipeCardSkeleton } from '../../../components/RecipeCardSkeleton';
+import { RecipeCard } from '../../../components/recipe';
+import { RecipeCardSkeleton } from '../../../components/recipe';
 import { EmptyState } from './EmptyState';
 import { styles } from '../styles';
 
