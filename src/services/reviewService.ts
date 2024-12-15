@@ -183,14 +183,14 @@ export const ReviewService = {
 
   getRecipeStats: async (recipeId: string) => {
     try {
-      const recipeRef = doc(db, "recipes", recipeId);
-      const recipeDoc = await getDoc(recipeRef);
+      const statsRef = doc(db, "recipeStats", recipeId);
+      const statsDoc = await getDoc(statsRef);
       
-      if (!recipeDoc.exists()) {
+      if (!statsDoc.exists()) {
         return { averageRating: 0, totalReviews: 0 };
       }
       
-      const data = recipeDoc.data();
+      const data = statsDoc.data();
       return {
         averageRating: data.averageRating || 0,
         totalReviews: data.totalReviews || 0

@@ -65,59 +65,25 @@ export const RegionService = {
       for (const region of regions) {
         const { recipes: regionRecipes, ...regionData } = region;
         
+        // Tạo document cho region
         const regionRef = doc(db, COLLECTIONS.REGIONS, region.id);
         batch.set(regionRef, regionData);
         
+        // Tạo documents cho recipes
         for (const recipe of regionRecipes) {
           const recipeRef = doc(db, COLLECTIONS.RECIPES, recipe.id);
           batch.set(recipeRef, {
             ...recipe,
             regionId: region.id,
-            createdAt: Timestamp.now(), // Thêm timestamp
-            updatedAt: Timestamp.now()
-          });
-
-          const statRef = doc(db, COLLECTIONS.RECIPE_STATS, recipe.id); 
-          batch.set(statRef, {
-            id: recipe.id,
-            averageRating: 0,
-            totalReviews: 0,
             createdAt: Timestamp.now(),
-            updatedAt: Timestamp.now()
+            updatedAt: Timestamp.now(),
+            averageRating: 0,
+            totalReviews: 0
           });
         }
       }
 
       await batch.commit();
-
-      const reviewsSnapshot = await getDocs(collection(db, COLLECTIONS.REVIEWS));
-      const recipeStatsMap = new Map();
-
-      reviewsSnapshot.docs.forEach(doc => {
-        const review = doc.data();
-        const stats = recipeStatsMap.get(review.recipeId) || {
-          totalReviews: 0,
-          totalRating: 0
-        };
-        
-        stats.totalReviews++;
-        stats.totalRating += review.rating;
-        recipeStatsMap.set(review.recipeId, stats);
-      });
-
-      const statsUpdateBatch = writeBatch(db);
-      for (const [recipeId, stats] of recipeStatsMap) {
-        const statRef = doc(db, COLLECTIONS.RECIPE_STATS, recipeId);
-        statsUpdateBatch.set(statRef, {
-          id: recipeId,
-          totalReviews: stats.totalReviews,
-          averageRating: stats.totalRating / stats.totalReviews,
-          updatedAt: Timestamp.now()
-        }, { merge: true });
-      }
-
-      await statsUpdateBatch.commit();
-      
       console.log('Import dữ liệu thành công!');
       return true;
     } catch (error) {
