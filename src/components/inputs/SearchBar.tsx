@@ -1,8 +1,10 @@
 // Component thanh tìm kiếm có icon và input text
 // Sử dụng để tìm kiếm món ăn trong ứng dụng
 import React from "react";
-import { View, TextInput, StyleSheet } from "react-native";
+import { View, TextInput, StyleSheet, Animated } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { colors } from '../../theme/colors';
+import { spacing } from '../../theme/spacing';
 
 // Props của component
 interface Props {
@@ -20,7 +22,7 @@ export function SearchBar({
   return (
     <View style={styles.container}>
       {/* Icon tìm kiếm */}
-      <Ionicons name="search" size={20} color="#666" />
+      <Ionicons name="search" size={20} color={styles.searchIcon.color} />
       
       {/* Ô input */}
       <TextInput
@@ -28,7 +30,7 @@ export function SearchBar({
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor="#666"
+        placeholderTextColor={styles.input.color}
       />
     </View>
   );
@@ -40,17 +42,30 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    margin: 10,
+    backgroundColor: colors.background.paper,
+    borderRadius: spacing.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    margin: spacing.md,
+    shadowColor: colors.text.primary,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
   },
 
   // Style cho ô input
   input: {
     flex: 1,
-    marginLeft: 10,
+    marginLeft: spacing.sm,
     fontSize: 16,
+    color: colors.text.primary,
   },
+
+  searchIcon: {
+    color: colors.text.secondary,
+  }
 });

@@ -1,201 +1,197 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+import { colors } from '../../theme/colors';
+import { spacing } from '../../theme/spacing';
+import { typography } from '../../theme/typography';
+
+const { width } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   card: {
-    backgroundColor: "white",
-    borderRadius: 15,
-    marginHorizontal: 15,
-    marginVertical: 8,
-    shadowColor: "#000",
+    backgroundColor: colors.background.default,
+    borderRadius: spacing.md,
+    marginHorizontal: spacing.md,
+    marginVertical: spacing.sm,
+    shadowColor: colors.text.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: 3,
     elevation: 3,
+    overflow: 'hidden',
   },
-
   image: {
-    width: "100%",
+    width: '100%',
     height: 200,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
+    backgroundColor: colors.background.paper,
   },
-
   content: {
-    padding: 16,
+    padding: spacing.md,
   },
-
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingBottom: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: spacing.sm,
   },
-
+  headerContent: {
+    flex: 1,
+    marginRight: spacing.sm,
+  },
   name: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#1a1a1a",
-    marginBottom: 4,
+    ...typography.h3,
+    color: colors.text.primary,
   },
-
   region: {
-    fontSize: 15,
-    color: "#666",
-    fontWeight: "500",
+    ...typography.body2,
+    color: colors.text.secondary,
+    marginTop: spacing.xs,
   },
-
-  expandButton: {
-    padding: 8,
-    backgroundColor: "#f5f5f5",
-    borderRadius: 20,
-  },
-
   details: {
-    marginTop: 16,
-    paddingTop: 16,
+    paddingTop: spacing.md,
   },
-
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#1a1a1a",
-    marginBottom: 12,
-    marginTop: 16,
+    ...typography.h3,
+    color: colors.text.primary,
+    marginBottom: spacing.sm,
   },
-
   listItem: {
-    fontSize: 15,
-    color: "#333",
-    lineHeight: 22,
-    marginBottom: 8,
-    paddingLeft: 8,
+    ...typography.body1,
+    color: colors.text.secondary,
+    marginBottom: spacing.xs,
+    paddingLeft: spacing.md,
   },
-
   actions: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
-    gap: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: spacing.md,
+    gap: spacing.sm,
   },
-
   saveButton: {
     flex: 1,
-    backgroundColor: "#4CAF50",
-    padding: 12,
-    borderRadius: 8,
-    alignItems: "center",
+    backgroundColor: colors.primary.main,
+    padding: spacing.sm,
+    borderRadius: spacing.sm,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: spacing.xs,
   },
-
   deleteButton: {
     flex: 1,
-    backgroundColor: "#f44336",
-    padding: 12,
-    borderRadius: 8,
-    alignItems: "center",
+    backgroundColor: colors.error,
+    padding: spacing.sm,
+    borderRadius: spacing.sm,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: spacing.xs,
   },
-
   buttonText: {
-    color: "white",
-    fontSize: 15,
-    fontWeight: "600",
+    ...typography.body1,
+    color: colors.background.default,
+    fontWeight: '600' as const,
   },
-
+  expandButton: {
+    padding: spacing.xs,
+    borderRadius: spacing.sm,
+    backgroundColor: colors.background.paper,
+  },
   ratingContainer: {
-    marginTop: 15,
-    backgroundColor: "#f8f9fa",
-    borderRadius: 12,
-    padding: 15,
-  },
-
-  ratingHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-
-  ratingScore: {
-    alignItems: "center",
-  },
-
-  averageRating: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#1a1a1a",
-  },
-
-  starsRow: {
-    flexDirection: "row",
-    gap: 2,
-    marginVertical: 4,
-  },
-
-  totalReviews: {
-    fontSize: 12,
-    color: "#666",
-  },
-
-  addReviewButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#007AFF",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    gap: 6,
-  },
-
-  addReviewText: {
-    color: "white",
-    fontSize: 14,
-    fontWeight: "500",
-  },
-
-  viewAllButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 12,
+    marginTop: spacing.md,
     borderTopWidth: 1,
-    borderTopColor: "#e1e1e1",
-    marginTop: 4,
+    borderTopColor: colors.divider,
+    paddingTop: spacing.md,
   },
-
+  ratingHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  ratingScore: {
+    alignItems: 'center',
+  },
+  averageRating: {
+    ...typography.h2,
+    color: colors.text.primary,
+  },
+  starsRow: {
+    flexDirection: 'row',
+    marginVertical: spacing.xs,
+    gap: spacing.xs,
+  },
+  totalReviews: {
+    ...typography.caption,
+    color: colors.text.secondary,
+  },
+  addReviewButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.primary.main,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: spacing.sm,
+    gap: spacing.xs,
+  },
+  addReviewText: {
+    ...typography.body2,
+    color: colors.background.default,
+    fontWeight: '500' as const,
+  },
+  viewAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: spacing.sm,
+    marginTop: spacing.sm,
+  },
   viewAllText: {
-    fontSize: 14,
-    color: "#007AFF",
-    fontWeight: "500",
+    ...typography.body2,
+    color: colors.primary.main,
+    fontWeight: '500' as const,
   },
-
   modalContainer: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "flex-end",
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
   },
-
   modalContent: {
-    backgroundColor: "white",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: "80%",
+    backgroundColor: colors.background.default,
+    borderTopLeftRadius: spacing.lg,
+    borderTopRightRadius: spacing.lg,
+    maxHeight: '80%',
+    paddingBottom: spacing.md,
   },
-
   modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: "#e1e1e1",
+    borderBottomColor: colors.divider,
   },
-
   modalTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#1a1a1a",
+    ...typography.h3,
+    color: colors.text.primary,
   },
-
   closeButton: {
-    padding: 4,
+    padding: spacing.xs,
+    borderRadius: spacing.sm,
+  },
+  modalBody: {
+    padding: spacing.md,
+  },
+  reviewsList: {
+    maxHeight: width * 1.2,
+  },
+  noReviews: {
+    ...typography.body1,
+    color: colors.text.secondary,
+    textAlign: 'center',
+    padding: spacing.xl,
+  },
+  pressableHighlight: {
+    opacity: 0.7,
+  },
+  expandButtonRotate: {
+    transform: [{ rotate: '180deg' }],
   },
 });
