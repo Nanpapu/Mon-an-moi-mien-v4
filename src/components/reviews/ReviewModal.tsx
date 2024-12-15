@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { ReviewService } from "../../services/reviewService";
+import { styles } from './ReviewModal.styles';
 
 interface Props {
   visible: boolean;
@@ -113,57 +114,3 @@ export const ReviewModal = ({
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  content: {
-    width: "90%",
-    backgroundColor: "white",
-    borderRadius: 15,
-    padding: 20,
-    alignItems: "center",
-  },
-  closeButton: {
-    position: "absolute",
-    right: 10,
-    top: 10,
-    padding: 5,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  starsContainer: {
-    flexDirection: "row",
-    marginBottom: 20,
-    gap: 8,
-  },
-  input: {
-    width: "100%",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 20,
-    textAlignVertical: "top",
-  },
-  submitButton: {
-    backgroundColor: "#007AFF",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8,
-    width: "100%",
-  },
-  submitText: {
-    color: "white",
-    textAlign: "center",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});

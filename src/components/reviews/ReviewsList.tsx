@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { Review } from '../../types';
 import { Ionicons } from '@expo/vector-icons';
+import { styles } from './ReviewsList.styles';
 
 interface ReviewsListProps {
   reviews: Review[];
@@ -10,6 +11,18 @@ interface ReviewsListProps {
 }
 
 export const ReviewsList = ({ reviews, averageRating, totalReviews }: ReviewsListProps) => {
+  if (reviews.length === 0) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Ionicons name="chatbubble-outline" size={64} color="#ccc" />
+        <Text style={styles.emptyTitle}>Chưa có đánh giá nào</Text>
+        <Text style={styles.emptyText}>
+          Hãy là người đầu tiên đánh giá món ăn này!
+        </Text>
+      </View>
+    );
+  }
+
   const renderStars = (rating: number) => {
     return [...Array(5)].map((_, index) => (
       <Ionicons
@@ -55,59 +68,3 @@ export const ReviewsList = ({ reviews, averageRating, totalReviews }: ReviewsLis
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-  },
-  reviewItem: {
-    backgroundColor: 'white',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-  userInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  userDetails: {
-    marginLeft: 10,
-  },
-  userName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  userEmail: {
-    fontSize: 12,
-    color: '#666',
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  date: {
-    fontSize: 12,
-    color: '#666',
-  },
-  comment: {
-    fontSize: 14,
-    color: '#333',
-    lineHeight: 20,
-  },
-});
