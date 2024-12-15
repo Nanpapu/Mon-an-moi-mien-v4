@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, ScrollView, Animated } from 'react-native';
 import { Modal, Typography } from '../../../components/shared';
 import { RecipeCard } from '../../../components/recipe';
@@ -21,6 +21,23 @@ export function RecipeModal({
   slideAnim,
 }: Props) {
   const { theme } = useTheme();
+  
+  useEffect(() => {
+    if (visible) {
+      console.log('Modal opened with recipes:', recipes);
+      Animated.timing(slideAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      slideAnim.setValue(0);
+    }
+  }, [visible]);
+
+  if (!recipes || recipes.length === 0) {
+    return null;
+  }
 
   return (
     <Modal 
@@ -32,49 +49,47 @@ export function RecipeModal({
       }}
     >
       <View style={{ 
-        maxHeight: '80%',
         backgroundColor: theme.colors.background.paper,
         borderTopLeftRadius: theme.spacing.lg,
         borderTopRightRadius: theme.spacing.lg,
+        height: '90%',
       }}>
         <View style={{ 
-          padding: theme.spacing.md,
+          padding: theme.spacing.lg,
           borderBottomWidth: 1,
           borderBottomColor: theme.colors.divider,
         }}>
-          <Typography variant="h2">
-            Các món ăn trong vùng
+          <Typography variant="h2" style={{ fontSize: 24 }}>
+            Các món ăn trong vùng ({recipes.length})
           </Typography>
         </View>
 
         <ScrollView
           style={{ flex: 1 }}
-          contentContainerStyle={{ padding: theme.spacing.md }}
+          contentContainerStyle={{ 
+            padding: theme.spacing.lg,
+            paddingBottom: theme.spacing.xl * 2
+          }}
         >
-          {recipes.map((recipe, index) => (
-            <Animated.View
-              key={recipe.id}
-              style={{
-                transform: [{ 
-                  translateY: slideAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [50 * (index + 1), 0]
-                  })
-                }],
-                opacity: slideAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0, 1]
-                })
-              }}
-            >
-              <RecipeCard
-                recipe={recipe}
-                onSave={() => onSaveRecipe(recipe)}
-                showActions={true}
-                showReviews={true}
-              />
-            </Animated.View>
-          ))}
+          {recipes.map((recipe, index) => {
+            console.log('Rendering recipe:', recipe);
+            return (
+              <View 
+                key={recipe.id}
+                style={{
+                  marginBottom: theme.spacing.lg,
+                  opacity: 1,
+                }}
+              >
+                <RecipeCard
+                  recipe={recipe}
+                  onSave={() => onSaveRecipe(recipe)}
+                  showActions={true}
+                  showReviews={true}
+                />
+              </View>
+            );
+          })}
         </ScrollView>
       </View>
     </Modal>

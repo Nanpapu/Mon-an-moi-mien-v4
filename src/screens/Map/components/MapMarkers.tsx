@@ -26,7 +26,10 @@ export function MapMarkers({
           key={region.id}
           coordinate={region.coordinate}
           title={region.name}
-          onPress={() => onMarkerPress(region.recipes)}
+          onPress={() => {
+            console.log('Region recipes:', region.recipes);
+            onMarkerPress(region.recipes);
+          }}
         />
       ))}
     </>
