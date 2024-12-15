@@ -1,10 +1,10 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
-import { TextInput } from 'react-native';
+import React from "react";
+import { View, Text, Image, TouchableOpacity } from "react-native";
+import { TextInput } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { User } from 'firebase/auth';
-import { styles } from '../styles';
-import { IMAGES } from '../../../constants/assets';
+import { User } from "firebase/auth";
+import { styles } from "../styles";
+import { IMAGES } from "../../../constants/assets";
 
 interface Props {
   user: User;
@@ -29,7 +29,7 @@ export const UserProfile = ({
   onCancelPress,
   onPickImage,
   onLogout,
-  onImportData
+  onImportData,
 }: Props) => {
   return (
     <View style={styles.container}>
@@ -37,7 +37,9 @@ export const UserProfile = ({
         <TouchableOpacity onPress={onPickImage}>
           <View>
             <Image
-              source={user?.photoURL ? { uri: user.photoURL } : IMAGES.defaultAvatar}
+              source={
+                user?.photoURL ? { uri: user.photoURL } : IMAGES.defaultAvatar
+              }
               style={styles.avatar}
             />
             <View style={styles.editIconContainer}>
@@ -88,7 +90,7 @@ export const UserProfile = ({
           <Text style={styles.buttonText}>Đăng xuất</Text>
         </TouchableOpacity>
 
-        {user.email === "admin@gmail.com" && onImportData && (
+        {user.email === "21521059@gm.uit.edu.vn" && onImportData && (
           <TouchableOpacity style={styles.importButton} onPress={onImportData}>
             <Text style={styles.buttonText}>Import Dữ Liệu</Text>
           </TouchableOpacity>

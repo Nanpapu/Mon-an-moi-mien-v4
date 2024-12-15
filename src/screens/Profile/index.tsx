@@ -28,7 +28,8 @@ export default function ProfileScreen() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Custom hooks
-  const { fadeAnim, slideAnim, animateFormTransition } = useAuthAnimation(isRegistering);
+  const { fadeAnim, slideAnim, animateFormTransition } =
+    useAuthAnimation(isRegistering);
   const {
     displayName,
     setDisplayName,
@@ -54,7 +55,7 @@ export default function ProfileScreen() {
     validateEmail,
     validatePassword,
     validateConfirmPassword,
-    handleResetPassword
+    handleResetPassword,
   } = useAuthForm(login, register, resetPassword);
 
   // Handlers
@@ -63,7 +64,10 @@ export default function ProfileScreen() {
     const isPasswordValid = validatePassword(password);
 
     if (isRegistering) {
-      const isConfirmPasswordValid = validateConfirmPassword(password, confirmPassword);
+      const isConfirmPasswordValid = validateConfirmPassword(
+        password,
+        confirmPassword
+      );
       if (!isEmailValid || !isPasswordValid || !isConfirmPasswordValid) return;
     } else {
       if (!isEmailValid || !isPasswordValid) return;
@@ -103,7 +107,9 @@ export default function ProfileScreen() {
           onCancelPress={() => setIsEditing(false)}
           onPickImage={pickImage}
           onLogout={logout}
-          onImportData={user.email === "admin@gmail.com" ? handleImportData : undefined}
+          onImportData={
+            user.email === ("21521059@gm.uit.edu.vn") ? handleImportData : undefined
+          }
         />
       ) : (
         <View style={styles.container}>
@@ -121,7 +127,9 @@ export default function ProfileScreen() {
             onPasswordChange={setPassword}
             onConfirmPasswordChange={setConfirmPassword}
             onTogglePassword={() => setShowPassword(!showPassword)}
-            onToggleConfirmPassword={() => setShowConfirmPassword(!showConfirmPassword)}
+            onToggleConfirmPassword={() =>
+              setShowConfirmPassword(!showConfirmPassword)
+            }
             onSubmit={handleLogin}
             onForgotPassword={() => setShowResetPassword(true)}
             onToggleAuthMode={toggleAuthMode}
