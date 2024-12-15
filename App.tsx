@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Animated } from 'react-native';
 
 import MapScreen from "./src/screens/Map";
-import MenuScreen from "./src/screens/MenuScreen";
+import MenuScreen from "./src/screens/Menu";
 import ProfileScreen from "./src/screens/ProfileScreen";
 import { RecipeProvider } from './src/context/RecipeContext';
 import { AuthProvider } from './src/context/AuthContext';
