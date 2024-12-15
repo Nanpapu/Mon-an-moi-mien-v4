@@ -7,7 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { Animated } from 'react-native';
 
-import MapScreen from "./src/screens/MapScreen";
+import MapScreen from "./src/screens/Map";
 import MenuScreen from "./src/screens/MenuScreen";
 import ProfileScreen from "./src/screens/ProfileScreen";
 import { RecipeProvider } from './src/context/RecipeContext';
