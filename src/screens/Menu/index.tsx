@@ -49,6 +49,7 @@ export default function MenuScreen() {
       ) : (
         <RecipeList
           isRefreshing={isRefreshing}
+          isLoading={isLoading}
           filteredRecipes={filteredRecipes}
           savedRecipes={savedRecipes}
           onRefresh={refreshSavedRecipes}

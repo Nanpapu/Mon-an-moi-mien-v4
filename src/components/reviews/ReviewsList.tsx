@@ -3,6 +3,7 @@ import { View, Image } from 'react-native';
 import { Typography } from '../shared';
 import { useTheme } from '../../theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
+import { createStyles } from './ReviewsList.styles';
 
 interface ReviewsListProps {
   reviews: any[];
@@ -12,6 +13,7 @@ interface ReviewsListProps {
 
 export const ReviewsList = ({ reviews, averageRating, totalReviews }: ReviewsListProps) => {
   const { theme } = useTheme();
+  const styles = createStyles(theme);
 
   if (reviews.length === 0) {
     return (

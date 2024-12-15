@@ -6,9 +6,16 @@ import { Card, Typography, Button } from '../shared';
 import { useTheme } from '../../theme/ThemeContext';
 import { Recipe } from '../../types';
 import { Ionicons } from '@expo/vector-icons';
+import { createStyles } from './RecipeCard.styles';
+
+// Thêm interface mới ở đầu file
+interface RecipeWithStats extends Recipe {
+  rating?: number;
+  totalReviews?: number;
+}
 
 interface Props {
-  recipe: Recipe;
+  recipe: RecipeWithStats; // Thay đổi kiểu của recipe
   onSave?: () => void;
   onDelete?: () => void;
   showActions?: boolean;
@@ -23,12 +30,13 @@ export function RecipeCard({
   showReviews = false,
 }: Props) {
   const { theme } = useTheme();
+  const styles = createStyles(theme);
 
   return (
-    <Card style={{ marginBottom: theme.spacing.md }}>
-      {recipe.imageUrl && (
+    <Card style={styles.card}>
+      {recipe.image && (
         <Image
-          source={{ uri: recipe.imageUrl }}
+          source={{ uri: recipe.image }}
           style={{
             width: '100%',
             height: 200,
@@ -88,7 +96,7 @@ export function RecipeCard({
           color="secondary"
           style={{ marginBottom: theme.spacing.md }}
         >
-          {recipe.mainIngredients.join(', ')}
+          {recipe.ingredients.join(', ')}
         </Typography>
 
         {showActions && (

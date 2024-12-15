@@ -1,57 +1,52 @@
-import { StyleSheet, Dimensions } from 'react-native';
-import { colors } from '../../theme/colors';
-import { spacing } from '../../theme/spacing';
-import { typography } from '../../theme/typography';
+import { StyleSheet } from 'react-native';
 
-const { width } = Dimensions.get('window');
-
-export const styles = StyleSheet.create({
+export const createStyles = (theme: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'flex-end',
   },
   content: {
-    backgroundColor: colors.background.default,
-    borderTopLeftRadius: spacing.lg,
-    borderTopRightRadius: spacing.lg,
-    padding: spacing.lg,
+    backgroundColor: theme.colors.background.default,
+    borderTopLeftRadius: theme.spacing.lg,
+    borderTopRightRadius: theme.spacing.lg,
+    padding: theme.spacing.lg,
     maxHeight: '80%',
   },
   closeButton: {
     alignSelf: 'flex-end',
-    padding: spacing.xs,
+    padding: theme.spacing.xs,
   },
   title: {
-    ...typography.h3,
-    color: colors.text.primary,
+    ...theme.typography.h3,
+    color: theme.colors.text.primary,
     textAlign: 'center',
-    marginBottom: spacing.lg,
+    marginBottom: theme.spacing.lg,
   },
   starsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: spacing.sm,
-    marginBottom: spacing.lg,
+    gap: theme.spacing.sm,
+    marginBottom: theme.spacing.lg,
   },
   input: {
-    ...typography.body1,
-    backgroundColor: colors.background.paper,
-    borderRadius: spacing.sm,
-    padding: spacing.md,
+    ...theme.typography.body1,
+    backgroundColor: theme.colors.background.paper,
+    borderRadius: theme.spacing.sm,
+    padding: theme.spacing.md,
     minHeight: 100,
     textAlignVertical: 'top',
-    marginBottom: spacing.lg,
+    marginBottom: theme.spacing.lg,
   },
   submitButton: {
-    backgroundColor: colors.primary.main,
-    padding: spacing.md,
-    borderRadius: spacing.sm,
+    backgroundColor: theme.colors.primary.main,
+    padding: theme.spacing.md,
+    borderRadius: theme.spacing.sm,
     alignItems: 'center',
   },
   submitText: {
-    ...typography.body1,
-    color: colors.background.default,
+    ...theme.typography.body1,
+    color: theme.colors.background.default,
     fontWeight: '600' as const,
   },
 }); 

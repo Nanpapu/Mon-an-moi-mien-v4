@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { ReviewService } from "../../services/reviewService";
-import { styles } from './ReviewModal.styles';
+import { createStyles } from './ReviewModal.styles';
 import { useTheme } from '../../theme/ThemeContext';
 import { Typography, Button } from '../shared';
 
@@ -36,6 +36,7 @@ export const ReviewModal = ({
   onSubmit,
 }: Props) => {
   const { theme } = useTheme();
+  const styles = createStyles(theme);
   const [rating, setRating] = useState(existingReview?.rating || 0);
   const [comment, setComment] = useState(existingReview?.comment || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -70,7 +71,7 @@ export const ReviewModal = ({
   return (
     <Modal 
       visible={visible} 
-      onClose={onClose}
+      onRequestClose={onClose}
       style={{ margin: theme.spacing.lg }}
     >
       <View style={{ padding: theme.spacing.lg }}>
