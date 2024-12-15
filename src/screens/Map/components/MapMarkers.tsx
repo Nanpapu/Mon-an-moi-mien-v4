@@ -27,32 +27,30 @@ export function MapMarkers({
   return (
     <>
       {regions.map((region) => (
-        shouldShowMarker(currentZoom) && (
-          <Marker
-            key={region.id}
-            coordinate={region.coordinate}
-            onPress={() => onMarkerPress(region.recipes)}
-          >
+        <Marker
+          key={region.id}
+          coordinate={region.coordinate}
+          onPress={() => onMarkerPress(region.recipes)}
+        >
+          <View style={[
+            styles.markerContainer,
+            {
+              backgroundColor: theme.colors.primary.main,
+              ...theme.shadows.sm,
+            }
+          ]}>
+            <Typography
+              variant="caption"
+              style={{ color: '#FFFFFF' }}
+            >
+              {region.name}
+            </Typography>
             <View style={[
-              styles.markerContainer,
-              {
-                backgroundColor: theme.colors.primary.main,
-                ...theme.shadows.md,
-              }
-            ]}>
-              <Typography
-                variant="caption"
-                style={{ color: theme.colors.primary.contrast }}
-              >
-                {region.name}
-              </Typography>
-              <View style={[
-                styles.markerArrow,
-                { borderTopColor: theme.colors.primary.main }
-              ]} />
-            </View>
-          </Marker>
-        )
+              styles.markerArrow,
+              { borderTopColor: theme.colors.primary.main }
+            ]} />
+          </View>
+        </Marker>
       ))}
     </>
   );
@@ -60,11 +58,15 @@ export function MapMarkers({
 
 const styles = StyleSheet.create({
   markerContainer: {
-    padding: 8,
-    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
     alignItems: 'center',
+    minWidth: 80,
   },
   markerArrow: {
+    position: 'absolute',
+    bottom: -8,
     width: 0,
     height: 0,
     borderLeftWidth: 8,
@@ -75,6 +77,5 @@ const styles = StyleSheet.create({
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
     alignSelf: 'center',
-    marginTop: -1,
   },
 });

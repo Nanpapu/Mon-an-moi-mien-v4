@@ -31,8 +31,11 @@ export const RegionFilter = ({ regions, selectedRegion, onSelectRegion }: Props)
         onPress={() => onSelectRegion(null)}
       >
         <Typography
-          variant="button"
-          color={!selectedRegion ? "contrast" : "primary"}
+          variant="body2"
+          style={{
+            color: !selectedRegion ? '#FFFFFF' : theme.colors.primary.main,
+            fontSize: 14,
+          }}
         >
           Tất cả
         </Typography>
@@ -53,8 +56,11 @@ export const RegionFilter = ({ regions, selectedRegion, onSelectRegion }: Props)
           onPress={() => onSelectRegion(region)}
         >
           <Typography
-            variant="button"
-            color={selectedRegion === region ? "contrast" : "primary"}
+            variant="body2"
+            style={{
+              color: selectedRegion === region ? '#FFFFFF' : theme.colors.primary.main,
+              fontSize: 14,
+            }}
           >
             {region}
           </Typography>
@@ -67,7 +73,8 @@ export const RegionFilter = ({ regions, selectedRegion, onSelectRegion }: Props)
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
-    paddingBottom: 16,
+    paddingVertical: 8,
+    flexDirection: 'row',
     gap: 8,
   },
   chip: {
@@ -75,5 +82,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
+    height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

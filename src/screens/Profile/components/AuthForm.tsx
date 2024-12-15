@@ -46,13 +46,16 @@ export const AuthForm = ({
 
   return (
     <Animated.View
-      style={[
-        {
-          opacity: fadeAnim,
-          transform: [{ translateX: slideAnim }],
-          width: '100%',
-        }
-      ]}
+      style={{
+        opacity: fadeAnim,
+        transform: [{ 
+          translateX: slideAnim.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, -30]
+          })
+        }],
+        width: '100%',
+      }}
     >
       <Typography variant="h2" style={{ marginBottom: theme.spacing.lg }}>
         {isRegistering ? "Đăng ký" : "Đăng nhập"}
