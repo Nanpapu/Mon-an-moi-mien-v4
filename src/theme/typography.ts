@@ -1,32 +1,76 @@
+import { Platform } from 'react-native';
+
 export const typography = {
   h1: {
     fontSize: 32,
     fontWeight: '700' as const,
     lineHeight: 40,
+    letterSpacing: 0.25,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
   },
   h2: {
     fontSize: 24,
     fontWeight: '700' as const,
     lineHeight: 32,
+    letterSpacing: 0,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
   },
   h3: {
     fontSize: 20,
     fontWeight: '600' as const,
     lineHeight: 28,
+    letterSpacing: 0.15,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
+  },
+  subtitle1: {
+    fontSize: 16,
+    fontWeight: '600' as const,
+    lineHeight: 24,
+    letterSpacing: 0.15,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
+  },
+  subtitle2: {
+    fontSize: 14,
+    fontWeight: '600' as const,
+    lineHeight: 20,
+    letterSpacing: 0.1,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
   },
   body1: {
     fontSize: 16,
     fontWeight: '400' as const,
     lineHeight: 24,
+    letterSpacing: 0.5,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
   },
   body2: {
     fontSize: 14,
     fontWeight: '400' as const,
     lineHeight: 20,
+    letterSpacing: 0.25,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
+  },
+  button: {
+    fontSize: 14,
+    fontWeight: '600' as const,
+    lineHeight: 20,
+    letterSpacing: 1.25,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
+    textTransform: 'uppercase' as const,
   },
   caption: {
     fontSize: 12,
     fontWeight: '400' as const,
     lineHeight: 16,
+    letterSpacing: 0.4,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
+  },
+  overline: {
+    fontSize: 10,
+    fontWeight: '400' as const,
+    lineHeight: 16,
+    letterSpacing: 1.5,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
+    textTransform: 'uppercase' as const,
   },
 };

@@ -1,26 +1,91 @@
-export const colors = {
+export const lightColors = {
   primary: {
-    main: '#FF6B6B',
-    light: '#FF8E8E',
-    dark: '#FF4848',
+    main: '#007AFF',
+    light: '#4DA3FF', 
+    dark: '#0055B3',
+    contrast: '#FFFFFF'
   },
   secondary: {
-    main: '#4ECDC4',
-    light: '#71D7D0',
-    dark: '#2BC4B8',
+    main: '#64748B',
+    light: '#94A3B8',
+    dark: '#475569',
+    contrast: '#FFFFFF'
+  },
+  error: {
+    main: '#DC2626',
+    light: '#EF4444',
+    dark: '#B91C1C',
+    contrast: '#FFFFFF'
+  },
+  warning: {
+    main: '#F59E0B',
+    light: '#FBBF24',
+    dark: '#D97706',
+    contrast: '#000000'
+  },
+  success: {
+    main: '#10B981',
+    light: '#34D399',
+    dark: '#059669',
+    contrast: '#FFFFFF'
   },
   background: {
     default: '#FFFFFF',
-    paper: '#F8F9FA',
-    accent: '#F1F3F5',
+    paper: '#F8FAFC',
+    contrast: '#1E293B'
   },
   text: {
-    primary: '#212529',
-    secondary: '#495057',
-    disabled: '#ADB5BD',
+    primary: '#1E293B',
+    secondary: '#64748B',
+    disabled: '#94A3B8',
+    contrast: '#FFFFFF'
   },
-  error: '#FF4444',
-  warning: '#FFA000',
-  success: '#4CAF50',
-  divider: '#E9ECEF',
+  divider: '#E2E8F0',
+  border: '#CBD5E1'
+};
+
+export const darkColors = {
+  primary: {
+    main: '#60A5FA',
+    light: '#93C5FD',
+    dark: '#2563EB',
+    contrast: '#000000'
+  },
+  secondary: {
+    main: '#94A3B8',
+    light: '#CBD5E1',
+    dark: '#64748B',
+    contrast: '#000000'
+  },
+  error: {
+    main: '#EF4444',
+    light: '#F87171',
+    dark: '#DC2626',
+    contrast: '#000000'
+  },
+  warning: {
+    main: '#FBBF24',
+    light: '#FCD34D',
+    dark: '#F59E0B',
+    contrast: '#000000'
+  },
+  success: {
+    main: '#34D399',
+    light: '#6EE7B7',
+    dark: '#10B981',
+    contrast: '#000000'
+  },
+  background: {
+    default: '#0F172A',
+    paper: '#1E293B',
+    contrast: '#FFFFFF'
+  },
+  text: {
+    primary: '#F8FAFC',
+    secondary: '#CBD5E1',
+    disabled: '#64748B',
+    contrast: '#0F172A'
+  },
+  divider: '#334155',
+  border: '#475569'
 };
