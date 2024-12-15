@@ -1,21 +1,42 @@
 import { db, storage } from "../config/firebase";
 import { doc, updateDoc, setDoc, getDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { CacheService, CACHE_KEYS, CACHE_EXPIRY } from './cacheService';
 
 export const UserService = {
-  updateProfile: async (
-    userId: string,
-    data: {
-      displayName?: string;
-      photoURL?: string;
-    }
-  ) => {
+  getUserProfile: async (userId: string) => {
     try {
-      const userRef = doc(db, "users", userId);
-      await updateDoc(userRef, data);
+      const cacheKey = `${CACHE_KEYS.USER_PROFILE}${userId}`;
+      const cachedProfile = await CacheService.getCache(
+        cacheKey,
+        CACHE_EXPIRY.USER_PROFILE
+      );
+
+      if (cachedProfile) {
+        return cachedProfile;
+      }
+
+      const userDoc = await getDoc(doc(db, 'users', userId));
+      if (!userDoc.exists()) return null;
+
+      const profile = { id: userDoc.id, ...userDoc.data() };
+      await CacheService.setCache(cacheKey, profile);
+
+      return profile;
+    } catch (error) {
+      console.error('Lỗi khi lấy thông tin người dùng:', error);
+      throw error;
+    }
+  },
+
+  updateProfile: async (userId: string, data: any) => {
+    try {
+      await updateDoc(doc(db, 'users', userId), data);
+      // Clear cache khi update
+      await CacheService.clearCache(`${CACHE_KEYS.USER_PROFILE}${userId}`);
       return true;
     } catch (error) {
-      console.error("Lỗi khi cập nhật profile:", error);
+      console.error('Lỗi khi cập nhật profile:', error);
       return false;
     }
   },
@@ -78,6 +99,10 @@ export const UserService = {
       return null;
     }
   },
+
+  clearUserCache: async (userId: string) => {
+    await CacheService.clearCache(`${CACHE_KEYS.USER_PROFILE}${userId}`);
+  }
 };
 
 // Hàm để ẩn một phần email

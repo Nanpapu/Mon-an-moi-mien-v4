@@ -7,9 +7,15 @@ export const useMapData = () => {
   const [regions, setRegions] = useState<Region[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const loadRegions = async () => {
+  const loadRegions = async (forceRefresh = false) => {
     try {
       setIsLoading(true);
+      
+      if (forceRefresh) {
+        // Xóa cache nếu cần refresh
+        await RegionService.clearRegionsCache();
+      }
+      
       const data = await RegionService.getAllRegions();
       setRegions(data);
     } catch (error) {
@@ -27,6 +33,6 @@ export const useMapData = () => {
   return {
     regions,
     isLoading,
-    refreshRegions: loadRegions
+    refreshRegions: () => loadRegions(true) // Force refresh khi người dùng pull-to-refresh
   };
 };
