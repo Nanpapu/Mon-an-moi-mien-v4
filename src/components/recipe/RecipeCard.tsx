@@ -44,6 +44,16 @@ export function RecipeCard({
     }
   }, [showReviews]);
 
+  useEffect(() => {
+    if (user && showReviews) {
+      const loadUserReview = async () => {
+        const review = await ReviewService.getUserReviewForRecipe(recipe.id, user.uid);
+        setExistingReview(review);
+      };
+      loadUserReview();
+    }
+  }, [user, showReviews]);
+
   const loadReviewStats = async () => {
     setIsLoadingStats(true);
     try {
@@ -53,6 +63,15 @@ export function RecipeCard({
       console.error("Lỗi khi tải thống kê đánh giá:", error);
     } finally {
       setIsLoadingStats(false);
+    }
+  };
+
+  const loadReviews = async () => {
+    try {
+      const reviewsList = await ReviewService.getRecipeReviews(recipe.id);
+      setAllReviews(reviewsList);
+    } catch (error) {
+      console.error("Lỗi khi tải đánh giá:", error);
     }
   };
 
@@ -186,7 +205,10 @@ export function RecipeCard({
 
             <TouchableOpacity
               style={styles.viewAllButton}
-              onPress={() => setShowReviewsList(true)}
+              onPress={() => {
+                loadReviews();
+                setShowReviewsList(true);
+              }}
             >
               <Typography 
                 variant="body1" 

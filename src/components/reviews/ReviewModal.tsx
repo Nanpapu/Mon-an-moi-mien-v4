@@ -79,7 +79,7 @@ export const ReviewModal = ({
           variant="h3" 
           style={{ marginBottom: theme.spacing.md }}
         >
-          {existingReview ? "Sửa đánh giá" : "Đánh giá món ăn"}
+          {existingReview ? "Chỉnh sửa đánh giá" : "Đánh giá món ăn"}
         </Typography>
 
         <View style={{ 
