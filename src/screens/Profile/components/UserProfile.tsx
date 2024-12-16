@@ -113,7 +113,7 @@ export const UserProfile = ({
           </View>
         )}
 
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
 
         <Button
           variant="secondary"

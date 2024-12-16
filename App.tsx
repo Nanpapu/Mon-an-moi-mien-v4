@@ -16,6 +16,7 @@ import { RecipeProvider } from "./src/context/RecipeContext";
 import { AuthProvider } from "./src/context/AuthContext";
 import { ThemeProvider } from "./src/theme/ThemeContext";
 import { ToastProvider } from "./src/context/ToastContext";
+import { AppBar } from "./src/components/shared/AppBar";
 
 // Khởi tạo Bottom Tab Navigator
 const Tab = createBottomTabNavigator();
@@ -34,7 +35,10 @@ export default function App() {
                     const { theme } = useTheme();
 
                     return {
-                      tabBarIcon: ({ focused, color, size }) => {
+                      header: ({ route }) => (
+                        <AppBar title={route.name} />
+                      ),
+                      tabBarIcon: ({ focused, size }) => {
                         let iconName: keyof typeof Ionicons.glyphMap;
                         if (route.name === "Bản đồ") {
                           iconName = focused ? "map" : "map-outline";
