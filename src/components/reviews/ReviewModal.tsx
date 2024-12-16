@@ -10,9 +10,9 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { ReviewService } from "../../services/reviewService";
-import { createStyles } from './ReviewModal.styles';
-import { useTheme } from '../../theme/ThemeContext';
-import { Typography, Button } from '../shared';
+import { createStyles } from "./ReviewModal.styles";
+import { useTheme } from "../../theme/ThemeContext";
+import { Typography, Button, Input } from "../shared";
 
 interface Props {
   visible: boolean;
@@ -69,27 +69,26 @@ export const ReviewModal = ({
   };
 
   return (
-    <Modal 
-      visible={visible} 
+    <Modal
+      visible={visible}
       onRequestClose={onClose}
       style={{ margin: theme.spacing.lg }}
     >
       <View style={{ padding: theme.spacing.lg }}>
-        <Typography 
-          variant="h3" 
-          style={{ marginBottom: theme.spacing.md }}
-        >
+        <Typography variant="h3" style={{ marginBottom: theme.spacing.md }}>
           {existingReview ? "Chỉnh sửa đánh giá" : "Đánh giá món ăn"}
         </Typography>
 
-        <View style={{ 
-          flexDirection: 'row', 
-          justifyContent: 'center',
-          marginBottom: theme.spacing.lg 
-        }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            marginBottom: theme.spacing.lg,
+          }}
+        >
           {[1, 2, 3, 4, 5].map((star) => (
-            <TouchableOpacity 
-              key={star} 
+            <TouchableOpacity
+              key={star}
               onPress={() => setRating(star)}
               style={{ padding: theme.spacing.xs }}
             >
@@ -102,30 +101,21 @@ export const ReviewModal = ({
           ))}
         </View>
 
-        <TextInput
-          style={{
-            borderWidth: 1,
-            borderColor: theme.colors.divider,
-            borderRadius: theme.spacing.sm,
-            padding: theme.spacing.md,
-            marginBottom: theme.spacing.lg,
-            color: theme.colors.text.primary,
-            backgroundColor: theme.colors.background.default,
-            textAlignVertical: 'top'
-          }}
-          placeholder="Nhập nhận xét của bạn..."
-          placeholderTextColor={theme.colors.text.secondary}
+        <Input
           value={comment}
           onChangeText={setComment}
+          placeholder="Nhập nhận xét của bạn..."
           multiline
           numberOfLines={4}
+          textAlignVertical="top"
+          containerStyle={{ marginBottom: theme.spacing.lg }}
         />
 
         <Button
           variant="primary"
           onPress={handleSubmit}
           disabled={isSubmitting}
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
         >
           {isSubmitting ? "Đang xử lý..." : "Gửi đánh giá"}
         </Button>

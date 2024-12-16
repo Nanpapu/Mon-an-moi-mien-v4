@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Animated } from 'react-native';
-import { Input, Button, Typography } from '../../../components/shared';
-import { useTheme } from '../../../theme/ThemeContext';
+import React from "react";
+import { View, Animated } from "react-native";
+import { Input, Button, Typography } from "../../../components/shared";
+import { useTheme } from "../../../theme/ThemeContext";
 
 interface Props {
   isRegistering: boolean;
@@ -40,7 +40,7 @@ export const AuthForm = ({
   onToggleConfirmPassword,
   onSubmit,
   onForgotPassword,
-  onToggleAuthMode
+  onToggleAuthMode,
 }: Props) => {
   const { theme } = useTheme();
 
@@ -48,13 +48,15 @@ export const AuthForm = ({
     <Animated.View
       style={{
         opacity: fadeAnim,
-        transform: [{ 
-          translateX: slideAnim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, -30]
-          })
-        }],
-        width: '100%',
+        transform: [
+          {
+            translateX: slideAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, -30],
+            }),
+          },
+        ],
+        width: "100%",
       }}
     >
       <Typography variant="h2" style={{ marginBottom: theme.spacing.lg }}>
@@ -98,10 +100,7 @@ export const AuthForm = ({
         />
       )}
 
-      <Button
-        onPress={onSubmit}
-        style={{ marginTop: theme.spacing.md }}
-      >
+      <Button onPress={onSubmit} style={{ marginTop: theme.spacing.md }}>
         {isRegistering ? "Đăng ký" : "Đăng nhập"}
       </Button>
 
