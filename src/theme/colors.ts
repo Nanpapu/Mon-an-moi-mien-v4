@@ -82,21 +82,21 @@ export const darkColors = {
     contrast: '#000000'
   },
   background: {
-    default: '#0F172A',
-    paper: '#1E293B',
+    default: '#1A1B1E',
+    paper: '#27282B',
     contrast: '#FFFFFF'
   },
   text: {
-    primary: '#F8FAFC',
-    secondary: '#CBD5E1',
-    disabled: '#64748B',
-    contrast: '#0F172A'
+    primary: '#E6E8EC',
+    secondary: '#A1A5AC',
+    disabled: '#696C72',
+    contrast: '#1A1B1E'
   },
-  divider: '#334155',
-  border: '#475569',
+  divider: '#383A3F',
+  border: '#4A4D52',
   shadow: '#000000',
   action: {
-    disabled: '#64748B',
+    disabled: '#696C72',
     hover: 'rgba(255, 255, 255, 0.08)',
     active: 'rgba(255, 255, 255, 0.12)',
   },
