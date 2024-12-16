@@ -254,13 +254,24 @@ export function RecipeCard({
         animationType="slide"
         onRequestClose={() => setShowReviewsList(false)}
       >
-        <View style={styles.modalContainer}>
-          <View style={[styles.modalContent, { flex: 1 }]}>
-            <View style={styles.modalHeader}>
+        <View style={[styles.modalContainer, {
+          backgroundColor: theme.colors.background.paper,
+          ...theme.shadows.lg
+        }]}>
+          <View style={[styles.modalContent, { 
+            flex: 1,
+            backgroundColor: theme.colors.background.default
+          }]}>
+            <View style={[styles.modalHeader, {
+              borderBottomColor: theme.colors.divider
+            }]}>
               <Typography variant="h3">Đánh giá</Typography>
               <TouchableOpacity
                 onPress={() => setShowReviewsList(false)}
-                style={styles.closeButton}
+                style={{
+                  padding: theme.spacing.sm,
+                  borderRadius: theme.spacing.sm
+                }}
               >
                 <Ionicons 
                   name="close" 

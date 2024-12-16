@@ -24,8 +24,8 @@ export const ReviewsList = ({ recipeId, reviews, averageRating, totalReviews }: 
         key={index}
         name={index < rating ? "star" : "star-outline"}
         size={16}
-        color="#FFD700"
-        style={styles.starIcon}
+        color={theme.colors.warning.main}
+        style={{ marginRight: theme.spacing.xs }}
       />
     ));
   };

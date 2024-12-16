@@ -81,7 +81,12 @@ export function MapControls({ onRefresh, regions, onRandomSelect, onSearch }: Pr
                 placeholderTextColor={theme.colors.text.secondary}
                 style={[
                   styles.input,
-                  { color: theme.colors.text.primary }
+                  {
+                    color: theme.colors.text.primary,
+                    backgroundColor: theme.colors.background.paper,
+                    borderColor: theme.colors.divider,
+                    ...theme.shadows.sm
+                  }
                 ]}
                 onSubmitEditing={handleSubmit}
               />

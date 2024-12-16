@@ -1,26 +1,64 @@
 import React from 'react';
-import { TouchableOpacity, Text, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
-import { styles } from '../styles';
+import { Typography } from '../../../components/shared';
+import { useTheme } from '../../../theme/ThemeContext';
 
 interface Props {
   onPress: () => void;
 }
 
 export const GoogleSignInButton = ({ onPress }: Props) => {
+  const { theme } = useTheme();
+  
   return (
     <View>
-      <View style={styles.divider}>
-        <View style={styles.dividerLine} />
-        <Text style={styles.dividerText}>HOẶC</Text>
-        <View style={styles.dividerLine} />
+      <View style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: theme.spacing.lg
+      }}>
+        <View style={{
+          flex: 1,
+          height: 1,
+          backgroundColor: theme.colors.divider
+        }} />
+        <Typography 
+          variant="caption" 
+          color="secondary"
+          style={{ marginHorizontal: theme.spacing.md }}
+        >
+          HOẶC
+        </Typography>
+        <View style={{
+          flex: 1,
+          height: 1,
+          backgroundColor: theme.colors.divider
+        }} />
       </View>
       
-      <TouchableOpacity style={styles.googleButton} onPress={onPress}>
+      <TouchableOpacity 
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#4285F4',
+          padding: theme.spacing.md,
+          borderRadius: theme.spacing.sm,
+          ...theme.shadows.sm
+        }} 
+        onPress={onPress}
+      >
         <Ionicons name="logo-google" size={24} color="white" />
-        <Text style={[styles.buttonText, { marginLeft: 10 }]}>
+        <Typography
+          variant="body1"
+          style={{
+            color: 'white',
+            marginLeft: theme.spacing.sm
+          }}
+        >
           Đăng nhập với Google
-        </Text>
+        </Typography>
       </TouchableOpacity>
     </View>
   );

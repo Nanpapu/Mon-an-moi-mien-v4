@@ -96,7 +96,7 @@ export const ReviewModal = ({
               <Ionicons
                 name={star <= rating ? "star" : "star-outline"}
                 size={32}
-                color="#FFD700"
+                color={theme.colors.warning.main}
               />
             </TouchableOpacity>
           ))}
