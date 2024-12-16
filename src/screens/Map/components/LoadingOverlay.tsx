@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, ActivityIndicator, Text } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
+import { Typography } from '../../../components/shared';
+import { useTheme } from '../../../theme/ThemeContext';
 import { styles } from '../styles';
 
 interface Props {
@@ -7,12 +9,24 @@ interface Props {
 }
 
 export const LoadingOverlay = ({ isLoading }: Props) => {
+  const { theme } = useTheme();
+  
   if (!isLoading) return null;
   
   return (
-    <View style={[styles.loadingOverlay, styles.loadingContainer]}>
-      <ActivityIndicator size="large" color="#007AFF" />
-      <Text style={styles.loadingText}>Đang tải dữ liệu...</Text>
+    <View style={[
+      styles.loadingOverlay, 
+      styles.loadingContainer,
+      { backgroundColor: theme.colors.background.paper }
+    ]}>
+      <ActivityIndicator size="large" color={theme.colors.primary.main} />
+      <Typography 
+        variant="body1" 
+        color="secondary"
+        style={{ marginTop: theme.spacing.md }}
+      >
+        Đang tải dữ liệu...
+      </Typography>
     </View>
   );
 };
