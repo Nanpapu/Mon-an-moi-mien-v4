@@ -217,5 +217,200 @@ export const regions: Region[] = [
         ],
       }
     ],
+  },
+  {
+    id: '92',
+    name: 'Cần Thơ',
+    coordinate: {
+      latitude: 10.0452,
+      longitude: 105.7469,
+    },
+    recipes: [
+      {
+        id: '92_01',
+        name: 'Bún Cá Cần Thơ',
+        region: 'Miền Nam',
+        image: 'https://example.com/bunca.jpg',
+        ingredients: [
+          'Cá lóc',
+          'Bún',
+          'Rau sống',
+          'Cà chua',
+          'Dọc mùng',
+          'Bạc hà'
+        ],
+        instructions: [
+          'Làm sạch cá và phi lê',
+          'Nấu nước dùng từ xương cá',
+          'Chiên cá giòn',
+          'Bày trí với bún và rau sống'
+        ],
+      },
+      {
+        id: '92_02',
+        name: 'Bánh Cống',
+        region: 'Miền Nam',
+        image: 'https://example.com/banhcong.jpg',
+        ingredients: [
+          'Tôm',
+          'Đậu xanh',
+          'Thịt băm',
+          'Bột gạo',
+          'Hành tím'
+        ],
+        instructions: [
+          'Xay đậu xanh nhuyễn',
+          'Trộn bột với nguyên liệu',
+          'Chiên bánh vàng giòn',
+          'Ăn kèm rau sống và nước mắm'
+        ],
+      }
+    ],
+  },
+  {
+    id: '75',
+    name: 'Đồng Nai',
+    coordinate: {
+      latitude: 10.9574,
+      longitude: 106.8426,
+    },
+    recipes: [
+      {
+        id: '75_01',
+        name: 'Bánh Bèo Biên Hòa',
+        region: 'Miền Nam',
+        image: 'https://example.com/banhbeo.jpg',
+        ingredients: [
+          'Bột gạo',
+          'Tôm khô',
+          'Mỡ hành',
+          'Đậu xanh',
+          'Nước cốt dừa'
+        ],
+        instructions: [
+          'Pha bột bánh bèo',
+          'Hấp bánh trong khuôn nhỏ',
+          'Làm nhân tôm khô',
+          'Rắc mỡ hành và ăn với nước mắm'
+        ],
+      }
+    ],
+  },
+  {
+    id: '54',
+    name: 'Phú Yên',
+    coordinate: {
+      latitude: 13.1056,
+      longitude: 109.2929,
+    },
+    recipes: [
+      {
+        id: '54_01',
+        name: 'Mắt Cá Ngừ Đại Dương',
+        region: 'Miền Trung',
+        image: 'https://example.com/matcaungu.jpg',
+        ingredients: [
+          'Mắt cá ngừ',
+          'Sả',
+          'Ớt',
+          'Hành tím',
+          'Gừng'
+        ],
+        instructions: [
+          'Sơ chế mắt cá ngừ',
+          'Ướp gia vị',
+          'Nấu canh chua',
+          'Thêm rau răm và ăn nóng'
+        ],
+      }
+    ],
+  },
+  {
+    id: '36',
+    name: 'Nam Định',
+    coordinate: {
+      latitude: 20.4333,
+      longitude: 106.1667,
+    },
+    recipes: [
+      {
+        id: '36_01',
+        name: 'Phở Bò Nam Định',
+        region: 'Miền Bắc',
+        image: 'https://example.com/phond.jpg',
+        ingredients: [
+          'Bánh phở Nam Định',
+          'Thịt bò',
+          'Xương ống',
+          'Gừng',
+          'Hành tây',
+          'Quế, thảo quả'
+        ],
+        instructions: [
+          'Ninh xương làm nước dùng',
+          'Thái thịt bò mỏng',
+          'Trần bánh phở',
+          'Bày trí và thêm gia vị'
+        ],
+      }
+    ],
+  },
+  {
+    id: '95',
+    name: 'Bạc Liêu',
+    coordinate: {
+      latitude: 9.2940,
+      longitude: 105.7216,
+    },
+    recipes: [
+      {
+        id: '95_01',
+        name: 'Bánh Cống Bạc Liêu',
+        region: 'Miền Nam',
+        image: 'https://example.com/banhcongbl.jpg',
+        ingredients: [
+          'Tôm tươi',
+          'Thịt băm',
+          'Đậu xanh',
+          'Bột gạo',
+          'Hành tím'
+        ],
+        instructions: [
+          'Xay nhuyễn đậu xanh',
+          'Trộn bột với nguyên liệu',
+          'Chiên vàng giòn',
+          'Ăn kèm rau sống'
+        ],
+      }
+    ],
+  },
+  {
+    id: '19',
+    name: 'Thái Nguyên',
+    coordinate: {
+      latitude: 21.5667,
+      longitude: 105.8250,
+    },
+    recipes: [
+      {
+        id: '19_01',
+        name: 'Cơm Lam Thái Nguyên',
+        region: 'Miền Bắc',
+        image: 'https://example.com/comlam.jpg',
+        ingredients: [
+          'Gạo nếp',
+          'Ống tre',
+          'Lá dong',
+          'Muối',
+          'Nước suối'
+        ],
+        instructions: [
+          'Ngâm gạo nếp',
+          'Cho vào ống tre',
+          'Nướng trên than hoa',
+          'Ăn kèm muối vừng'
+        ],
+      }
+    ],
   }
 ]; 
