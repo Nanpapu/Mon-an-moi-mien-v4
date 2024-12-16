@@ -17,6 +17,7 @@ import { ImportButton } from "../../components/buttons";
 import { useTheme } from '../../theme/ThemeContext';
 import { Loading } from '../../components/shared';
 import * as Location from 'expo-location';
+import { ViewVietnamButton } from './components/ViewVietnamButton';
 
 export default function MapScreen({ navigation }: { navigation: any }) {
   const { theme } = useTheme();
@@ -34,7 +35,8 @@ export default function MapScreen({ navigation }: { navigation: any }) {
     setRegion, 
     calculateZoom, 
     shouldShowMarker,
-    setCurrentZoom 
+    setCurrentZoom,
+    viewVietnam
   } = useMapInteraction();
   
   useEffect(() => {
@@ -160,6 +162,12 @@ export default function MapScreen({ navigation }: { navigation: any }) {
       />
 
       {isLoading && <Loading overlay text="Đang tải..." />}
+
+      <ViewVietnamButton 
+        onPress={() => {
+          viewVietnam(mapRef);
+        }}
+      />
     </View>
   );
 }
