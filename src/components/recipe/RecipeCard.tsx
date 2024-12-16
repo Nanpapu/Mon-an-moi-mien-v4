@@ -1,21 +1,19 @@
 // Component hiển thị thông tin chi tiết của một công thức nấu ăn
 // Bao gồm hình ảnh, tên món, vùng miền, nguyên liệu và cách làm
-import React from 'react';
-import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { Card, Typography, Button } from '../shared';
-import { useTheme } from '../../theme/ThemeContext';
-import { Recipe } from '../../types';
-import { Ionicons } from '@expo/vector-icons';
-import { createStyles } from './RecipeCard.styles';
-
-// Thêm interface mới ở đầu file
-interface RecipeWithStats extends Recipe {
-  rating?: number;
-  totalReviews?: number;
-}
+import React, { useEffect, useState } from "react";
+import { View, Modal, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Image } from "expo-image";
+import { Recipe, Review } from "../../types";
+import { useAuth } from "../../context/AuthContext";
+import { ReviewService } from "../../services/reviewService";
+import { Ionicons } from "@expo/vector-icons";
+import { ReviewModal, ReviewsList } from "../reviews";
+import { createStyles } from "./RecipeCard.styles";
+import { useTheme } from "../../theme/ThemeContext";
+import { Typography } from "../shared";
 
 interface Props {
-  recipe: RecipeWithStats; // Thay đổi kiểu của recipe
+  recipe: Recipe;
   onSave?: () => void;
   onDelete?: () => void;
   showActions?: boolean;
@@ -26,101 +24,237 @@ export function RecipeCard({
   recipe,
   onSave,
   onDelete,
-  showActions = false,
+  showActions = true,
   showReviews = false,
 }: Props) {
   const { theme } = useTheme();
   const styles = createStyles(theme);
+  const { user } = useAuth();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [stats, setStats] = useState({ averageRating: 0, totalReviews: 0 });
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
+  const [existingReview, setExistingReview] = useState<any>(null);
+  const [showReviewsList, setShowReviewsList] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+  const [allReviews, setAllReviews] = useState<Review[]>([]);
+
+  useEffect(() => {
+    if (showReviews) {
+      loadReviewStats();
+    }
+  }, [showReviews]);
+
+  const loadReviewStats = async () => {
+    setIsLoadingStats(true);
+    try {
+      const recipeStats = await ReviewService.getRecipeStats(recipe.id);
+      setStats(recipeStats);
+    } catch (error) {
+      console.error("Lỗi khi tải thống kê đánh giá:", error);
+    } finally {
+      setIsLoadingStats(false);
+    }
+  };
 
   return (
-    <Card style={styles.card}>
-      {recipe.image && (
-        <Image
-          source={{ uri: recipe.image }}
-          style={{
-            width: '100%',
-            height: 200,
-            borderTopLeftRadius: theme.spacing.sm,
-            borderTopRightRadius: theme.spacing.sm,
-          }}
-          resizeMode="cover"
-        />
-      )}
+    <View style={styles.card}>
+      <Image
+        source={recipe.image}
+        style={styles.image}
+        contentFit="cover"
+        transition={1000}
+      />
 
-      <View style={{ padding: theme.spacing.md }}>
-        <Typography variant="h3" style={{ marginBottom: theme.spacing.xs }}>
-          {recipe.name}
-        </Typography>
-
-        <Typography 
-          variant="body2" 
-          color="secondary"
-          style={{ marginBottom: theme.spacing.sm }}
+      <View style={styles.content}>
+        <View
+          style={[
+            styles.header,
+            showDetails && {
+              borderBottomWidth: 1,
+              borderBottomColor: theme.colors.divider,
+            },
+          ]}
         >
-          {recipe.region}
-        </Typography>
-
-        {showReviews && (
-          <View style={{ 
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: theme.spacing.sm 
-          }}>
-            {[1, 2, 3, 4, 5].map((star, index) => (
-              <Ionicons
-                key={index}
-                name={star <= (recipe.rating || 0) ? "star" : "star-outline"}
-                size={16}
-                color="#FFD700"
-                style={{ marginRight: 2 }}
-              />
-            ))}
-            <Typography 
-              variant="caption" 
-              color="secondary"
-              style={{ marginLeft: theme.spacing.xs }}
-            >
-              ({recipe.totalReviews || 0} đánh giá)
+          <View>
+            <Typography variant="h3">{recipe.name}</Typography>
+            <Typography variant="body2" color="secondary">
+              Vùng miền: {recipe.region}
             </Typography>
+          </View>
+
+          <TouchableOpacity
+            style={styles.expandButton}
+            onPress={() => setShowDetails(!showDetails)}
+          >
+            <Ionicons
+              name={showDetails ? "chevron-up" : "chevron-down"}
+              size={24}
+              color={theme.colors.text.secondary}
+            />
+          </TouchableOpacity>
+        </View>
+
+        {showDetails && (
+          <View style={styles.details}>
+            <Typography variant="subtitle1">Nguyên liệu:</Typography>
+            {recipe.ingredients.map((ingredient, index) => (
+              <Typography key={index} variant="body2" color="secondary" style={styles.listItem}>
+                • {ingredient}
+              </Typography>
+            ))}
+
+            <Typography variant="subtitle1" style={{ marginTop: theme.spacing.md }}>
+              Cách làm:
+            </Typography>
+            {recipe.instructions.map((instruction, index) => (
+              <Typography key={index} variant="body2" color="secondary" style={styles.listItem}>
+                {index + 1}. {instruction}
+              </Typography>
+            ))}
           </View>
         )}
 
-        <Typography 
-          variant="subtitle2" 
-          style={{ marginBottom: theme.spacing.xs }}
-        >
-          Nguyên liệu chính:
-        </Typography>
-        <Typography 
-          variant="body2" 
-          color="secondary"
-          style={{ marginBottom: theme.spacing.md }}
-        >
-          {recipe.ingredients.join(', ')}
-        </Typography>
-
         {showActions && (
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-            {onDelete ? (
-              <Button
-                variant="secondary"
-                icon="trash-outline"
-                onPress={onDelete}
-              >
-                Xóa
-              </Button>
-            ) : onSave && (
-              <Button
-                variant="primary"
-                icon="bookmark-outline"
-                onPress={onSave}
-              >
-                Lưu
-              </Button>
+          <View style={styles.actions}>
+            {onSave && (
+              <TouchableOpacity style={styles.saveButton} onPress={onSave}>
+                <Ionicons name="bookmark-outline" size={20} color={theme.colors.background.default} />
+                <Typography variant="body1" style={{ color: theme.colors.background.default }}>
+                  Lưu công thức
+                </Typography>
+              </TouchableOpacity>
+            )}
+            {onDelete && (
+              <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
+                <Ionicons name="trash-outline" size={20} color={theme.colors.background.default} />
+                <Typography variant="body1" style={{ color: theme.colors.background.default }}>
+                  Xóa công thức
+                </Typography>
+              </TouchableOpacity>
             )}
           </View>
         )}
+
+        {showReviews && (
+          <View style={styles.ratingContainer}>
+            <View style={styles.ratingHeader}>
+              <View style={styles.ratingScore}>
+                {!isLoadingStats && stats.totalReviews > 0 ? (
+                  <>
+                    <Typography variant="h2" style={styles.averageRating}>
+                      {stats.averageRating.toFixed(1)}
+                    </Typography>
+                    <View style={styles.starsRow}>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Ionicons
+                          key={star}
+                          name={star <= stats.averageRating ? "star" : "star-outline"}
+                          size={16}
+                          color="#FFD700"
+                        />
+                      ))}
+                    </View>
+                    <Typography variant="caption" color="secondary">
+                      {stats.totalReviews} đánh giá
+                    </Typography>
+                  </>
+                ) : isLoadingStats ? (
+                    <ActivityIndicator size="small" color={theme.colors.primary.main} />
+                ) : (
+                  <Typography variant="body2" style={styles.noReviews}>
+                    Chưa có đánh giá
+                  </Typography>
+                )}
+              </View>
+
+              {user && (
+                <TouchableOpacity
+                  style={styles.addReviewButton}
+                  onPress={() => setModalVisible(true)}
+                >
+                  <Ionicons
+                    name={existingReview ? "create" : "add"}
+                    size={20}
+                    color={theme.colors.primary.contrast}
+                  />
+                  <Typography variant="body1" style={{ color: theme.colors.primary.contrast }}>
+                    {existingReview ? "Sửa đánh giá" : "Đánh giá"}
+                  </Typography>
+                </TouchableOpacity>
+              )}
+            </View>
+
+            <TouchableOpacity
+              style={styles.viewAllButton}
+              onPress={() => setShowReviewsList(true)}
+            >
+              <Typography variant="body1" style={styles.viewAllText}>
+                Xem tất cả đánh giá
+              </Typography>
+              <Ionicons 
+                name="chevron-forward" 
+                size={20} 
+                color={theme.colors.primary.main} 
+              />
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
-    </Card>
+
+      {showReviews && user && (
+        <ReviewModal
+          visible={modalVisible}
+          recipeId={recipe.id}
+          userId={user.uid}
+          existingReview={existingReview}
+          onClose={() => setModalVisible(false)}
+          onSubmit={async () => {
+            const recipeStats = await ReviewService.getRecipeStats(recipe.id);
+            setStats(recipeStats);
+            if (user) {
+              const review = await ReviewService.getUserReviewForRecipe(
+                recipe.id,
+                user.uid
+              );
+              setExistingReview(review);
+            }
+            setModalVisible(false);
+          }}
+        />
+      )}
+
+      <Modal
+        visible={showReviewsList}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowReviewsList(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={[styles.modalContent, { flex: 1 }]}>
+            <View style={styles.modalHeader}>
+              <Typography variant="h3">Đánh giá</Typography>
+              <TouchableOpacity
+                onPress={() => setShowReviewsList(false)}
+                style={styles.closeButton}
+              >
+                <Ionicons 
+                  name="close" 
+                  size={24} 
+                  color={theme.colors.text.primary} 
+                />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={{ flex: 1 }}>
+              <ReviewsList
+                reviews={allReviews}
+                recipeId={recipe.id}
+                averageRating={stats.averageRating}
+                totalReviews={stats.totalReviews}
+              />
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+    </View>
   );
 }

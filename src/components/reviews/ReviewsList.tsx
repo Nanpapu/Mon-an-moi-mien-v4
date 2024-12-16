@@ -1,17 +1,21 @@
 import React from 'react';
-import { View, Image } from 'react-native';
+import { View, Image, ScrollView } from 'react-native';
 import { Typography } from '../shared';
 import { useTheme } from '../../theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { createStyles } from './ReviewsList.styles';
+import { useEffect, useState } from 'react';
+import { Review } from '../../types';
+import { ReviewService } from '../../services/reviewService';
 
 interface ReviewsListProps {
-  reviews: any[];
+  recipeId: string;
+  reviews: Review[];
   averageRating?: number;
   totalReviews?: number;
 }
 
-export const ReviewsList = ({ reviews, averageRating, totalReviews }: ReviewsListProps) => {
+export const ReviewsList = ({ recipeId, reviews, averageRating, totalReviews }: ReviewsListProps) => {
   const { theme } = useTheme();
   const styles = createStyles(theme);
 
@@ -56,74 +60,85 @@ export const ReviewsList = ({ reviews, averageRating, totalReviews }: ReviewsLis
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      {reviews.map((review) => (
-        <View 
-          key={review.id} 
-          style={{
-            padding: theme.spacing.md,
-            borderBottomWidth: 1,
-            borderBottomColor: theme.colors.divider,
-          }}
-        >
-          <View style={{ 
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: theme.spacing.sm 
-          }}>
-            {review.userInfo?.photoURL ? (
-              <Image 
-                source={{ uri: review.userInfo.photoURL }} 
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  marginRight: theme.spacing.sm
-                }} 
-              />
-            ) : (
-              <Ionicons 
-                name="person-circle" 
-                size={40} 
-                color={theme.colors.primary.main}
-                style={{ marginRight: theme.spacing.sm }}
-              />
-            )}
-            <View>
-              <Typography variant="subtitle2">
-                {review.userInfo?.displayName || "Người dùng"}
-              </Typography>
+    <ScrollView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
+        <View style={{ 
+          padding: theme.spacing.md, 
+          borderBottomWidth: 1,
+          borderBottomColor: theme.colors.divider 
+        }}>
+          <Typography variant="subtitle1">
+            {averageRating?.toFixed(1) || 0} sao ({totalReviews} đánh giá)
+          </Typography>
+        </View>
+        {reviews.map((review) => (
+          <View 
+            key={review.id} 
+            style={{
+              padding: theme.spacing.md,
+              borderBottomWidth: 1,
+              borderBottomColor: theme.colors.divider,
+            }}
+          >
+            <View style={{ 
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginBottom: theme.spacing.sm 
+            }}>
+              {review.userInfo?.photoURL ? (
+                <Image 
+                  source={{ uri: review.userInfo.photoURL }} 
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 20,
+                    marginRight: theme.spacing.sm
+                  }} 
+                />
+              ) : (
+                <Ionicons 
+                  name="person-circle" 
+                  size={40} 
+                  color={theme.colors.primary.main}
+                  style={{ marginRight: theme.spacing.sm }}
+                />
+              )}
+              <View>
+                <Typography variant="subtitle2">
+                  {review.userInfo?.displayName || "Người dùng"}
+                </Typography>
+                <Typography 
+                  variant="caption" 
+                  color="secondary"
+                >
+                  {review.userInfo?.email}
+                </Typography>
+              </View>
+            </View>
+            
+            <View style={{ 
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginBottom: theme.spacing.sm 
+            }}>
+              <View style={{ flexDirection: 'row' }}>
+                {renderStars(review.rating)}
+              </View>
               <Typography 
                 variant="caption" 
                 color="secondary"
+                style={{ marginLeft: theme.spacing.md }}
               >
-                {review.userInfo?.email}
+                {new Date(review.createdAt.seconds * 1000).toLocaleDateString()}
               </Typography>
             </View>
-          </View>
-          
-          <View style={{ 
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: theme.spacing.sm 
-          }}>
-            <View style={{ flexDirection: 'row' }}>
-              {renderStars(review.rating)}
-            </View>
-            <Typography 
-              variant="caption" 
-              color="secondary"
-              style={{ marginLeft: theme.spacing.md }}
-            >
-              {new Date(review.createdAt.toDate()).toLocaleDateString()}
+            
+            <Typography variant="body2">
+              {review.comment}
             </Typography>
           </View>
-          
-          <Typography variant="body2">
-            {review.comment}
-          </Typography>
-        </View>
-      ))}
-    </View>
+        ))}
+      </View>
+    </ScrollView>
   );
 };

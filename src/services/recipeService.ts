@@ -7,26 +7,23 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const RecipeService = {
   getRecipeById: async (recipeId: string) => {
     try {
-      // Kiểm tra cache
       const cacheKey = `${CACHE_KEYS.RECIPES}${recipeId}`;
-      const cachedRecipe = await CacheService.getCache(
-        cacheKey,
-        CACHE_EXPIRY.RECIPES
-      );
       
-      if (cachedRecipe) {
-        return cachedRecipe;
-      }
-
-      // Nếu không có cache, lấy từ Firestore
+      // Lấy recipe và stats
       const recipeDoc = await getDoc(doc(db, COLLECTIONS.RECIPES, recipeId));
+      const statsDoc = await getDoc(doc(db, "recipeStats", recipeId));
+
       if (!recipeDoc.exists()) return null;
 
-      const recipe = { id: recipeDoc.id, ...recipeDoc.data() };
+      const recipe = { 
+        id: recipeDoc.id, 
+        ...recipeDoc.data(),
+        rating: statsDoc.exists() ? statsDoc.data().averageRating : 0,
+        totalReviews: statsDoc.exists() ? statsDoc.data().totalReviews : 0
+      };
       
-      // Lưu vào cache
+      // Luôn cập nhật cache mới nhất
       await CacheService.setCache(cacheKey, recipe);
-      
       return recipe;
     } catch (error) {
       console.error('Lỗi khi lấy công thức:', error);

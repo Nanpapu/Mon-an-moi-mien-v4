@@ -91,10 +91,21 @@ export const createStyles = (theme: any) => StyleSheet.create({
     backgroundColor: theme.colors.background.paper,
   },
   ratingContainer: {
-    marginTop: theme.spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: theme.spacing.sm,
     borderTopWidth: 1,
     borderTopColor: theme.colors.divider,
-    paddingTop: theme.spacing.md,
+    marginTop: theme.spacing.md,
+  },
+  ratingStars: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ratingText: {
+    marginLeft: theme.spacing.sm,
+    color: theme.colors.text.secondary,
   },
   ratingHeader: {
     flexDirection: 'row',

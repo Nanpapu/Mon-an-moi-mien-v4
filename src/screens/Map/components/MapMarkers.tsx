@@ -27,7 +27,7 @@ export function MapMarkers({
           coordinate={region.coordinate}
           title={region.name}
           onPress={() => {
-            console.log('Region recipes:', region.recipes);
+            // console.log('Region recipes:', region.recipes);
             onMarkerPress(region.recipes);
           }}
         />

@@ -110,6 +110,7 @@ export const ReviewService = {
   // Lấy tất cả đánh giá của một công thức
   getRecipeReviews: async (recipeId: string): Promise<Review[]> => {
     try {
+      console.log("Fetching reviews for recipe:", recipeId);
       const q = query(
         collection(db, "reviews"),
         where("recipeId", "==", recipeId),
@@ -117,8 +118,11 @@ export const ReviewService = {
       );
 
       const querySnapshot = await getDocs(q);
+      console.log("Found reviews:", querySnapshot.size);
+      
       const reviews = await Promise.all(querySnapshot.docs.map(async (doc) => {
         const data = doc.data();
+        console.log("Review data:", data);
         const userInfo = await UserService.getUserInfo(data.userId);
         return {
           id: doc.id,
@@ -150,7 +154,7 @@ export const ReviewService = {
       await runTransaction(db, async (transaction) => {
         // Đọc review và recipe trước
         const reviewRef = doc(db, "reviews", reviewId);
-        const recipeRef = doc(db, "recipes", recipeId);
+        const recipeRef = doc(db, "recipeStats", recipeId);
         
         const reviewDoc = await transaction.get(reviewRef);
         const recipeDoc = await transaction.get(recipeRef);
