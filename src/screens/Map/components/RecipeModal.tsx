@@ -1,16 +1,17 @@
-import React, { useEffect } from 'react';
-import { View, ScrollView, Animated } from 'react-native';
-import { Modal, Typography } from '../../../components/shared';
+import React from 'react';
+import { View, ScrollView, Modal, TouchableOpacity, StatusBar } from 'react-native';
+import { Typography } from '../../../components/shared';
 import { RecipeCard } from '../../../components/recipe';
 import { useTheme } from '../../../theme/ThemeContext';
 import { Recipe } from '../../../types';
+import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface Props {
   visible: boolean;
   onClose: () => void;
   recipes: Recipe[];
   onSaveRecipe: (recipe: Recipe) => void;
-  slideAnim: Animated.Value;
 }
 
 export function RecipeModal({
@@ -18,78 +19,90 @@ export function RecipeModal({
   onClose,
   recipes,
   onSaveRecipe,
-  slideAnim,
 }: Props) {
   const { theme } = useTheme();
-  
-  useEffect(() => {
-    if (visible) {
-      console.log('Modal opened with recipes:', recipes);
-      Animated.timing(slideAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    } else {
-      slideAnim.setValue(0);
-    }
-  }, [visible]);
+  const insets = useSafeAreaInsets();
 
   if (!recipes || recipes.length === 0) {
     return null;
   }
 
   return (
-    <Modal 
+    <Modal
       visible={visible}
-      onClose={onClose}
-      style={{
-        margin: 0,
-        justifyContent: 'flex-end',
-      }}
+      animationType="slide"
+      presentationStyle="fullScreen"
+      onRequestClose={onClose}
     >
       <View style={{ 
-        backgroundColor: theme.colors.background.paper,
-        borderTopLeftRadius: theme.spacing.lg,
-        borderTopRightRadius: theme.spacing.lg,
-        height: '90%',
+        flex: 1,
+        backgroundColor: theme.colors.background.default,
       }}>
+        {/* Header */}
         <View style={{ 
-          padding: theme.spacing.lg,
+          flexDirection: 'row',
+          alignItems: 'center',
+          padding: theme.spacing.md,
+          paddingTop: insets.top,
           borderBottomWidth: 1,
           borderBottomColor: theme.colors.divider,
+          backgroundColor: theme.colors.background.paper,
+          ...theme.shadows.sm,
         }}>
-          <Typography variant="h2" style={{ fontSize: 24 }}>
-            Các món ăn trong vùng ({recipes.length})
-          </Typography>
+          <TouchableOpacity 
+            onPress={onClose}
+            style={{
+              padding: theme.spacing.sm,
+              marginRight: theme.spacing.sm,
+            }}
+          >
+            <Ionicons 
+              name="arrow-back" 
+              size={24} 
+              color={theme.colors.text.primary} 
+            />
+          </TouchableOpacity>
+
+          <View style={{ flex: 1 }}>
+            <Typography variant="h2" style={{ fontSize: 20 }}>
+              Các món ăn trong vùng
+            </Typography>
+            <Typography 
+              variant="body2" 
+              color="secondary"
+              style={{ marginTop: 2 }}
+            >
+              {recipes.length} công thức
+            </Typography>
+          </View>
         </View>
 
+        {/* Recipe List */}
         <ScrollView
           style={{ flex: 1 }}
           contentContainerStyle={{ 
-            padding: theme.spacing.lg,
-            paddingBottom: theme.spacing.xl * 2
+            padding: theme.spacing.md,
+            paddingBottom: insets.bottom + theme.spacing.xl
           }}
         >
-          {recipes.map((recipe, index) => {
-            console.log('Rendering recipe:', recipe);
-            return (
-              <View 
-                key={recipe.id}
-                style={{
-                  marginBottom: theme.spacing.lg,
-                  opacity: 1,
-                }}
-              >
-                <RecipeCard
-                  recipe={recipe}
-                  onSave={() => onSaveRecipe(recipe)}
-                  showActions={true}
-                  showReviews={true}
-                />
-              </View>
-            );
-          })}
+          {recipes.map((recipe) => (
+            <View 
+              key={recipe.id}
+              style={{
+                marginBottom: theme.spacing.lg,
+                backgroundColor: theme.colors.background.paper,
+                borderRadius: theme.spacing.md,
+                ...theme.shadows.sm,
+              }}
+            >
+              <RecipeCard
+                recipe={recipe}
+                onSave={() => onSaveRecipe(recipe)}
+                showActions={true}
+                showReviews={true}
+              />
+            </View>
+          ))}
         </ScrollView>
       </View>
     </Modal>

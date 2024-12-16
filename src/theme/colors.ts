@@ -41,7 +41,8 @@ export const lightColors = {
     contrast: '#FFFFFF'
   },
   divider: '#E2E8F0',
-  border: '#CBD5E1'
+  border: '#CBD5E1',
+  shadow: '#000000'
 };
 
 export const darkColors = {
@@ -87,5 +88,6 @@ export const darkColors = {
     contrast: '#0F172A'
   },
   divider: '#334155',
-  border: '#475569'
+  border: '#475569',
+  shadow: '#000000'
 };
