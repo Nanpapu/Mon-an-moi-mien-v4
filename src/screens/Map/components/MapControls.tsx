@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState, useRef } from "react";
+import { View, StyleSheet, TouchableOpacity, Animated, Platform, TextInput } from "react-native";
 import { RandomRecipeButton } from '../../../components/buttons';
-import { SearchBar } from '../../../components/shared';
+import { SearchBar, Typography } from '../../../components/shared';
 import { useTheme } from "../../../theme/ThemeContext";
 import { Ionicons } from '@expo/vector-icons';
 import { Region } from "../../../types";
@@ -16,46 +16,79 @@ interface Props {
 export function MapControls({ onRefresh, regions, onRandomSelect, onSearch }: Props) {
   const { theme } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
+  const animatedWidth = useRef(new Animated.Value(48)).current;
+
+  const expandedWidth = Platform.OS === 'ios' ? 358 : 328;
+  
+  const toggleSearch = () => {
+    const toValue = showSearch ? 48 : expandedWidth;
+    setShowSearch(!showSearch);
+    Animated.spring(animatedWidth, {
+      toValue,
+      useNativeDriver: false,
+      friction: 10
+    }).start();
+  };
 
   const handleSubmit = () => {
     if (searchQuery.trim()) {
       onSearch(searchQuery);
+      setSearchQuery('');
+      toggleSearch();
     }
   };
 
   return (
     <>
-      <View style={[
+      <Animated.View style={[
         styles.searchContainer,
         {
           backgroundColor: theme.colors.background.paper,
-          borderWidth: 1,
-          borderColor: theme.colors.divider,
+          width: animatedWidth,
           ...theme.shadows.sm
         }
       ]}>
-        <View style={styles.searchInputContainer}>
-          <SearchBar
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholder="Tìm kiếm địa điểm..."
-            onSubmitEditing={handleSubmit}
-          />
+        {!showSearch ? (
           <TouchableOpacity 
-            onPress={handleSubmit}
-            style={[
-              styles.searchButton, 
-              { backgroundColor: theme.colors.primary.main }
-            ]}
+            onPress={toggleSearch}
+            style={styles.searchIcon}
           >
             <Ionicons 
               name="search" 
-              size={20} 
-              color={theme.colors.primary.contrast} 
+              size={24} 
+              color={theme.colors.text.secondary} 
             />
           </TouchableOpacity>
-        </View>
-      </View>
+        ) : (
+          <View style={styles.searchInputWrapper}>
+            <TouchableOpacity 
+              onPress={toggleSearch}
+              style={styles.searchIcon}
+            >
+              <Ionicons 
+                name="search" 
+                size={24} 
+                color={theme.colors.text.secondary} 
+              />
+            </TouchableOpacity>
+            
+            <View style={styles.searchBarWrapper}>
+              <TextInput
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                placeholder="Tìm kiếm địa điểm..."
+                placeholderTextColor={theme.colors.text.secondary}
+                style={[
+                  styles.input,
+                  { color: theme.colors.text.primary }
+                ]}
+                onSubmitEditing={handleSubmit}
+              />
+            </View>
+          </View>
+        )}
+      </Animated.View>
 
       <RandomRecipeButton
         regions={regions}
@@ -70,20 +103,30 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 20,
     left: 16,
-    right: 16,
-    borderRadius: 8,
+    height: 48,
+    borderRadius: 24,
     overflow: 'hidden',
     zIndex: 1,
   },
-  searchInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingRight: 8,
-  },
-  searchButton: {
-    padding: 8,
-    borderRadius: 8,
+  searchIcon: {
+    width: 48,
+    height: 48,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  searchInputWrapper: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchBarWrapper: {
+    flex: 1,
+    paddingRight: 16,
+  },
+  input: {
+    flex: 1,
+    height: 48,
+    fontSize: 16,
+    paddingVertical: 8,
   }
 });
