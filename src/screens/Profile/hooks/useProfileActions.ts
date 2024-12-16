@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { UserService } from "../../../services/userService";
@@ -9,6 +9,24 @@ export const useProfileActions = (user: User | null) => {
   const [displayName, setDisplayName] = useState(user?.displayName || "");
   const [isEditing, setIsEditing] = useState(false);
   const [originalDisplayName, setOriginalDisplayName] = useState(user?.displayName || "");
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!user) return;
+      
+      try {
+        const userData = await UserService.getUserData(user.uid);
+        if (userData && userData.displayName) {
+          setDisplayName(userData.displayName);
+          setOriginalDisplayName(userData.displayName);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [user]);
 
   const handleStartEditing = () => {
     setOriginalDisplayName(displayName);
@@ -53,7 +71,7 @@ export const useProfileActions = (user: User | null) => {
           Alert.alert("Thành công", "Đã cập nhật ảnh đại diện");
         }
       } catch (error) {
-        Alert.alert("Lỗi", "Không thể cập nhật ảnh đại diện");
+        Alert.alert("Lỗi", "Không th��� cập nhật ảnh đại diện");
       }
     }
   };

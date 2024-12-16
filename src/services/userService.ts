@@ -102,6 +102,19 @@ export const UserService = {
 
   clearUserCache: async (userId: string) => {
     await CacheService.clearCache(`${CACHE_KEYS.USER_PROFILE}${userId}`);
+  },
+
+  async getUserData(userId: string) {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', userId));
+      if (userDoc.exists()) {
+        return userDoc.data();
+      }
+      return null;
+    } catch (error) {
+      console.error("Error getting user data:", error);
+      throw error;
+    }
   }
 };
 
