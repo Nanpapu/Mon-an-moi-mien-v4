@@ -45,6 +45,8 @@ export const lightColors = {
   shadow: '#000000',
   action: {
     disabled: '#94A3B8',
+    hover: 'rgba(0, 0, 0, 0.04)',
+    active: 'rgba(0, 0, 0, 0.08)',
   },
 };
 
@@ -95,5 +97,7 @@ export const darkColors = {
   shadow: '#000000',
   action: {
     disabled: '#64748B',
+    hover: 'rgba(255, 255, 255, 0.08)',
+    active: 'rgba(255, 255, 255, 0.12)',
   },
 };
