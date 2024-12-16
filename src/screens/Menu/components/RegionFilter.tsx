@@ -11,31 +11,27 @@ interface Props {
 
 export const RegionFilter = ({ regions, selectedRegion, onSelectRegion }: Props) => {
   const { theme } = useTheme();
+  const styles = createStyles(theme);
 
   return (
-    <ScrollView
-      horizontal
+    <ScrollView 
+      horizontal 
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.container}
     >
       <TouchableOpacity
         style={[
-          styles.chip,
-          {
-            backgroundColor: !selectedRegion 
-              ? theme.colors.primary.main 
-              : theme.colors.background.paper,
-            borderColor: theme.colors.primary.main,
-          },
+          styles.filterButton,
+          !selectedRegion && styles.selectedButton
         ]}
         onPress={() => onSelectRegion(null)}
       >
-        <Typography
-          variant="body2"
-          style={{
-            color: !selectedRegion ? '#FFFFFF' : theme.colors.primary.main,
-            fontSize: 14,
-          }}
+        <Typography 
+          variant="body1"
+          style={[
+            styles.buttonText,
+            !selectedRegion && styles.selectedText
+          ]}
         >
           Tất cả
         </Typography>
@@ -45,22 +41,17 @@ export const RegionFilter = ({ regions, selectedRegion, onSelectRegion }: Props)
         <TouchableOpacity
           key={region}
           style={[
-            styles.chip,
-            {
-              backgroundColor: selectedRegion === region 
-                ? theme.colors.primary.main 
-                : theme.colors.background.paper,
-              borderColor: theme.colors.primary.main,
-            },
+            styles.filterButton,
+            selectedRegion === region && styles.selectedButton
           ]}
           onPress={() => onSelectRegion(region)}
         >
-          <Typography
-            variant="body2"
-            style={{
-              color: selectedRegion === region ? '#FFFFFF' : theme.colors.primary.main,
-              fontSize: 14,
-            }}
+          <Typography 
+            variant="body1"
+            style={[
+              styles.buttonText,
+              selectedRegion === region && styles.selectedText
+            ]}
           >
             {region}
           </Typography>
@@ -70,20 +61,28 @@ export const RegionFilter = ({ regions, selectedRegion, onSelectRegion }: Props)
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   container: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    flexDirection: 'row',
-    gap: 8,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    gap: theme.spacing.sm,
   },
-  chip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+  filterButton: {
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    borderRadius: theme.spacing.sm,
+    backgroundColor: theme.colors.background.paper,
     borderWidth: 1,
-    height: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderColor: theme.colors.divider,
   },
+  selectedButton: {
+    backgroundColor: theme.colors.primary.main,
+    borderColor: theme.colors.primary.main,
+  },
+  buttonText: {
+    color: theme.colors.text.primary,
+  },
+  selectedText: {
+    color: theme.colors.primary.contrast,
+  }
 });

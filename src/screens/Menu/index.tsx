@@ -38,11 +38,13 @@ export default function MenuScreen() {
         placeholder="Tìm theo tên món hoặc nguyên liệu..."
       />
 
-      <RegionFilter
-        regions={regions}
-        selectedRegion={selectedRegion}
-        onSelectRegion={setSelectedRegion}
-      />
+      <View style={{ paddingBottom: theme.spacing.sm }}>
+        <RegionFilter
+          regions={regions}
+          selectedRegion={selectedRegion}
+          onSelectRegion={setSelectedRegion}
+        />
+      </View>
 
       {isLoading ? (
         <Loading text="Đang tải..." />
