@@ -11,7 +11,7 @@ export const ViewVietnamButton = ({ onPress }: Props) => {
   const { theme } = useTheme();
   
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       onPress={onPress}
       style={[
         styles.button,
@@ -21,10 +21,10 @@ export const ViewVietnamButton = ({ onPress }: Props) => {
         }
       ]}
     >
-      <Ionicons 
-        name="map-outline" 
-        size={24} 
-        color={theme.colors.primary.main} 
+      <Ionicons
+        name="compass-outline"
+        size={24}
+        color={theme.colors.primary.main}
       />
     </TouchableOpacity>
   );
