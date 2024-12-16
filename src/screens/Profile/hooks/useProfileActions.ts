@@ -8,6 +8,17 @@ import { User } from "firebase/auth";
 export const useProfileActions = (user: User | null) => {
   const [displayName, setDisplayName] = useState(user?.displayName || "");
   const [isEditing, setIsEditing] = useState(false);
+  const [originalDisplayName, setOriginalDisplayName] = useState(user?.displayName || "");
+
+  const handleStartEditing = () => {
+    setOriginalDisplayName(displayName);
+    setIsEditing(true);
+  };
+
+  const handleCancelEditing = () => {
+    setDisplayName(originalDisplayName);
+    setIsEditing(false);
+  };
 
   const handleImportData = async () => {
     try {
@@ -83,6 +94,8 @@ export const useProfileActions = (user: User | null) => {
     setDisplayName,
     isEditing,
     setIsEditing,
+    handleStartEditing,
+    handleCancelEditing,
     handleImportData,
     pickImage,
     handleSaveProfile,

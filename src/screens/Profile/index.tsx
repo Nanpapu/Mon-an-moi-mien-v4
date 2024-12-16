@@ -38,6 +38,8 @@ export default function ProfileScreen() {
     handleImportData,
     pickImage,
     handleSaveProfile,
+    handleStartEditing,
+    handleCancelEditing,
   } = useProfileActions(user);
 
   const {
@@ -105,9 +107,9 @@ export default function ProfileScreen() {
           displayName={displayName}
           isEditing={isEditing}
           onDisplayNameChange={setDisplayName}
-          onEditPress={() => setIsEditing(true)}
+          onEditPress={handleStartEditing}
           onSavePress={handleSaveProfile}
-          onCancelPress={() => setIsEditing(false)}
+          onCancelPress={handleCancelEditing}
           onPickImage={pickImage}
           onLogout={logout}
           onImportData={
