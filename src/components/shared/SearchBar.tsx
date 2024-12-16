@@ -8,6 +8,7 @@ interface Props {
   onChangeText: (text: string) => void;
   onClear?: () => void;
   placeholder?: string;
+  onSubmitEditing?: () => void; 
 }
 
 export const SearchBar = ({ 

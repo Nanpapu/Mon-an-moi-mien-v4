@@ -17,6 +17,7 @@ import { RippleButton } from "../../components/buttons";
 import { ImportButton } from "../../components/buttons";
 import { useTheme } from '../../theme/ThemeContext';
 import { Loading } from '../../components/shared';
+import * as Location from 'expo-location';
 
 export default function MapScreen({ navigation }: { navigation: any }) {
   const { theme } = useTheme();
@@ -24,6 +25,7 @@ export default function MapScreen({ navigation }: { navigation: any }) {
   const [selectedRecipes, setSelectedRecipes] = useState<Recipe[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [isMapReady, setIsMapReady] = useState(false);
+  const [hasLocationPermission, setHasLocationPermission] = useState(false);
   
   const mapRef = useRef<MapView>(null);
   const { regions, isLoading, refreshRegions } = useMapData();
@@ -43,6 +45,13 @@ export default function MapScreen({ navigation }: { navigation: any }) {
       setIsMapReady(true);
     }, 1000);
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      setHasLocationPermission(status === 'granted');
+    })();
   }, []);
 
   const handleSaveRecipe = async (recipe: Recipe) => {
@@ -69,6 +78,41 @@ export default function MapScreen({ navigation }: { navigation: any }) {
       setSelectedRecipes(recipes);
       setModalVisible(true);
     }, 1000);
+  };
+
+  const onSearch = async (query: string) => {
+    if (!query.trim()) return;
+    
+    try {
+      if (!hasLocationPermission) {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert(
+            "Cần quyền truy cập",
+            "Ứng dụng cần quyền truy cập vị trí để tìm kiếm địa điểm"
+          );
+          return;
+        }
+        setHasLocationPermission(true);
+      }
+
+      const result = await Location.geocodeAsync(query);
+      if (result.length > 0) {
+        const { latitude, longitude } = result[0];
+        const newRegion = {
+          latitude,
+          longitude,
+          latitudeDelta: 0.05,
+          longitudeDelta: 0.05,
+        };
+        mapRef.current?.animateToRegion(newRegion, 1000);
+      } else {
+        Alert.alert("Thông báo", "Không tìm thấy địa điểm");
+      }
+    } catch (error) {
+      console.error('Lỗi tìm kiếm:', error);
+      Alert.alert("Lỗi", "Không thể tìm kiếm địa điểm");
+    }
   };
 
   if (!regions || regions.length === 0) {
@@ -107,19 +151,8 @@ export default function MapScreen({ navigation }: { navigation: any }) {
       <MapControls
         onRefresh={refreshRegions}
         regions={regions}
-        onRandomSelect={(lat, lng, recipes) => {
-          mapRef.current?.animateToRegion({
-            latitude: lat,
-            longitude: lng,
-            latitudeDelta: 0.5,
-            longitudeDelta: 0.5,
-          }, 1000);
-          
-          setTimeout(() => {
-            setSelectedRecipes(recipes);
-            setModalVisible(true);
-          }, 1000);
-        }}
+        onRandomSelect={handleRandomRecipe}
+        onSearch={onSearch}
       />
 
       <RecipeModal
