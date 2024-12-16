@@ -7,7 +7,6 @@ import { useRecipes } from "../../context/RecipeContext";
 import { styles } from "./styles";
 import { useMapData } from "./hooks/useMapData";
 import { useMapInteraction } from "./hooks/useMapInteraction";
-import { useModalAnimation } from "./hooks/useModalAnimation";
 import { MapMarkers } from "./components/MapMarkers";
 import { MapControls } from "./components/MapControls";
 import { LoadingOverlay } from "./components/LoadingOverlay";
@@ -38,8 +37,6 @@ export default function MapScreen({ navigation }: { navigation: any }) {
     setCurrentZoom 
   } = useMapInteraction();
   
-  const slideAnim = useModalAnimation(modalVisible);
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMapReady(true);
@@ -160,7 +157,6 @@ export default function MapScreen({ navigation }: { navigation: any }) {
         onClose={() => setModalVisible(false)}
         recipes={selectedRecipes}
         onSaveRecipe={handleSaveRecipe}
-        slideAnim={slideAnim}
       />
 
       {isLoading && <Loading overlay text="Đang tải..." />}
