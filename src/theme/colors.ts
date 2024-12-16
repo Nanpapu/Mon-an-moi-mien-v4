@@ -42,7 +42,10 @@ export const lightColors = {
   },
   divider: '#E2E8F0',
   border: '#CBD5E1',
-  shadow: '#000000'
+  shadow: '#000000',
+  action: {
+    disabled: '#94A3B8',
+  },
 };
 
 export const darkColors = {
@@ -89,5 +92,8 @@ export const darkColors = {
   },
   divider: '#334155',
   border: '#475569',
-  shadow: '#000000'
+  shadow: '#000000',
+  action: {
+    disabled: '#64748B',
+  },
 };

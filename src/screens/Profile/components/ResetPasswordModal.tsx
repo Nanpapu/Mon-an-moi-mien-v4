@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, TextInput } from 'react-native';
-import { Modal, Typography, Button } from '../../../components/shared';
+import { View } from 'react-native';
+import { Modal, Typography, Input, Button } from '../../../components/shared';
 import { useTheme } from '../../../theme/ThemeContext';
 
 interface Props {
@@ -26,7 +26,12 @@ export const ResetPasswordModal = ({
       onClose={onClose}
       style={{ margin: theme.spacing.lg }}
     >
-      <View style={{ padding: theme.spacing.lg }}>
+      <View style={{ 
+        padding: theme.spacing.lg,
+        backgroundColor: theme.colors.background.paper,
+        borderRadius: theme.spacing.md,
+        ...theme.shadows.md
+      }}>
         <Typography 
           variant="h3" 
           style={{ marginBottom: theme.spacing.lg }}
@@ -34,28 +39,20 @@ export const ResetPasswordModal = ({
           Đặt lại mật khẩu
         </Typography>
 
-        <TextInput
-          style={{
-            borderWidth: 1,
-            borderColor: theme.colors.divider,
-            borderRadius: theme.spacing.sm,
-            padding: theme.spacing.md,
-            marginBottom: theme.spacing.lg,
-            color: theme.colors.text.primary,
-            backgroundColor: theme.colors.background.default,
-          }}
-          placeholder="Nhập email của bạn"
-          placeholderTextColor={theme.colors.text.secondary}
+        <Input
           value={email}
           onChangeText={onEmailChange}
+          placeholder="Nhập email của bạn"
           keyboardType="email-address"
           autoCapitalize="none"
+          leftIcon="mail-outline"
         />
 
         <View style={{ 
           flexDirection: 'row', 
           justifyContent: 'flex-end',
-          gap: theme.spacing.md
+          gap: theme.spacing.md,
+          marginTop: theme.spacing.lg
         }}>
           <Button
             variant="outline"
