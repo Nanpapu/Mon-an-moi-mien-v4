@@ -3,7 +3,7 @@ import { TouchableOpacity, Modal, View, ActivityIndicator, Alert } from 'react-n
 import { Typography } from '../shared';
 import { useTheme } from '../../theme/ThemeContext';
 import { db } from '../../config/firebase';
-import { doc, writeBatch, Timestamp } from 'firebase/firestore';
+import { doc, writeBatch, Timestamp, collection, getDocs } from 'firebase/firestore';
 import { COLLECTIONS } from '../../constants';
 import { regions } from '../../data/regions';
 
@@ -14,13 +14,19 @@ export function ImportButton() {
   const handleImportData = async () => {
     setIsImporting(true);
     try {
-      // Tạo batch để thực hiện nhiều thao tác cùng lúc
       const batch = writeBatch(db);
 
+      // 1. Lấy danh sách tất cả recipeStats hiện tại
+      const statsSnapshot = await getDocs(collection(db, COLLECTIONS.RECIPE_STATS));
+      const existingStatsIds = new Set(statsSnapshot.docs.map(doc => doc.id));
+      
+      // 2. Tạo Set chứa ID của tất cả recipes sẽ import
+      const newRecipeIds = new Set();
+
+      // 3. Import regions và recipes
       for (const region of regions) {
         const { recipes: regionRecipes, ...regionData } = region;
-
-        // 1. Tạo document cho region
+        
         const regionRef = doc(db, COLLECTIONS.REGIONS, region.id);
         batch.set(regionRef, {
           ...regionData,
@@ -28,9 +34,9 @@ export function ImportButton() {
           updatedAt: Timestamp.now(),
         });
 
-        // 2. Tạo documents cho recipes và recipeStats
         for (const recipe of regionRecipes) {
-          // Tạo recipe document
+          newRecipeIds.add(recipe.id);
+          
           const recipeRef = doc(db, COLLECTIONS.RECIPES, recipe.id);
           batch.set(recipeRef, {
             ...recipe,
@@ -39,21 +45,31 @@ export function ImportButton() {
             updatedAt: Timestamp.now(),
           });
 
-          // Tạo recipeStats document với giá trị mặc định
+          // Tạo/cập nhật recipeStats
           const recipeStatsRef = doc(db, COLLECTIONS.RECIPE_STATS, recipe.id);
-          batch.set(recipeStatsRef, {
-            recipeId: recipe.id,
-            averageRating: 0,
-            totalReviews: 0,
-            createdAt: Timestamp.now(),
-            updatedAt: Timestamp.now()
-          });
+          if (!existingStatsIds.has(recipe.id)) {
+            // Chỉ tạo mới nếu chưa tồn tại
+            batch.set(recipeStatsRef, {
+              recipeId: recipe.id,
+              averageRating: 0,
+              totalReviews: 0,
+              createdAt: Timestamp.now(),
+              updatedAt: Timestamp.now()
+            });
+          }
         }
       }
 
-      // Thực hiện tất cả các thao tác
+      // 4. Xóa recipeStats của những recipe không còn tồn tại
+      for (const statsId of existingStatsIds) {
+        if (!newRecipeIds.has(statsId)) {
+          const statsRef = doc(db, COLLECTIONS.RECIPE_STATS, statsId);
+          batch.delete(statsRef);
+        }
+      }
+
       await batch.commit();
-      Alert.alert('Thành công', 'Đã import dữ liệu vào Firestore');
+      Alert.alert('Thành công', 'Đã import và đồng bộ dữ liệu');
     } catch (error) {
       console.error("Lỗi khi import dữ liệu:", error);
       Alert.alert('Lỗi', 'Có lỗi xảy ra khi import dữ liệu');
