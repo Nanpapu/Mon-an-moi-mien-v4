@@ -98,24 +98,39 @@ export const RegionService = {
     try {
       const batch = writeBatch(db);
 
+      // 1. Lấy danh sách tất cả recipeStats hiện tại
+      const statsSnapshot = await getDocs(collection(db, COLLECTIONS.RECIPE_STATS));
+      const existingStatsIds = new Set(statsSnapshot.docs.map(doc => doc.id));
+
       for (const region of regions) {
         const { recipes: regionRecipes, ...regionData } = region;
 
-        // Tạo document cho region
+        // 2. Tạo document cho region
         const regionRef = doc(db, COLLECTIONS.REGIONS, region.id);
         batch.set(regionRef, regionData);
 
-        // Tạo documents cho recipes
+        // 3. Tạo documents cho recipes và recipeStats
         for (const recipe of regionRecipes) {
+          // Tạo recipe document
           const recipeRef = doc(db, COLLECTIONS.RECIPES, recipe.id);
           batch.set(recipeRef, {
             ...recipe,
             regionId: region.id,
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
-            averageRating: 0,
-            totalReviews: 0,
           });
+
+          // Chỉ tạo recipeStats mới nếu chưa tồn tại
+          if (!existingStatsIds.has(recipe.id)) {
+            const recipeStatsRef = doc(db, COLLECTIONS.RECIPE_STATS, recipe.id);
+            batch.set(recipeStatsRef, {
+              recipeId: recipe.id,
+              averageRating: 0,
+              totalReviews: 0,
+              createdAt: Timestamp.now(),
+              updatedAt: Timestamp.now()
+            });
+          }
         }
       }
 

@@ -45,10 +45,9 @@ export function ImportButton() {
             updatedAt: Timestamp.now(),
           });
 
-          // Tạo/cập nhật recipeStats
-          const recipeStatsRef = doc(db, COLLECTIONS.RECIPE_STATS, recipe.id);
+          // Chỉ tạo mới recipeStats nếu chưa tồn tại
           if (!existingStatsIds.has(recipe.id)) {
-            // Chỉ tạo mới nếu chưa tồn tại
+            const recipeStatsRef = doc(db, COLLECTIONS.RECIPE_STATS, recipe.id);
             batch.set(recipeStatsRef, {
               recipeId: recipe.id,
               averageRating: 0,
