@@ -6,7 +6,7 @@ import { spacing, layout } from './spacing';
 import { shadows } from './shadows';
 import { Animated } from 'react-native';
 
-type Theme = {
+export type Theme = {
   colors: typeof lightColors;
   typography: typeof typography;
   spacing: typeof spacing;

@@ -1,6 +1,9 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+import { Theme } from '../../theme/ThemeContext';
 
-export const createStyles = (theme: any) => StyleSheet.create({
+const { width } = Dimensions.get('window');
+
+export const createStyles = (theme: Theme) => StyleSheet.create({
   card: {
     backgroundColor: theme.colors.background.default,
     borderRadius: theme.spacing.md,
@@ -72,7 +75,7 @@ export const createStyles = (theme: any) => StyleSheet.create({
   },
   deleteButton: {
     flex: 1,
-    backgroundColor: theme.colors.error,
+    backgroundColor: theme.colors.error.main,
     padding: theme.spacing.sm,
     borderRadius: theme.spacing.sm,
     alignItems: 'center',
@@ -91,10 +94,7 @@ export const createStyles = (theme: any) => StyleSheet.create({
     backgroundColor: theme.colors.background.paper,
   },
   ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: theme.spacing.sm,
+    padding: theme.spacing.md,
     borderTopWidth: 1,
     borderTopColor: theme.colors.divider,
     marginTop: theme.spacing.md,
@@ -111,6 +111,7 @@ export const createStyles = (theme: any) => StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: theme.spacing.md,
   },
   ratingScore: {
     alignItems: 'center',
@@ -145,14 +146,17 @@ export const createStyles = (theme: any) => StyleSheet.create({
   viewAllButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: theme.spacing.sm,
-    marginTop: theme.spacing.sm,
+    justifyContent: 'center',
+    backgroundColor: theme.colors.background.paper,
+    padding: theme.spacing.sm,
+    borderRadius: theme.spacing.sm,
+    marginTop: theme.spacing.md,
+    borderWidth: 1,
+    borderColor: theme.colors.primary.main,
   },
   viewAllText: {
-    ...theme.typography.body2,
     color: theme.colors.primary.main,
-    fontWeight: '500' as const,
+    marginRight: theme.spacing.sm,
   },
   modalContainer: {
     flex: 1,
@@ -186,7 +190,7 @@ export const createStyles = (theme: any) => StyleSheet.create({
     padding: theme.spacing.md,
   },
   reviewsList: {
-    maxHeight: theme.width * 1.2,
+    maxHeight: width * 1.2,
   },
   noReviews: {
     color: '#666',

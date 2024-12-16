@@ -1,69 +1,44 @@
 import { StyleSheet } from "react-native";
+import { Theme } from "../../theme/ThemeContext";
 
-export const createStyles = (theme: any) => StyleSheet.create({
-  container: {
-    padding: theme.spacing.md,
+export const createStyles = (theme: Theme) => StyleSheet.create({
+  emptyContainer: {
+    alignItems: 'center',
+    padding: theme.spacing.xl,
   },
-  reviewItem: {
-    backgroundColor: theme.colors.background.paper,
-    borderRadius: theme.spacing.md,
+  headerContainer: {
     padding: theme.spacing.md,
-    marginBottom: theme.spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.divider,
   },
-  userInfo: {
-    flexDirection: "row",
-    alignItems: "center",
+  reviewContainer: {
+    padding: theme.spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.divider,
+  },
+  userInfoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: theme.spacing.sm,
   },
-  avatar: {
+  userAvatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
     marginRight: theme.spacing.sm,
   },
-  userDetails: {
-    flex: 1,
-  },
-  userName: {
-    ...theme.typography.body1,
-    color: theme.colors.text.primary,
-    fontWeight: "600" as const,
-  },
-  userEmail: {
-    ...theme.typography.caption,
-    color: theme.colors.text.secondary,
-  },
   ratingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: theme.spacing.xs,
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: theme.spacing.sm,
   },
-  date: {
-    ...theme.typography.caption,
-    color: theme.colors.text.secondary,
-    marginLeft: "auto",
+  starsContainer: {
+    flexDirection: 'row',
   },
-  comment: {
-    ...theme.typography.body2,
-    color: theme.colors.text.primary,
+  starIcon: {
+    marginRight: 2,
   },
-  emptyContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: theme.spacing.xl,
-    minHeight: 300,
-  },
-  emptyTitle: {
-    ...theme.typography.h3,
-    color: theme.colors.text.primary,
-    marginTop: theme.spacing.md,
-    marginBottom: theme.spacing.xs,
-  },
-  emptyText: {
-    ...theme.typography.body2,
-    color: theme.colors.text.secondary,
-    textAlign: "center",
+  dateText: {
+    marginLeft: theme.spacing.md,
   },
 });

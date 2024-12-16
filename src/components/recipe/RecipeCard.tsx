@@ -188,8 +188,11 @@ export function RecipeCard({
               style={styles.viewAllButton}
               onPress={() => setShowReviewsList(true)}
             >
-              <Typography variant="body1" style={styles.viewAllText}>
-                Xem tất cả đánh giá
+              <Typography 
+                variant="body1" 
+                style={styles.viewAllText}
+              >
+                Xem tất cả {stats.totalReviews} đánh giá
               </Typography>
               <Ionicons 
                 name="chevron-forward" 
