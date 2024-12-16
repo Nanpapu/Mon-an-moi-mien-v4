@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { TouchableOpacity, Modal, View, ActivityIndicator, Alert } from 'react-native';
 import { Typography } from '../shared';
 import { useTheme } from '../../theme/ThemeContext';
-import { RegionService } from '../../services/regionService';
+import { db } from '../../config/firebase';
+import { doc, writeBatch, Timestamp } from 'firebase/firestore';
+import { COLLECTIONS } from '../../constants';
+import { regions } from '../../data/regions';
 
 export function ImportButton() {
   const { theme } = useTheme();
@@ -11,13 +14,48 @@ export function ImportButton() {
   const handleImportData = async () => {
     setIsImporting(true);
     try {
-      const success = await RegionService.importDataToFirestore();
-      if (success) {
-        Alert.alert('Thành công', 'Đã import dữ liệu vào Firestore');
-      } else {
-        Alert.alert('Lỗi', 'Không thể import dữ liệu');
+      // Tạo batch để thực hiện nhiều thao tác cùng lúc
+      const batch = writeBatch(db);
+
+      for (const region of regions) {
+        const { recipes: regionRecipes, ...regionData } = region;
+
+        // 1. Tạo document cho region
+        const regionRef = doc(db, COLLECTIONS.REGIONS, region.id);
+        batch.set(regionRef, {
+          ...regionData,
+          createdAt: Timestamp.now(),
+          updatedAt: Timestamp.now(),
+        });
+
+        // 2. Tạo documents cho recipes và recipeStats
+        for (const recipe of regionRecipes) {
+          // Tạo recipe document
+          const recipeRef = doc(db, COLLECTIONS.RECIPES, recipe.id);
+          batch.set(recipeRef, {
+            ...recipe,
+            regionId: region.id,
+            createdAt: Timestamp.now(),
+            updatedAt: Timestamp.now(),
+          });
+
+          // Tạo recipeStats document với giá trị mặc định
+          const recipeStatsRef = doc(db, COLLECTIONS.RECIPE_STATS, recipe.id);
+          batch.set(recipeStatsRef, {
+            recipeId: recipe.id,
+            averageRating: 0,
+            totalReviews: 0,
+            createdAt: Timestamp.now(),
+            updatedAt: Timestamp.now()
+          });
+        }
       }
+
+      // Thực hiện tất cả các thao tác
+      await batch.commit();
+      Alert.alert('Thành công', 'Đã import dữ liệu vào Firestore');
     } catch (error) {
+      console.error("Lỗi khi import dữ liệu:", error);
       Alert.alert('Lỗi', 'Có lỗi xảy ra khi import dữ liệu');
     } finally {
       setIsImporting(false);

@@ -11,7 +11,7 @@ export const RecipeService = {
       
       // Lấy recipe và stats
       const recipeDoc = await getDoc(doc(db, COLLECTIONS.RECIPES, recipeId));
-      const statsDoc = await getDoc(doc(db, "recipeStats", recipeId));
+      const statsDoc = await getDoc(doc(db, COLLECTIONS.RECIPE_STATS, recipeId));
 
       if (!recipeDoc.exists()) return null;
 
