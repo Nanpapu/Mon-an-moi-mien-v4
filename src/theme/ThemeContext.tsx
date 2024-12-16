@@ -1,3 +1,4 @@
+// Context để quản lý theme trong ứng dụng
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { useColorScheme } from 'react-native';
 import { lightColors, darkColors } from './colors';
@@ -6,6 +7,7 @@ import { spacing, layout } from './spacing';
 import { shadows } from './shadows';
 import { Animated } from 'react-native';
 
+// Định nghĩa kiểu dữ liệu cho theme
 export type Theme = {
   colors: typeof lightColors;
   typography: typeof typography;
@@ -15,18 +17,25 @@ export type Theme = {
   isDark: boolean;
 };
 
+// Định nghĩa kiểu dữ liệu cho context
 type ThemeContextType = {
   theme: Theme;
   toggleTheme: () => void;
 };
 
+// Tạo context
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+// Provider component để cung cấp theme cho toàn ứng dụng
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Lấy theme hệ thống
   const colorScheme = useColorScheme();
+  // State quản lý theme tối/sáng
   const [isDark, setIsDark] = useState(colorScheme === 'dark');
+  // Animation khi chuyển theme
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
+  // Hàm chuyển đổi theme với animation
   const toggleTheme = () => {
     Animated.sequence([
       Animated.timing(fadeAnim, {
@@ -44,6 +53,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
   };
 
+  // Tạo theme object
   const theme: Theme = {
     colors: isDark ? darkColors : lightColors,
     typography,
@@ -62,6 +72,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   );
 };
 
+// Hook để sử dụng theme trong components
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (context === undefined) {
