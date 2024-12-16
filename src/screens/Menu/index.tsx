@@ -2,7 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { useTheme } from '../../theme/ThemeContext';
 import { Loading } from '../../components/shared';
-import { SearchBar } from "../../components/inputs";
+import { SearchBar } from "../../components/shared/SearchBar";
 import { useMenuData } from "./hooks/useMenuData";
 import { useRecipeFilter } from "./hooks/useRecipeFilter";
 import { RegionFilter } from "./components/RegionFilter";

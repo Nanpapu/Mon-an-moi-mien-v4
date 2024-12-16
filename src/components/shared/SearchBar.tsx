@@ -42,7 +42,11 @@ export const SearchBar = ({
         placeholderTextColor={theme.colors.text.secondary}
         style={[
           styles.input,
-          { color: theme.colors.text.primary }
+          {
+            color: theme.colors.text.primary,
+            backgroundColor: theme.colors.background.paper,
+            borderColor: theme.colors.divider
+          }
         ]}
       />
 
