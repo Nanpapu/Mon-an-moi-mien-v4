@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Service xử lý đánh giá và bình luận cho công thức nấu ăn
+ */
+
 import { db } from "../config/firebase";
 import {
   collection,
@@ -16,8 +20,21 @@ import { Review } from "../types";
 import { UserService } from "./userService";
 import { CacheService, CACHE_KEYS, CACHE_EXPIRY } from "./cacheService";
 import { COLLECTIONS } from "../constants";
+
+/**
+ * Service quản lý đánh giá và bình luận
+ * @module ReviewService
+ */
 export const ReviewService = {
-  // Tạo đánh giá mới
+  /**
+   * Tạo đánh giá mới cho một công thức
+   * @param {string} recipeId - ID của công thức
+   * @param {string} userId - ID của người đánh giá
+   * @param {number} rating - Số sao đánh giá (1-5)
+   * @param {string} comment - Nội dung bình luận
+   * @returns {Promise<Review>} Thông tin đánh giá mới được tạo
+   * @throws {Error} Lỗi khi tạo đánh giá hoặc người dùng đã đánh giá trước đó
+   */
   createReview: async (
     recipeId: string,
     userId: string,
@@ -83,7 +100,12 @@ export const ReviewService = {
     }
   },
 
-  // Lấy đánh giá của user cho một công thức
+  /**
+   * Lấy đánh giá của người dùng cho một công thức
+   * @param {string} recipeId - ID của công thức
+   * @param {string} userId - ID của người dùng
+   * @returns {Promise<Review | null>} Thông tin đánh giá hoặc null nếu chưa đánh giá
+   */
   getUserReviewForRecipe: async (
     recipeId: string,
     userId: string
@@ -111,7 +133,11 @@ export const ReviewService = {
     }
   },
 
-  // Lấy tất cả đánh giá của một công thức
+  /**
+   * Lấy tất cả đánh giá của một công thức
+   * @param {string} recipeId - ID của công thức
+   * @returns {Promise<Review[]>} Danh sách đánh giá
+   */
   getRecipeReviews: async (recipeId: string): Promise<Review[]> => {
     try {
       console.log("Fetching reviews for recipe:", recipeId);
@@ -149,7 +175,14 @@ export const ReviewService = {
     }
   },
 
-  // Cập nhật đánh giá
+  /**
+   * Cập nhật đánh giá hiện có
+   * @param {string} reviewId - ID của đánh giá
+   * @param {string} recipeId - ID của công thức
+   * @param {number} rating - Số sao đánh giá mới
+   * @param {string} comment - Nội dung bình luận mới
+   * @throws {Error} Lỗi khi cập nhật đánh giá
+   */
   updateReview: async (
     reviewId: string,
     recipeId: string,
@@ -198,7 +231,11 @@ export const ReviewService = {
     }
   },
 
-  // Lấy stats (số sao trung bình và tổng đánh giá) của recipe
+  /**
+   * Lấy thống kê đánh giá của một công thức
+   * @param {string} recipeId - ID của công thức
+   * @returns {Promise<{averageRating: number, totalReviews: number}>} Thống kê đánh giá
+   */
   getRecipeStats: async (recipeId: string) => {
     try {
       // Check cache trước
@@ -240,7 +277,10 @@ export const ReviewService = {
     }
   },
 
-  // Clear cache khi có đánh giá mới hoặc update
+  /**
+   * Xóa cache thống kê đánh giá của một công thức
+   * @param {string} recipeId - ID của công thức
+   */
   clearRecipeStatsCache: async (recipeId: string) => {
     await CacheService.clearCache(
       `${CACHE_KEYS.RECIPE_REVIEWS}stats_${recipeId}`
