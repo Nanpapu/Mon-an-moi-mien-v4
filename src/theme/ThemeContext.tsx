@@ -57,7 +57,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
       // Scale down rất nhẹ
       Animated.timing(scaleAnim, {
         toValue: 0.98,
-        duration: 200,
+        duration: 300,
         useNativeDriver: true,
         easing: Easing.ease,
       }),
