@@ -35,9 +35,7 @@ export default function App() {
                     const { theme } = useTheme();
 
                     return {
-                      header: ({ route }) => (
-                        <AppBar title={route.name} />
-                      ),
+                      header: ({ route }) => <AppBar title={route.name} />,
                       tabBarIcon: ({ focused, size }) => {
                         let iconName: keyof typeof Ionicons.glyphMap;
                         if (route.name === "Bản đồ") {

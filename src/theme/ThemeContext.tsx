@@ -100,6 +100,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
           flex: 1,
           opacity: fadeAnim,
           transform: [{ scale: scaleAnim }],
+          backgroundColor: theme.colors.background.default,
         }}
       >
         {children}
