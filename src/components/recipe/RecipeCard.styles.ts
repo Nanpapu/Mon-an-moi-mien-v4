@@ -5,24 +5,21 @@ const { width } = Dimensions.get('window');
 
 export const createStyles = (theme: Theme) => StyleSheet.create({
   card: {
-    backgroundColor: theme.colors.background.default,
+    backgroundColor: theme.colors.background.paper,
     borderRadius: theme.spacing.md,
     marginHorizontal: theme.spacing.md,
-    marginVertical: theme.spacing.sm,
-    shadowColor: theme.colors.text.primary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
+    marginBottom: theme.spacing.md,
+    ...theme.shadows.sm,
     overflow: 'hidden',
   },
   image: {
     width: '100%',
-    height: 200,
+    height: 400,
     backgroundColor: theme.colors.background.paper,
   },
   content: {
     padding: theme.spacing.md,
+    backgroundColor: theme.colors.background.paper,
   },
   header: {
     flexDirection: 'row',

@@ -4,7 +4,8 @@ import { Recipe } from '../../../types';
 import { RecipeCard } from '../../../components/recipe';
 import { RecipeCardSkeleton } from '../../../components/recipe';
 import { EmptyState } from './EmptyState';
-import { styles } from '../styles';
+import { createStyles } from '../styles';
+import { useTheme } from '../../../theme/ThemeContext';
 
 interface Props {
   isLoading: boolean;
@@ -23,6 +24,9 @@ export const RecipeList = ({
   onRefresh,
   onDeleteRecipe
 }: Props) => {
+  const { theme } = useTheme();
+  const styles = createStyles(theme);
+
   return (
     <ScrollView
       style={styles.recipeList}
@@ -30,8 +34,8 @@ export const RecipeList = ({
         <RefreshControl
           refreshing={isRefreshing}
           onRefresh={onRefresh}
-          colors={["#007AFF"]}
-          tintColor="#007AFF"
+          colors={[theme.colors.primary.main]}
+          tintColor={theme.colors.primary.main}
         />
       }
     >
