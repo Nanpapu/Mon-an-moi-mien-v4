@@ -42,8 +42,10 @@
 - Expo Location & Maps
 - AsyncStorage cho caching
 
-## 📁 Cấu trúc thư mụcsrc/
+## 📁 Cấu trúc thư mục
+
     ```bash
+    src/
     ├── components/ # Các component tái sử dụng
     ├── screens/ # Màn hình chính của ứng dụng
     ├── services/ # Logic tương tác với Firebase
