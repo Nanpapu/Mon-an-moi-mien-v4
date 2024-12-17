@@ -8,16 +8,23 @@ const VIETNAM_REGION = {
   longitudeDelta: 12,
 };
 
-// Các mức zoom để hiển thị marker
+// Điều chỉnh lại các mức zoom phù hợp hơn
 const ZOOM_LEVELS = {
-  COUNTRY: 6, // Hiển thị các thành phố lớn
-  REGION: 8,  // Hiển thị các tỉnh/thành phố
-  CITY: 10,   // Hiển thị các quận/huyện
-  DISTRICT: 12 // Hiển thị chi tiết
+  COUNTRY: 4,  // Zoom xa hơn để dễ nhìn toàn Việt Nam
+  REGION: 6,   // Mức zoom vùng miền
+  CITY: 8,     // Mức zoom tỉnh/thành phố
+  DISTRICT: 10 // Mức zoom chi tiết
 };
 
-// Danh sách các thành phố lớn
-const MAJOR_CITIES = ['48', '01', '79']; // IDs của Đà Nẵng, Hà Nội, TP.HCM
+// Thêm nhiều thành phố hơn để dễ tìm
+const MAJOR_CITIES = [
+  '48', // Đà Nẵng
+  '01', // Hà Nội
+  '79', // TP.HCM
+  '46', // Huế
+  '92', // Cần Thơ
+  '95'  // Bạc Liêu
+];
 
 export const useMapInteraction = () => {
   const [currentZoom, setCurrentZoom] = useState(10);
@@ -25,6 +32,7 @@ export const useMapInteraction = () => {
 
   const calculateZoom = (latitudeDelta: number) => {
     const zoom = Math.round(Math.log(360 / latitudeDelta) / Math.LN2);
+    console.log('Current calculated zoom:', zoom); // Debug log
     return zoom;
   };
 
@@ -34,15 +42,15 @@ export const useMapInteraction = () => {
       return true;
     }
 
-    // Hiển thị dựa vào mức zoom
+    // Điều chỉnh logic hiển thị marker
     if (zoom <= ZOOM_LEVELS.COUNTRY) {
-      // Ở mức zoom toàn quốc, chỉ hiển thị thành phố lớn
+      // Ở mức zoom toàn quốc, chỉ hiển thị thành phố lớn và một số điểm đáng chú ý
       return MAJOR_CITIES.includes(regionId);
     } else if (zoom <= ZOOM_LEVELS.REGION) {
-      // Ở mức zoom vùng miền, hiển thị các tỉnh/thành phố
+      // Ở mức zoom vùng miền, hiển thị thêm các tỉnh lân cận
       return true;
     } else {
-      // Ở mức zoom chi tiết, hiển thị tất cả
+      // Ở mức zoom chi tiết hơn, hiển thị tất cả
       return true;
     }
   };
