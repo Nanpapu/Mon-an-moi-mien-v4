@@ -12,8 +12,8 @@ const VIETNAM_REGION = {
 const ZOOM_LEVELS = {
   COUNTRY: 4,  // Zoom xa hơn để dễ nhìn toàn Việt Nam
   REGION: 6,   // Mức zoom vùng miền
-  CITY: 8,     // Mức zoom tỉnh/thành phố
-  DISTRICT: 10 // Mức zoom chi tiết
+  CITY: 7,     // Mức zoom tỉnh/thành phố
+  DISTRICT: 8    // Mức zoom chi tiết
 };
 
 // Thêm nhiều thành phố hơn để dễ tìm
@@ -30,6 +30,7 @@ export const useMapInteraction = () => {
   const [currentZoom, setCurrentZoom] = useState(10);
   const [region, setRegion] = useState(VIETNAM_REGION);
 
+  // Tính toán mức zoom dựa trên latitudeDelta
   const calculateZoom = (latitudeDelta: number) => {
     const zoom = Math.round(Math.log(360 / latitudeDelta) / Math.LN2);
     console.log('Current calculated zoom:', zoom); // Debug log
