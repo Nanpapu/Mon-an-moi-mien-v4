@@ -1,50 +1,39 @@
 import { StyleSheet } from 'react-native';
+import { Theme } from '../../theme/ThemeContext';
 
-export const styles = StyleSheet.create({
+export const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
-    backgroundColor: "white",
-    borderRadius: 15,
-    marginHorizontal: 15,
-    marginBottom: 20,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    backgroundColor: theme.colors.background.paper,
+    borderRadius: theme.spacing.md,
+    marginHorizontal: theme.spacing.md,
+    marginBottom: theme.spacing.md,
+    ...theme.shadows.sm,
     overflow: 'hidden',
   },
-  
   image: {
     width: '100%',
     height: 200,
-    backgroundColor: '#E1E9EE'
+    backgroundColor: theme.isDark ? '#2A2A2A' : '#E1E9EE',
   },
-  
   content: {
-    padding: 15,
+    padding: theme.spacing.md,
   },
-  
   title: {
     height: 24,
-    backgroundColor: '#E1E9EE',
-    borderRadius: 4,
-    marginBottom: 8
+    backgroundColor: theme.isDark ? '#2A2A2A' : '#E1E9EE',
+    borderRadius: theme.spacing.xs,
+    marginBottom: theme.spacing.sm,
   },
-  
   region: {
     height: 16,
-    backgroundColor: '#E1E9EE',
-    borderRadius: 4,
+    backgroundColor: theme.isDark ? '#2A2A2A' : '#E1E9EE',
+    borderRadius: theme.spacing.xs,
     width: '40%',
-    marginBottom: 15
+    marginBottom: theme.spacing.md,
   },
-  
   ingredients: {
     height: 100,
-    backgroundColor: '#E1E9EE',
-    borderRadius: 4
-  }
+    backgroundColor: theme.isDark ? '#2A2A2A' : '#E1E9EE',
+    borderRadius: theme.spacing.xs,
+  },
 });

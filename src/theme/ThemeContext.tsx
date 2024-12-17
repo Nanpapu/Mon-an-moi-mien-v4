@@ -20,6 +20,9 @@ export type Theme = {
   layout: typeof layout;
   shadows: typeof shadows;
   isDark: boolean;
+  skeleton: {
+    background: string;
+  };
 };
 
 // Định nghĩa kiểu dữ liệu cho context
@@ -91,6 +94,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     layout,
     shadows,
     isDark,
+    skeleton: {
+      background: isDark ? '#2A2A2A' : '#E1E9EE',
+    },
   };
 
   return (

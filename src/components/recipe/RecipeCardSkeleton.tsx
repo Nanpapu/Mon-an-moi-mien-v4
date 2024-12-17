@@ -1,8 +1,11 @@
 import React, { useRef, useEffect } from 'react';
-import { View, Animated, StyleSheet } from 'react-native';
-import { styles } from './RecipeCardSkeleton.styles';
+import { View, Animated } from 'react-native';
+import { createStyles } from './RecipeCardSkeleton.styles';
+import { useTheme } from '../../theme/ThemeContext';
 
 export function RecipeCardSkeleton() {
+  const { theme } = useTheme();
+  const styles = createStyles(theme);
   const animatedValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -37,4 +40,4 @@ export function RecipeCardSkeleton() {
       </View>
     </View>
   );
-} 
+}
