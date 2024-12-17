@@ -1,57 +1,74 @@
-# Authentication API
+# Auth API
 
 API xử lý xác thực người dùng trong ứng dụng.
 
 ## AuthService
 
-Service xử lý các chức năng liên quan đến đăng nhập, đăng ký và quản lý phiên đăng nhập.
+Service xử lý các chức năng liên quan đến authentication.
 
 ### `login(email: string, password: string): Promise<User>`
 
 Đăng nhập người dùng với email và mật khẩu.
 
 **Tham số:**
-
-- `email`: Email của người dùng
-- `password`: Mật khẩu của người dùng
+- `email`: Email đăng nhập
+- `password`: Mật khẩu
 
 **Trả về:**
-
 - Promise chứa thông tin User nếu đăng nhập thành công
 - Throw error nếu đăng nhập thất bại
-
-**Ví dụ:**
-
-```typescript
-try {
-  const user = await AuthService.login("user@example.com", "password123");
-  console.log("Đăng nhập thành công:", user);
-} catch (error) {
-  console.error("Lỗi đăng nhập:", error);
-}
-```
 
 ### `register(email: string, password: string): Promise<User>`
 
 Đăng ký tài khoản mới.
 
 **Tham số:**
-
 - `email`: Email đăng ký
-- `password`: Mật khẩu đăng ký
+- `password`: Mật khẩu
 
 **Trả về:**
-
-- Promise chứa thông tin User mới nếu đăng ký thành công
+- Promise chứa thông tin User mới
 - Throw error nếu đăng ký thất bại
 
 ### `logout(): Promise<void>`
 
 Đăng xuất người dùng hiện tại.
 
-### `getCurrentUser(): User | null`
+**Trả về:**
+- Promise void nếu đăng xuất thành công
+- Throw error nếu đăng xuất thất bại
 
-Lấy thông tin người dùng đang đăng nhập.
+### `resetPassword(email: string): Promise<void>`
+
+Gửi email reset mật khẩu.
+
+**Tham số:**
+- `email`: Email cần reset mật khẩu
+
+**Trả về:**
+- Promise void nếu gửi email thành công
+- Throw error nếu gửi thất bại
+
+### `updateProfile(displayName?: string, photoURL?: string): Promise<void>`
+
+Cập nhật thông tin profile người dùng.
+
+**Tham số:**
+- `displayName`: Tên hiển thị mới (optional)
+- `photoURL`: URL ảnh đại diện mới (optional)
+
+**Trả về:**
+- Promise void nếu cập nhật thành công
+- Throw error nếu cập nhật thất bại
+
+### Error Codes
+
+Các mã lỗi authentication phổ biến:
+- `INVALID_EMAIL`: Email không hợp lệ
+- `USER_DISABLED`: Tài khoản bị vô hiệu hóa
+- `USER_NOT_FOUND`: Không tìm thấy tài khoản
+- `WRONG_PASSWORD`: Sai mật khẩu
+- `EMAIL_IN_USE`: Email đã được sử dụng
 
 ## GoogleAuthService
 
@@ -144,13 +161,3 @@ Hook xử lý form authentication.
     boolean;
 }
 ```
-
-## Error Handling
-
-Các mã lỗi phổ biến:
-
-- `auth/invalid-email`: Email không hợp lệ
-- `auth/user-disabled`: Tài khoản bị vô hiệu hóa
-- `auth/user-not-found`: Không tìm thấy tài khoản
-- `auth/wrong-password`: Sai mật khẩu
-- `auth/email-already-in-use`: Email đã được sử dụng

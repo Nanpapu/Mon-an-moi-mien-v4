@@ -11,12 +11,14 @@ Service quản lý thông tin người dùng.
 Cập nhật thông tin profile người dùng.
 
 **Tham số:**
+
 - `userId`: ID của người dùng
 - `data`: Object chứa thông tin cần cập nhật
   - `displayName`: Tên hiển thị (optional)
   - `photoURL`: URL ảnh đại diện (optional)
 
 **Trả về:**
+
 - Promise<boolean> - true nếu cập nhật thành công
 - Throw error nếu cập nhật thất bại
 
@@ -25,10 +27,12 @@ Cập nhật thông tin profile người dùng.
 Upload ảnh đại diện mới.
 
 **Tham số:**
+
 - `userId`: ID của người dùng
 - `imageUri`: URI của ảnh cần upload
 
 **Trả về:**
+
 - Promise chứa URL download của ảnh nếu thành công
 - null nếu upload thất bại
 - Throw error nếu có lỗi
@@ -38,10 +42,12 @@ Upload ảnh đại diện mới.
 Tạo document người dùng trong Firestore.
 
 **Tham số:**
+
 - `userId`: ID của người dùng
 - `email`: Email của người dùng
 
 **Trả về:**
+
 - Promise<boolean> - true nếu tạo thành công
 - Throw error nếu tạo thất bại
 
@@ -50,9 +56,11 @@ Tạo document người dùng trong Firestore.
 Lấy thông tin người dùng.
 
 **Tham số:**
+
 - `userId`: ID của người dùng
 
 **Trả về:**
+
 - Promise chứa object UserInfo nếu tìm thấy:
   ```typescript
   {
