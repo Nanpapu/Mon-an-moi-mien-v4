@@ -13,8 +13,8 @@ import { RecipeModal } from "./components/RecipeModal";
 import { useTheme } from '../../theme/ThemeContext';
 import { Loading } from '../../components/shared';
 import * as Location from 'expo-location';
-import { ViewVietnamButton } from './components/ViewVietnamButton';
 import { RegionService } from '../../services/regionService';
+import { ViewVietnamButton } from './components/ViewVietnamButton';
 
 export default function MapScreen({ navigation }: { navigation: any }) {
   const { theme } = useTheme();
@@ -139,7 +139,8 @@ export default function MapScreen({ navigation }: { navigation: any }) {
         onRegionChange={(newRegion) => {
           setRegion(newRegion);
           const newZoom = calculateZoom(newRegion.latitudeDelta);
-          console.log('Map zoom changed:', newZoom);
+          // console.log('Map zoom level:', newZoom);
+          // console.log('Visible markers:', regions.filter(r => shouldShowMarker(r.id, newZoom)).length);
           setCurrentZoom(newZoom);
         }}
         onMapReady={() => {

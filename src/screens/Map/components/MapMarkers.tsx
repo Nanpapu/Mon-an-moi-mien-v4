@@ -1,4 +1,5 @@
 import React from 'react';
+import { Animated } from 'react-native';
 import { Marker } from 'react-native-maps';
 import { Region } from '../../../types';
 
@@ -18,24 +19,23 @@ export function MapMarkers({
   onMarkerPress,
 }: Props) {
   if (!isMapReady) {
-    console.log('Map not ready yet');
     return null;
   }
 
-  console.log('MapMarkers - Total regions:', regions.length);
-  
   return (
     <>
       {regions.map((region) => {
         const shouldShow = shouldShowMarker(region.id, currentZoom);
-        console.log(`Region ${region.name}: shouldShow = ${shouldShow}`);
         
+        if (!shouldShow) return null;
+
         return (
           <Marker
             key={region.id}
             coordinate={region.coordinate}
             title={region.name}
             onPress={() => onMarkerPress(region.recipes)}
+            tracksViewChanges={false}
           />
         );
       })}
