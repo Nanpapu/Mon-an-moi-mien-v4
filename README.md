@@ -43,7 +43,6 @@
 - AsyncStorage cho caching
 
 ## 📁 Cấu trúc thư mục
-
     ```bash
     src/
     ├── components/ # Các component tái sử dụng
