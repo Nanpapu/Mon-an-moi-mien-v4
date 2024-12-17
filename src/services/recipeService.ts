@@ -1,10 +1,24 @@
+/**
+ * @fileoverview Service xử lý các chức năng liên quan đến công thức nấu ăn
+ */
+
 import { CacheService, CACHE_KEYS, CACHE_EXPIRY } from './cacheService';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { COLLECTIONS } from '../constants/collections';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+/**
+ * Service quản lý công thức nấu ăn
+ * @module RecipeService
+ */
 export const RecipeService = {
+  /**
+   * Lấy thông tin chi tiết một công thức
+   * @param {string} recipeId - ID của công thức cần lấy
+   * @returns {Promise<object | null>} Thông tin công thức hoặc null nếu không tìm thấy
+   * @throws {Error} Lỗi khi lấy thông tin công thức
+   */
   getRecipeById: async (recipeId: string) => {
     try {
       const cacheKey = `${CACHE_KEYS.RECIPES}${recipeId}`;
@@ -31,6 +45,11 @@ export const RecipeService = {
     }
   },
 
+  /**
+   * Lấy danh sách công thức đã lưu của người dùng
+   * @param {string} userId - ID của người dùng
+   * @returns {Promise<Array>} Danh sách công thức đã lưu
+   */
   getSavedRecipes: async (userId: string) => {
     try {
       const cacheKey = `${CACHE_KEYS.SAVED_RECIPES}${userId}`;
