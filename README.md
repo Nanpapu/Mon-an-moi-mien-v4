@@ -43,18 +43,18 @@
 - AsyncStorage cho caching
 
 ## 📁 Cấu trúc thư mục
-    ```bash
-    src/
-    ├── components/ # Các component tái sử dụng
-    ├── screens/ # Màn hình chính của ứng dụng
-    ├── services/ # Logic tương tác với Firebase
-    ├── context/ # React Context cho state management
-    ├── hooks/ # Custom hooks
-    ├── theme/ # Cấu hình theme và styles
-    ├── types/ # TypeScript types và interfaces
-    ├── utils/ # Các hàm tiện ích
-    └── constants/ # Các hằng số
-    ```
+```
+src/
+├── components/     # Các component tái sử dụng
+├── screens/        # Màn hình chính của ứng dụng  
+├── services/       # Logic tương tác với Firebase
+├── context/        # React Context cho state management
+├── hooks/          # Custom hooks
+├── theme/          # Cấu hình theme và styles
+├── types/          # TypeScript types và interfaces
+├── utils/          # Các hàm tiện ích
+└── constants/      # Các hằng số
+```
 
 ## 📖 Tài liệu
 
