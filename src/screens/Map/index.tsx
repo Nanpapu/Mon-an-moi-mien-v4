@@ -14,6 +14,7 @@ import { useTheme } from '../../theme/ThemeContext';
 import { Loading } from '../../components/shared';
 import * as Location from 'expo-location';
 import { ViewVietnamButton } from './components/ViewVietnamButton';
+import { RegionService } from '../../services/regionService';
 
 export default function MapScreen({ navigation }: { navigation: any }) {
   const { theme } = useTheme();
@@ -110,6 +111,16 @@ export default function MapScreen({ navigation }: { navigation: any }) {
     }
   };
 
+  const handleRefresh = async () => {
+    try {
+      await RegionService.clearRegionsCache();
+      await refreshRegions();
+    } catch (error) {
+      console.error('Lỗi khi refresh:', error);
+      Alert.alert('Lỗi', 'Không thể tải lại dữ liệu');
+    }
+  };
+
   if (!regions || regions.length === 0) {
     return (
       <View style={styles.loadingContainer}>
@@ -127,9 +138,14 @@ export default function MapScreen({ navigation }: { navigation: any }) {
         initialRegion={region}
         onRegionChange={(newRegion) => {
           setRegion(newRegion);
-          setCurrentZoom(calculateZoom(newRegion.latitudeDelta));
+          const newZoom = calculateZoom(newRegion.latitudeDelta);
+          console.log('Map zoom changed:', newZoom);
+          setCurrentZoom(newZoom);
         }}
-        onMapReady={() => setIsMapReady(true)}
+        onMapReady={() => {
+          console.log('Map is ready');
+          setIsMapReady(true);
+        }}
       >
         <MapMarkers
           regions={regions}
@@ -137,6 +153,7 @@ export default function MapScreen({ navigation }: { navigation: any }) {
           currentZoom={currentZoom}
           shouldShowMarker={shouldShowMarker}
           onMarkerPress={(recipes) => {
+            console.log('Marker pressed, recipes:', recipes.length);
             setSelectedRecipes(recipes);
             setModalVisible(true);
           }}
@@ -144,7 +161,7 @@ export default function MapScreen({ navigation }: { navigation: any }) {
       </MapView>
 
       <MapControls
-        onRefresh={refreshRegions}
+        onRefresh={handleRefresh}
         regions={regions}
         onRandomSelect={handleRandomRecipe}
         onSearch={onSearch}

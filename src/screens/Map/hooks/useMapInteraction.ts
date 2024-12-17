@@ -13,15 +13,13 @@ export const useMapInteraction = () => {
   const [region, setRegion] = useState(VIETNAM_REGION);
 
   const calculateZoom = (latitudeDelta: number) => {
-    return Math.round(Math.log(360 / latitudeDelta) / Math.LN2);
+    const zoom = Math.round(Math.log(360 / latitudeDelta) / Math.LN2);
+    console.log('Current zoom level:', zoom);
+    return zoom;
   };
 
   const shouldShowMarker = (regionId: string, zoom: number) => {
-    const majorCities = ["01", "48", "79"];
-    if (majorCities.includes(regionId)) {
-      return zoom > 2;
-    }
-    return zoom > 3.5;
+    return true;
   };
 
   const viewVietnam = (mapRef: React.RefObject<MapView>) => {

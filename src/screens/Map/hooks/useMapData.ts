@@ -17,6 +17,7 @@ export const useMapData = () => {
       }
       
       const data = await RegionService.getAllRegions();
+      console.log('Loaded data from RegionService:', data);
       setRegions(data);
     } catch (error) {
       console.error("Lỗi khi tải dữ liệu:", error);

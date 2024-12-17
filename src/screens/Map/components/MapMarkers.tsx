@@ -17,21 +17,28 @@ export function MapMarkers({
   shouldShowMarker,
   onMarkerPress,
 }: Props) {
-  if (!isMapReady) return null;
+  if (!isMapReady) {
+    console.log('Map not ready yet');
+    return null;
+  }
 
+  console.log('MapMarkers - Total regions:', regions.length);
+  
   return (
     <>
-      {regions.map((region) => (
-        <Marker
-          key={region.id}
-          coordinate={region.coordinate}
-          title={region.name}
-          onPress={() => {
-            // console.log('Region recipes:', region.recipes);
-            onMarkerPress(region.recipes);
-          }}
-        />
-      ))}
+      {regions.map((region) => {
+        const shouldShow = shouldShowMarker(region.id, currentZoom);
+        console.log(`Region ${region.name}: shouldShow = ${shouldShow}`);
+        
+        return (
+          <Marker
+            key={region.id}
+            coordinate={region.coordinate}
+            title={region.name}
+            onPress={() => onMarkerPress(region.recipes)}
+          />
+        );
+      })}
     </>
   );
 }

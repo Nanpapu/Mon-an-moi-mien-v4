@@ -38,16 +38,21 @@ export const RegionService = {
       );
 
       if (cachedRegions) {
+        console.log('Returning cached regions:', cachedRegions.length);
         return cachedRegions;
       }
 
       const regionsSnapshot = await getDocs(
         collection(db, COLLECTIONS.REGIONS)
       );
+      console.log('Total regions in Firestore:', regionsSnapshot.size);
+
       const regions: Region[] = [];
 
       for (const doc of regionsSnapshot.docs) {
         const regionData = doc.data();
+        console.log('Processing region:', doc.id);
+        
         const recipesSnapshot = await getDocs(
           query(
             collection(db, COLLECTIONS.RECIPES),
@@ -60,12 +65,13 @@ export const RegionService = {
         );
 
         regions.push({
-          id: doc.id, // Thêm id từ document
+          id: doc.id,
           ...regionData,
           recipes,
         } as Region);
       }
 
+      console.log('Total processed regions:', regions.length);
       await CacheService.setCache(CACHE_KEYS.REGIONS, regions);
 
       return regions;
@@ -173,4 +179,23 @@ export const RegionService = {
   clearRegionsCache: async () => {
     await CacheService.clearCache(CACHE_KEYS.REGIONS);
   },
+
+  /**
+   * Debug Regions Data
+   */
+  debugRegionsData: async () => {
+    try {
+      const regionsSnapshot = await getDocs(collection(db, COLLECTIONS.REGIONS));
+      console.log('Total regions in Firestore:', regionsSnapshot.size);
+      
+      regionsSnapshot.forEach(doc => {
+        console.log('Region:', {
+          id: doc.id,
+          ...doc.data()
+        });
+      });
+    } catch (error) {
+      console.error('Debug error:', error);
+    }
+  }
 };

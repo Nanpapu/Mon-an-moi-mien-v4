@@ -17,18 +17,29 @@ export function MapControls({ onRefresh, regions, onRandomSelect, onSearch }: Pr
   const { theme } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
-  const animatedWidth = useRef(new Animated.Value(48)).current;
+  const searchWidth = useRef(new Animated.Value(48)).current;
+  const reloadTop = useRef(new Animated.Value(20)).current;
 
   const expandedWidth = Platform.OS === 'ios' ? 358 : 328;
   
   const toggleSearch = () => {
     const toValue = showSearch ? 48 : expandedWidth;
+    const newTop = showSearch ? 20 : 80;
+    
     setShowSearch(!showSearch);
-    Animated.spring(animatedWidth, {
-      toValue,
-      useNativeDriver: false,
-      friction: 10
-    }).start();
+    
+    Animated.parallel([
+      Animated.spring(searchWidth, {
+        toValue,
+        useNativeDriver: false,
+        friction: 10
+      }),
+      Animated.spring(reloadTop, {
+        toValue: newTop,
+        useNativeDriver: false,
+        friction: 10
+      })
+    ]).start();
   };
 
   const handleSubmit = () => {
@@ -45,7 +56,7 @@ export function MapControls({ onRefresh, regions, onRandomSelect, onSearch }: Pr
         styles.searchContainer,
         {
           backgroundColor: theme.colors.background.paper,
-          width: animatedWidth,
+          width: searchWidth,
           ...theme.shadows.sm
         }
       ]}>
@@ -95,6 +106,23 @@ export function MapControls({ onRefresh, regions, onRandomSelect, onSearch }: Pr
         )}
       </Animated.View>
 
+      <Animated.View style={[
+        styles.reloadButton,
+        {
+          backgroundColor: theme.colors.background.paper,
+          top: reloadTop,
+          ...theme.shadows.sm
+        }
+      ]}>
+        <TouchableOpacity onPress={onRefresh}>
+          <Ionicons 
+            name="reload" 
+            size={24} 
+            color={theme.colors.primary.main}
+          />
+        </TouchableOpacity>
+      </Animated.View>
+
       <RandomRecipeButton
         regions={regions}
         onRandomSelect={onRandomSelect}
@@ -133,5 +161,15 @@ const styles = StyleSheet.create({
     height: 48,
     fontSize: 16,
     paddingVertical: 8,
-  }
+  },
+  reloadButton: {
+    position: 'absolute',
+    right: 16,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
 });
