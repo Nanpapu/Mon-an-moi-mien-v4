@@ -1,5 +1,11 @@
 import React from 'react';
-import { Modal, View, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  Modal,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 import { Recipe } from '../../../types';
 import { RecipeCard } from '../../../components/recipe';
 import { Typography } from '../../../components/shared';
@@ -45,14 +51,19 @@ export const RecipeDetailModal = ({
           <Typography variant="h3">Chi tiết công thức</Typography>
         </View>
 
-        <View style={styles.content}>
-          <RecipeCard
-            recipe={recipe}
-            onDelete={() => onDelete(recipe)}
-            showActions={true}
-            showReviews={true}
-          />
-        </View>
+        <ScrollView
+          style={styles.scrollContent}
+          showsVerticalScrollIndicator={true}
+        >
+          <View style={styles.content}>
+            <RecipeCard
+              recipe={recipe}
+              onDelete={() => onDelete(recipe)}
+              showActions={true}
+              showReviews={true}
+            />
+          </View>
+        </ScrollView>
       </View>
     </Modal>
   );
@@ -71,13 +82,16 @@ const createStyles = (theme: any) =>
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.divider,
       backgroundColor: theme.colors.background.paper,
+      ...theme.shadows.sm,
     },
     closeButton: {
       marginRight: theme.spacing.md,
       padding: theme.spacing.xs,
     },
-    content: {
+    scrollContent: {
       flex: 1,
+    },
+    content: {
       padding: theme.spacing.md,
     },
   });
