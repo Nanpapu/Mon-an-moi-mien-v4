@@ -75,22 +75,26 @@ export const RecipeGridItem = ({ recipe, onPress, width, config }: Props) => {
               <View style={styles.divider} />
               <View style={styles.ratingContainer}>
                 {stats.totalReviews > 0 ? (
-                  <>
+                  <View style={styles.ratingContainer}>
                     <View style={styles.starsContainer}>
                       {[1, 2, 3, 4, 5].map((star) => (
                         <Ionicons
                           key={star}
-                          name={star <= stats.averageRating ? 'star' : 'star-outline'}
+                          name={
+                            star <= stats.averageRating
+                              ? 'star'
+                              : 'star-outline'
+                          }
                           size={12}
                           color={theme.colors.warning.main}
                           style={{ marginRight: 2 }}
                         />
                       ))}
+                      <Typography variant="caption" style={styles.reviewCount}>
+                        ({stats.totalReviews})
+                      </Typography>
                     </View>
-                    <Typography variant="caption" style={styles.reviewCount}>
-                      ({stats.totalReviews})
-                    </Typography>
-                  </>
+                  </View>
                 ) : (
                   <View style={styles.noReviewsContainer}>
                     <Ionicons
@@ -160,6 +164,7 @@ const createStyles = (
     reviewCount: {
       color: theme.colors.text.secondary,
       fontSize: 12,
+      marginLeft: theme.spacing.xs,
     },
     noReviewsContainer: {
       flexDirection: 'row',
