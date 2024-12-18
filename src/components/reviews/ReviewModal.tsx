@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Modal,
   View,
@@ -7,12 +7,13 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { ReviewService } from "../../services/reviewService";
-import { createStyles } from "./ReviewModal.styles";
-import { useTheme } from "../../theme/ThemeContext";
-import { Typography, Button, Input } from "../shared";
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { ReviewService } from '../../services/reviewService';
+import { createStyles } from './ReviewModal.styles';
+import { useTheme } from '../../theme/ThemeContext';
+import { Typography, Button, Input } from '../shared';
+import { useToast } from '../../hooks/useToast';
 
 interface Props {
   visible: boolean;
@@ -38,12 +39,13 @@ export const ReviewModal = ({
   const { theme } = useTheme();
   const styles = createStyles(theme);
   const [rating, setRating] = useState(existingReview?.rating || 0);
-  const [comment, setComment] = useState(existingReview?.comment || "");
+  const [comment, setComment] = useState(existingReview?.comment || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { showToast } = useToast();
 
   const handleSubmit = async () => {
     if (rating === 0) {
-      Alert.alert("Lỗi", "Vui lòng chọn số sao");
+      showToast('warning', 'Vui lòng chọn số sao');
       return;
     }
 
@@ -56,13 +58,15 @@ export const ReviewModal = ({
           rating,
           comment
         );
+        showToast('success', 'Đã cập nhật đánh giá');
       } else {
         await ReviewService.createReview(recipeId, userId, rating, comment);
+        showToast('success', 'Đã thêm đánh giá');
       }
       onSubmit();
       onClose();
     } catch (error: any) {
-      Alert.alert("Lỗi", error.message);
+      showToast('error', error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -76,13 +80,13 @@ export const ReviewModal = ({
     >
       <View style={{ padding: theme.spacing.lg }}>
         <Typography variant="h3" style={{ marginBottom: theme.spacing.md }}>
-          {existingReview ? "Chỉnh sửa đánh giá" : "Đánh giá món ăn"}
+          {existingReview ? 'Chỉnh sửa đánh giá' : 'Đánh giá món ăn'}
         </Typography>
 
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "center",
+            flexDirection: 'row',
+            justifyContent: 'center',
             marginBottom: theme.spacing.lg,
           }}
         >
@@ -93,7 +97,7 @@ export const ReviewModal = ({
               style={{ padding: theme.spacing.xs }}
             >
               <Ionicons
-                name={star <= rating ? "star" : "star-outline"}
+                name={star <= rating ? 'star' : 'star-outline'}
                 size={32}
                 color={theme.colors.warning.main}
               />
@@ -115,9 +119,9 @@ export const ReviewModal = ({
           variant="primary"
           onPress={handleSubmit}
           disabled={isSubmitting}
-          style={{ width: "100%" }}
+          style={{ width: '100%' }}
         >
-          {isSubmitting ? "Đang xử lý..." : "Gửi đánh giá"}
+          {isSubmitting ? 'Đang xử lý...' : 'Gửi đánh giá'}
         </Button>
       </View>
     </Modal>

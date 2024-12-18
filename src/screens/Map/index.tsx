@@ -1,20 +1,21 @@
-import React, { useRef, useState, useEffect } from "react";
-import { View, Text, Alert } from "react-native";
-import MapView, { Region as MapRegion } from "react-native-maps";
-import { Recipe } from "../../types";
-import { saveRecipe } from "../../utils/storage";
-import { useRecipes } from "../../context/RecipeContext";
-import { styles } from "./styles";
-import { useMapData } from "./hooks/useMapData";
-import { useMapInteraction } from "./hooks/useMapInteraction";
-import { MapMarkers } from "./components/MapMarkers";
-import { MapControls } from "./components/MapControls";
-import { RecipeModal } from "./components/RecipeModal";
+import React, { useRef, useState, useEffect } from 'react';
+import { View, Text, Alert } from 'react-native';
+import MapView, { Region as MapRegion } from 'react-native-maps';
+import { Recipe } from '../../types';
+import { saveRecipe } from '../../utils/storage';
+import { useRecipes } from '../../context/RecipeContext';
+import { styles } from './styles';
+import { useMapData } from './hooks/useMapData';
+import { useMapInteraction } from './hooks/useMapInteraction';
+import { MapMarkers } from './components/MapMarkers';
+import { MapControls } from './components/MapControls';
+import { RecipeModal } from './components/RecipeModal';
 import { useTheme } from '../../theme/ThemeContext';
 import { Loading } from '../../components/shared';
 import * as Location from 'expo-location';
 import { RegionService } from '../../services/regionService';
 import { ViewVietnamButton } from './components/ViewVietnamButton';
+import { useToast } from '../../hooks/useToast';
 
 export default function MapScreen({ navigation }: { navigation: any }) {
   const { theme } = useTheme();
@@ -23,19 +24,21 @@ export default function MapScreen({ navigation }: { navigation: any }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [isMapReady, setIsMapReady] = useState(false);
   const [hasLocationPermission, setHasLocationPermission] = useState(false);
-  
+
   const mapRef = useRef<MapView>(null);
   const { regions, isLoading, refreshRegions } = useMapData();
-  const { 
-    currentZoom, 
-    region, 
-    setRegion, 
-    calculateZoom, 
+  const {
+    currentZoom,
+    region,
+    setRegion,
+    calculateZoom,
     shouldShowMarker,
     setCurrentZoom,
-    viewVietnam
+    viewVietnam,
   } = useMapInteraction();
-  
+
+  const { showToast } = useToast();
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsMapReady(true);
@@ -51,25 +54,32 @@ export default function MapScreen({ navigation }: { navigation: any }) {
   }, []);
 
   const handleSaveRecipe = async (recipe: Recipe) => {
-    const success = await saveRecipe(recipe);
-    if (success) {
-      await refreshSavedRecipes();
-      Alert.alert("Thành công", "Đã lưu công thức vào Menu của bạn");
-    } else {
-      Alert.alert("Thông báo", "Công thức này đã được lưu trước đó");
+    try {
+      const success = await saveRecipe(recipe);
+      if (success) {
+        showToast('success', 'Đã lưu công thức');
+      } else {
+        showToast('info', 'Công thức đã được lưu trước đó');
+      }
+    } catch (error) {
+      showToast('error', 'Không thể lưu công thức');
     }
   };
 
-  const handleRandomRecipe = (latitude: number, longitude: number, recipes: Recipe[]) => {
+  const handleRandomRecipe = (
+    latitude: number,
+    longitude: number,
+    recipes: Recipe[]
+  ) => {
     const newRegion: MapRegion = {
       latitude,
       longitude,
       latitudeDelta: 0.5,
       longitudeDelta: 0.5,
     };
-    
+
     mapRef.current?.animateToRegion(newRegion, 1000);
-    
+
     setTimeout(() => {
       setSelectedRecipes(recipes);
       setModalVisible(true);
@@ -78,15 +88,12 @@ export default function MapScreen({ navigation }: { navigation: any }) {
 
   const onSearch = async (query: string) => {
     if (!query.trim()) return;
-    
+
     try {
       if (!hasLocationPermission) {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
-          Alert.alert(
-            "Cần quyền truy cập",
-            "Ứng dụng cần quyền truy cập vị trí để tìm kiếm địa điểm"
-          );
+          showToast('error', 'Cần quyền truy cập vị trí để tìm kiếm');
           return;
         }
         setHasLocationPermission(true);
@@ -102,12 +109,13 @@ export default function MapScreen({ navigation }: { navigation: any }) {
           longitudeDelta: 0.05,
         };
         mapRef.current?.animateToRegion(newRegion, 1000);
+        showToast('success', 'Đã tìm thấy địa điểm');
       } else {
-        Alert.alert("Thông báo", "Không tìm thấy địa điểm");
+        showToast('warning', 'Không tìm thấy địa điểm');
       }
     } catch (error) {
       console.error('Lỗi tìm kiếm:', error);
-      Alert.alert("Lỗi", "Không thể tìm kiếm địa điểm");
+      showToast('error', 'Không thể tìm kiếm địa điểm');
     }
   };
 
@@ -139,14 +147,17 @@ export default function MapScreen({ navigation }: { navigation: any }) {
         onRegionChange={(newRegion) => {
           setRegion(newRegion);
           const newZoom = calculateZoom(newRegion.latitudeDelta);
-          
+
           // Debug log for map zoom
           console.log('---Debug Map Zoom---');
           console.log('Zoom level:', newZoom);
           console.log('latitudeDelta:', newRegion.latitudeDelta);
-          console.log('Visible markers:', regions.filter(r => shouldShowMarker(r.id, newZoom)).length);
+          console.log(
+            'Visible markers:',
+            regions.filter((r) => shouldShowMarker(r.id, newZoom)).length
+          );
           console.log('------------------');
-          
+
           setCurrentZoom(newZoom);
         }}
         onMapReady={() => {
@@ -183,7 +194,7 @@ export default function MapScreen({ navigation }: { navigation: any }) {
 
       {isLoading && <Loading overlay text="Đang tải..." />}
 
-      <ViewVietnamButton 
+      <ViewVietnamButton
         onPress={() => {
           viewVietnam(mapRef);
         }}

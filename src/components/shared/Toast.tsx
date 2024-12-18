@@ -5,6 +5,7 @@ import { useTheme } from '../../theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { ToastType } from '../../hooks/useToast';
 import { THEME_CONSTANTS } from '../../theme/constants';
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 interface Props {
   visible: boolean;
@@ -60,45 +61,48 @@ export const Toast = ({ visible, message, type }: Props) => {
   if (!visible) return null;
 
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        {
-          transform: [{ translateY }],
-          backgroundColor: getToastColor(),
-          bottom: THEME_CONSTANTS.layout.tabBarHeight + theme.spacing.md,
-          left: theme.spacing.md,
-          right: theme.spacing.md,
-          padding: theme.spacing.md,
-          borderRadius: THEME_CONSTANTS.layout.borderRadius.sm,
-          ...theme.shadows.md,
-        },
-      ]}
-    >
-      <View style={styles.content}>
-        <Ionicons
-          name={getIcon()}
-          size={24}
-          color={theme.colors.text.contrast}
-        />
-        <Typography
-          variant="body2"
-          style={{
-            color: theme.colors.text.contrast,
-            marginLeft: theme.spacing.sm,
-          }}
-        >
-          {message}
-        </Typography>
-      </View>
-    </Animated.View>
+    <RootSiblingParent>
+      <Animated.View
+        style={[
+          styles.container,
+          {
+            transform: [{ translateY }],
+            backgroundColor: getToastColor(),
+            bottom: THEME_CONSTANTS.layout.tabBarHeight + theme.spacing.md,
+            left: theme.spacing.md,
+            right: theme.spacing.md,
+            padding: theme.spacing.md,
+            borderRadius: THEME_CONSTANTS.layout.borderRadius.sm,
+            ...theme.shadows.md,
+          },
+        ]}
+      >
+        <View style={styles.content}>
+          <Ionicons
+            name={getIcon()}
+            size={24}
+            color={theme.colors.text.contrast}
+          />
+          <Typography
+            variant="body2"
+            style={{
+              color: theme.colors.text.contrast,
+              marginLeft: theme.spacing.sm,
+            }}
+          >
+            {message}
+          </Typography>
+        </View>
+      </Animated.View>
+    </RootSiblingParent>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    zIndex: 9999,
+    zIndex: 999999,
+    elevation: 999999,
   },
   content: {
     flexDirection: 'row',

@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, ScrollView, Modal, TouchableOpacity, StatusBar } from 'react-native';
+import {
+  View,
+  ScrollView,
+  Modal,
+  TouchableOpacity,
+  StatusBar,
+} from 'react-native';
 import { Typography } from '../../../components/shared';
 import { RecipeCard } from '../../../components/recipe';
 import { useTheme } from '../../../theme/ThemeContext';
@@ -33,33 +39,38 @@ export function RecipeModal({
       animationType="slide"
       presentationStyle="fullScreen"
       onRequestClose={onClose}
+      style={{ zIndex: 999 }}
     >
-      <View style={{ 
-        flex: 1,
-        backgroundColor: theme.colors.background.default,
-      }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: theme.colors.background.default,
+        }}
+      >
         {/* Header */}
-        <View style={{ 
-          flexDirection: 'row',
-          alignItems: 'center',
-          padding: theme.spacing.md,
-          paddingTop: insets.top,
-          borderBottomWidth: 1,
-          borderBottomColor: theme.colors.divider,
-          backgroundColor: theme.colors.background.paper,
-          ...theme.shadows.sm,
-        }}>
-          <TouchableOpacity 
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            padding: theme.spacing.md,
+            paddingTop: insets.top,
+            borderBottomWidth: 1,
+            borderBottomColor: theme.colors.divider,
+            backgroundColor: theme.colors.background.paper,
+            ...theme.shadows.sm,
+          }}
+        >
+          <TouchableOpacity
             onPress={onClose}
             style={{
               padding: theme.spacing.sm,
               marginRight: theme.spacing.sm,
             }}
           >
-            <Ionicons 
-              name="arrow-back" 
-              size={24} 
-              color={theme.colors.text.primary} 
+            <Ionicons
+              name="arrow-back"
+              size={24}
+              color={theme.colors.text.primary}
             />
           </TouchableOpacity>
 
@@ -67,8 +78,8 @@ export function RecipeModal({
             <Typography variant="h2" style={{ fontSize: 20 }}>
               Các món ăn trong vùng
             </Typography>
-            <Typography 
-              variant="body2" 
+            <Typography
+              variant="body2"
               color="secondary"
               style={{ marginTop: 2 }}
             >
@@ -80,13 +91,13 @@ export function RecipeModal({
         {/* Recipe List */}
         <ScrollView
           style={{ flex: 1 }}
-          contentContainerStyle={{ 
+          contentContainerStyle={{
             padding: theme.spacing.md,
-            paddingBottom: insets.bottom + theme.spacing.xl
+            paddingBottom: insets.bottom + theme.spacing.xl,
           }}
         >
           {recipes.map((recipe) => (
-            <View 
+            <View
               key={recipe.id}
               style={{
                 marginBottom: theme.spacing.lg,

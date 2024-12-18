@@ -10,6 +10,7 @@ import { useAuthForm } from './hooks/useAuthForm';
 import { useAuthAnimation } from './hooks/useAuthAnimation';
 import { useProfileActions } from './hooks/useProfileActions';
 import { ResetPasswordModal } from './components/ResetPasswordModal';
+import { useToast } from '../../hooks/useToast';
 
 export default function ProfileScreen() {
   const { theme } = useTheme();
@@ -61,37 +62,39 @@ export default function ProfileScreen() {
     handleResetPassword,
   } = useAuthForm(login, register, resetPassword);
 
+  const { showToast } = useToast();
+
   // Handlers
   const handleLogin = async () => {
-    const isEmailValid = validateEmail(email);
-    const isPasswordValid = validatePassword(password);
-
-    if (isRegistering) {
-      const isConfirmPasswordValid = validateConfirmPassword(
-        password,
-        confirmPassword
-      );
-      if (!isEmailValid || !isPasswordValid || !isConfirmPasswordValid) return;
-    } else {
-      if (!isEmailValid || !isPasswordValid) return;
-    }
-
     try {
-      if (isRegistering) {
-        await register(email, password);
-        Alert.alert('Thành công', 'Đăng ký tài khoản thành công');
-      } else {
-        await login(email, password);
-        Alert.alert('Thành công', 'Đăng nhập thành công');
-      }
+      await login(email, password);
+      showToast('success', 'Đăng nhập thành công');
     } catch (error: any) {
-      Alert.alert('Lỗi', error.message);
+      showToast('error', 'Đăng nhập thất bại: ' + error.message);
+    }
+  };
+
+  const handleRegister = async () => {
+    try {
+      await register(email, password);
+      showToast('success', 'Đăng ký thành công');
+    } catch (error: any) {
+      showToast('error', 'Đăng ký thất bại: ' + error.message);
     }
   };
 
   const toggleAuthMode = () => {
     setIsRegistering(!isRegistering);
     animateFormTransition();
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      showToast('success', 'Đã đăng xuất');
+    } catch (error: any) {
+      showToast('error', 'Đăng xuất thất bại');
+    }
   };
 
   return (
@@ -114,7 +117,7 @@ export default function ProfileScreen() {
           onSavePress={handleSaveProfile}
           onCancelPress={handleCancelEditing}
           onPickImage={pickImage}
-          onLogout={logout}
+          onLogout={handleLogout}
           onImportData={
             user.email === '21521059@gm.uit.edu.vn'
               ? handleImportData
