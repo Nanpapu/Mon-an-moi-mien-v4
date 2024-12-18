@@ -21,19 +21,20 @@ export const ZoomControls = ({
 
   return (
     <View style={styles.container}>
+        <TouchableOpacity
+        onPress={onZoomIn}
+        disabled={!canZoomIn}
+        style={[styles.button, !canZoomIn && styles.buttonDisabled]}
+      >
+        <Ionicons name="add" size={24} color={theme.colors.text.primary} />
+      </TouchableOpacity>
+
       <TouchableOpacity
         onPress={onZoomOut}
         disabled={!canZoomOut}
         style={[styles.button, !canZoomOut && styles.buttonDisabled]}
       >
         <Ionicons name="remove" size={24} color={theme.colors.text.primary} />
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={onZoomIn}
-        disabled={!canZoomIn}
-        style={[styles.button, !canZoomIn && styles.buttonDisabled]}
-      >
-        <Ionicons name="add" size={24} color={theme.colors.text.primary} />
       </TouchableOpacity>
     </View>
   );
