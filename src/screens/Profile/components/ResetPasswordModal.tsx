@@ -16,7 +16,7 @@ export const ResetPasswordModal = ({
   email,
   onEmailChange,
   onClose,
-  onSubmit
+  onSubmit,
 }: Props) => {
   const { theme } = useTheme();
 
@@ -26,16 +26,15 @@ export const ResetPasswordModal = ({
       onClose={onClose}
       style={{ margin: theme.spacing.lg }}
     >
-      <View style={{ 
-        padding: theme.spacing.lg,
-        backgroundColor: theme.colors.background.paper,
-        borderRadius: theme.spacing.md,
-        ...theme.shadows.md
-      }}>
-        <Typography 
-          variant="h3" 
-          style={{ marginBottom: theme.spacing.lg }}
-        >
+      <View
+        style={{
+          padding: theme.spacing.lg,
+          backgroundColor: theme.colors.background.paper,
+          borderRadius: theme.spacing.md,
+          ...theme.shadows.md,
+        }}
+      >
+        <Typography variant="h3" style={{ marginBottom: theme.spacing.lg }}>
           Đặt lại mật khẩu
         </Typography>
 
@@ -48,24 +47,18 @@ export const ResetPasswordModal = ({
           leftIcon="mail-outline"
         />
 
-        <View style={{ 
-          flexDirection: 'row', 
-          justifyContent: 'flex-end',
-          gap: theme.spacing.md,
-          marginTop: theme.spacing.lg
-        }}>
-          <Button
-            variant="outline"
-            onPress={onClose}
-            style={{ flex: 1 }}
-          >
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+            gap: theme.spacing.md,
+            marginTop: theme.spacing.lg,
+          }}
+        >
+          <Button variant="outline" onPress={onClose} style={{ flex: 1 }}>
             Hủy
           </Button>
-          <Button
-            variant="primary"
-            onPress={onSubmit}
-            style={{ flex: 1 }}
-          >
+          <Button variant="primary" onPress={onSubmit} style={{ flex: 1 }}>
             Gửi
           </Button>
         </View>
