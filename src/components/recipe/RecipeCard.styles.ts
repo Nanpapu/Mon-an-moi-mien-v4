@@ -159,30 +159,29 @@ export const createStyles = (theme: Theme) =>
     modalContainer: {
       flex: 1,
       backgroundColor: 'rgba(0,0,0,0.5)',
-      justifyContent: 'flex-end',
     },
     modalContent: {
+      flex: 1,
       backgroundColor: theme.colors.background.default,
-      borderTopLeftRadius: theme.spacing.lg,
-      borderTopRightRadius: theme.spacing.lg,
-      maxHeight: '80%',
-      paddingBottom: theme.spacing.md,
+      marginTop: 60,
     },
     modalHeader: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: theme.spacing.md,
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors.divider,
+      position: 'absolute',
+      top: -60,
+      left: 0,
+      right: 0,
+      zIndex: 1,
     },
     modalTitle: {
       ...theme.typography.h3,
       color: theme.colors.text.primary,
     },
     closeButton: {
-      padding: theme.spacing.xs,
-      borderRadius: theme.spacing.sm,
+      padding: theme.spacing.sm,
     },
     modalBody: {
       padding: theme.spacing.md,
