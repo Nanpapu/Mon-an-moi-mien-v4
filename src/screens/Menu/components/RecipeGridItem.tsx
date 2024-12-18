@@ -16,9 +16,16 @@ interface Props {
   onPress: () => void;
   width: number;
   config: (typeof ZOOM_LEVELS)[keyof typeof ZOOM_LEVELS];
+  onFavoriteChange?: () => void;
 }
 
-export const RecipeGridItem = ({ recipe, onPress, width, config }: Props) => {
+export const RecipeGridItem = ({
+  recipe,
+  onPress,
+  width,
+  config,
+  onFavoriteChange,
+}: Props) => {
   const { theme } = useTheme();
   const styles = createStyles(theme, width, config);
   const [stats, setStats] = useState({ averageRating: 0, totalReviews: 0 });
@@ -57,7 +64,7 @@ export const RecipeGridItem = ({ recipe, onPress, width, config }: Props) => {
       onPress={onPress}
       activeOpacity={0.7}
     >
-      <FavoriteButton recipe={recipe} />
+      <FavoriteButton recipe={recipe} onToggle={onFavoriteChange} />
       <Image
         source={recipe.image}
         style={styles.image}

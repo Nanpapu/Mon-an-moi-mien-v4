@@ -9,9 +9,10 @@ interface Props {
   recipe: Recipe;
   size?: number;
   style?: any;
+  onToggle?: () => void;
 }
 
-export function FavoriteButton({ recipe, size = 24, style }: Props) {
+export function FavoriteButton({ recipe, size = 24, style, onToggle }: Props) {
   const { theme } = useTheme();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -35,6 +36,7 @@ export function FavoriteButton({ recipe, size = 24, style }: Props) {
         await FavoriteService.addFavorite(recipe);
       }
       setIsFavorite(!isFavorite);
+      onToggle?.();
     } catch (error) {
       console.error('Lỗi khi thay đổi trạng thái yêu thích:', error);
     }

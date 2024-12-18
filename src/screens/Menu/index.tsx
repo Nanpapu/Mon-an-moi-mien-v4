@@ -33,6 +33,7 @@ export default function MenuScreen() {
     setShowFavorites,
     filteredRecipes,
     regions,
+    refreshFavorites,
   } = useRecipeFilter(savedRecipes);
 
   const {
@@ -80,6 +81,7 @@ export default function MenuScreen() {
             onDeleteRecipe={handleDeleteRecipe}
             currentConfig={currentConfig}
             calculateItemWidth={calculateItemWidth}
+            onFavoriteChange={refreshFavorites}
           />
           <ZoomControls
             onZoomIn={zoomIn}

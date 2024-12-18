@@ -17,6 +17,7 @@ interface Props {
   onDeleteRecipe: (recipe: Recipe) => Promise<void>;
   currentConfig: any;
   calculateItemWidth: () => number;
+  onFavoriteChange: () => void;
 }
 
 export const RecipeList = ({
@@ -28,6 +29,7 @@ export const RecipeList = ({
   onDeleteRecipe,
   currentConfig,
   calculateItemWidth,
+  onFavoriteChange,
 }: Props) => {
   const { theme } = useTheme();
   const styles = createStyles(theme);
@@ -54,6 +56,7 @@ export const RecipeList = ({
               onPress={() => setSelectedRecipe(recipe)}
               width={calculateItemWidth()}
               config={currentConfig}
+              onFavoriteChange={onFavoriteChange}
             />
           ))}
         </View>
