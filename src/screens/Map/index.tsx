@@ -125,7 +125,7 @@ export default function MapScreen({ navigation }: { navigation: any }) {
       await refreshRegions();
     } catch (error) {
       console.error('Lỗi khi refresh:', error);
-      Alert.alert('Lỗi', 'Không thể tải lại dữ liệu');
+      showToast('error', 'Không thể tải lại dữ liệu');
     }
   };
 

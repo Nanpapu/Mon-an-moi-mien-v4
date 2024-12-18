@@ -1,19 +1,22 @@
-import { useState, useEffect } from "react";
-import { Alert } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import { UserService } from "../../../services/userService";
-import { RegionService } from "../../../services/regionService";
-import { User } from "firebase/auth";
+import { useState, useEffect } from 'react';
+import { useToast } from '../../../hooks/useToast';
+import * as ImagePicker from 'expo-image-picker';
+import { UserService } from '../../../services/userService';
+import { RegionService } from '../../../services/regionService';
+import { User } from 'firebase/auth';
 
 export const useProfileActions = (user: User | null) => {
-  const [displayName, setDisplayName] = useState(user?.displayName || "");
+  const { showToast } = useToast();
+  const [displayName, setDisplayName] = useState(user?.displayName || '');
   const [isEditing, setIsEditing] = useState(false);
-  const [originalDisplayName, setOriginalDisplayName] = useState(user?.displayName || "");
+  const [originalDisplayName, setOriginalDisplayName] = useState(
+    user?.displayName || ''
+  );
 
   useEffect(() => {
     const fetchUserData = async () => {
       if (!user) return;
-      
+
       try {
         const userData = await UserService.getUserData(user.uid);
         if (userData && userData.displayName) {
@@ -21,7 +24,7 @@ export const useProfileActions = (user: User | null) => {
           setOriginalDisplayName(userData.displayName);
         }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
       }
     };
 
@@ -42,12 +45,12 @@ export const useProfileActions = (user: User | null) => {
     try {
       const success = await RegionService.importDataToFirestore();
       if (success) {
-        Alert.alert("Thành công", "Đã import dữ liệu vào Firestore");
+        showToast('success', 'Đã import dữ liệu vào Firestore');
       } else {
-        Alert.alert("Lỗi", "Không thể import dữ liệu");
+        showToast('error', 'Không thể import dữ liệu');
       }
     } catch (error) {
-      Alert.alert("Lỗi", "Có lỗi xảy ra khi import dữ liệu");
+      showToast('error', 'Có lỗi xảy ra khi import dữ liệu');
     }
   };
 
@@ -55,7 +58,7 @@ export const useProfileActions = (user: User | null) => {
     if (!user) return;
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: "images",
+      mediaTypes: 'images',
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
@@ -68,10 +71,10 @@ export const useProfileActions = (user: User | null) => {
           result.assets[0].uri
         );
         if (downloadURL) {
-          Alert.alert("Thành công", "Đã cập nhật ảnh đại diện");
+          showToast('success', 'Đã cập nhật ảnh đại diện');
         }
       } catch (error) {
-        Alert.alert("Lỗi", "Không th��� cập nhật ảnh đại diện");
+        showToast('error', 'Không thể cập nhật ảnh đại diện');
       }
     }
   };
@@ -84,11 +87,11 @@ export const useProfileActions = (user: User | null) => {
         displayName,
       });
       if (success) {
-        Alert.alert("Thành công", "Đã cập nhật thông tin");
+        showToast('success', 'Đã cập nhật thông tin');
         setIsEditing(false);
       }
     } catch (error) {
-      Alert.alert("Lỗi", "Không thể cập nhật thông tin");
+      showToast('error', 'Không thể cập nhật thông tin');
     }
   };
 
@@ -97,13 +100,13 @@ export const useProfileActions = (user: User | null) => {
     try {
       const success = await UserService.createUserDocument(
         user.uid,
-        user.email || ""
+        user.email || ''
       );
       if (success) {
-        Alert.alert("Thành công", "Đã tạo thông tin người dùng");
+        showToast('success', 'Đã tạo thông tin người dùng');
       }
     } catch (error) {
-      Alert.alert("Lỗi", "Không thể tạo thông tin người dùng");
+      showToast('error', 'Không thể tạo thông tin người dùng');
     }
   };
 

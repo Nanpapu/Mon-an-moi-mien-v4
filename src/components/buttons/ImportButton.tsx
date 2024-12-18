@@ -1,15 +1,29 @@
 import React, { useState } from 'react';
-import { TouchableOpacity, Modal, View, ActivityIndicator, Alert } from 'react-native';
+import {
+  TouchableOpacity,
+  Modal,
+  View,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
 import { Typography } from '../shared';
 import { useTheme } from '../../theme/ThemeContext';
 import { db } from '../../config/firebase';
-import { doc, writeBatch, Timestamp, collection, getDocs } from 'firebase/firestore';
+import {
+  doc,
+  writeBatch,
+  Timestamp,
+  collection,
+  getDocs,
+} from 'firebase/firestore';
 import { COLLECTIONS } from '../../constants';
 import { regions } from '../../data/regions';
+import { useToast } from '../../hooks/useToast';
 
 export function ImportButton() {
   const { theme } = useTheme();
   const [isImporting, setIsImporting] = useState(false);
+  const { showToast } = useToast();
 
   const handleImportData = async () => {
     setIsImporting(true);
@@ -17,16 +31,18 @@ export function ImportButton() {
       const batch = writeBatch(db);
 
       // 1. Lấy danh sách tất cả recipeStats hiện tại
-      const statsSnapshot = await getDocs(collection(db, COLLECTIONS.RECIPE_STATS));
-      const existingStatsIds = new Set(statsSnapshot.docs.map(doc => doc.id));
-      
+      const statsSnapshot = await getDocs(
+        collection(db, COLLECTIONS.RECIPE_STATS)
+      );
+      const existingStatsIds = new Set(statsSnapshot.docs.map((doc) => doc.id));
+
       // 2. Tạo Set chứa ID của tất cả recipes sẽ import
       const newRecipeIds = new Set();
 
       // 3. Import regions và recipes
       for (const region of regions) {
         const { recipes: regionRecipes, ...regionData } = region;
-        
+
         const regionRef = doc(db, COLLECTIONS.REGIONS, region.id);
         batch.set(regionRef, {
           ...regionData,
@@ -36,7 +52,7 @@ export function ImportButton() {
 
         for (const recipe of regionRecipes) {
           newRecipeIds.add(recipe.id);
-          
+
           const recipeRef = doc(db, COLLECTIONS.RECIPES, recipe.id);
           batch.set(recipeRef, {
             ...recipe,
@@ -53,7 +69,7 @@ export function ImportButton() {
               averageRating: 0,
               totalReviews: 0,
               createdAt: Timestamp.now(),
-              updatedAt: Timestamp.now()
+              updatedAt: Timestamp.now(),
             });
           }
         }
@@ -68,10 +84,10 @@ export function ImportButton() {
       }
 
       await batch.commit();
-      Alert.alert('Thành công', 'Đã import và đồng bộ dữ liệu');
+      showToast('success', 'Đã import và đồng bộ dữ liệu');
     } catch (error) {
-      console.error("Lỗi khi import dữ liệu:", error);
-      Alert.alert('Lỗi', 'Có lỗi xảy ra khi import dữ liệu');
+      console.error('Lỗi khi import dữ liệu:', error);
+      showToast('error', 'Có lỗi xảy ra khi import dữ liệu');
     } finally {
       setIsImporting(false);
     }
@@ -79,18 +95,20 @@ export function ImportButton() {
 
   return (
     <>
-      <TouchableOpacity 
-        style={[{
-          backgroundColor: theme.colors.primary.main,
-          padding: theme.spacing.md,
-          borderRadius: theme.spacing.sm,
-          alignItems: 'center',
-          ...theme.shadows.sm
-        }]}
+      <TouchableOpacity
+        style={[
+          {
+            backgroundColor: theme.colors.primary.main,
+            padding: theme.spacing.md,
+            borderRadius: theme.spacing.sm,
+            alignItems: 'center',
+            ...theme.shadows.sm,
+          },
+        ]}
         onPress={handleImportData}
         disabled={isImporting}
       >
-        <Typography 
+        <Typography
           variant="body1"
           style={{ color: theme.colors.primary.contrast }}
         >
@@ -98,29 +116,26 @@ export function ImportButton() {
         </Typography>
       </TouchableOpacity>
 
-      <Modal
-        transparent={true}
-        visible={isImporting}
-        animationType="fade"
-      >
-        <View style={{
-          flex: 1,
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-          <View style={{
-            backgroundColor: theme.colors.background.paper,
-            padding: theme.spacing.lg,
-            borderRadius: theme.spacing.md,
+      <Modal transparent={true} visible={isImporting} animationType="fade">
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
             alignItems: 'center',
-            ...theme.shadows.md
-          }}>
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: theme.colors.background.paper,
+              padding: theme.spacing.lg,
+              borderRadius: theme.spacing.md,
+              alignItems: 'center',
+              ...theme.shadows.md,
+            }}
+          >
             <ActivityIndicator size="large" color={theme.colors.primary.main} />
-            <Typography
-              variant="body1"
-              style={{ marginTop: theme.spacing.md }}
-            >
+            <Typography variant="body1" style={{ marginTop: theme.spacing.md }}>
               Đang import dữ liệu...
             </Typography>
           </View>
