@@ -43,7 +43,8 @@ export function RecipeCard({
 
   useEffect(() => {
     if (showReviews) {
-      // Lắng nghe thay đổi từ recipeStats
+      setIsLoadingStats(true);
+      
       const unsubscribe = onSnapshot(
         doc(db, COLLECTIONS.RECIPE_STATS, recipe.id),
         (doc) => {
@@ -54,14 +55,19 @@ export function RecipeCard({
               totalReviews: data.totalReviews || 0
             });
           }
+          setIsLoadingStats(false);
         },
         (error) => {
           console.error("Lỗi khi lắng nghe thay đổi stats:", error);
+          setIsLoadingStats(false);
         }
       );
 
       // Cleanup subscription
-      return () => unsubscribe();
+      return () => {
+        unsubscribe();
+        setIsLoadingStats(false);
+      };
     }
   }, [showReviews, recipe.id]);
 
