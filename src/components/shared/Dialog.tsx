@@ -1,5 +1,5 @@
-import React from 'react';
-import { Modal, View, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Modal, View, StyleSheet, TouchableOpacity, Animated, Dimensions } from 'react-native';
 import { Typography, Button } from './';
 import { useTheme } from '../../theme/ThemeContext';
 
@@ -11,7 +11,7 @@ interface DialogProps {
   cancelText?: string;
   onConfirm?: () => void;
   onCancel?: () => void;
-  type?: 'default' | 'danger';
+  type?: 'default' | 'danger' | 'success';
 }
 
 export const Dialog = ({
@@ -25,26 +25,37 @@ export const Dialog = ({
   type = 'default'
 }: DialogProps) => {
   const { theme } = useTheme();
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.3)).current;
 
-  const styles = StyleSheet.create({
-    overlay: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: theme.spacing.lg,
-    },
-    dialog: {
-      width: '80%',
-      maxWidth: 400,
-      padding: theme.spacing.lg,
-      borderRadius: theme.spacing.md,
-    },
-    actions: {
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-      marginTop: theme.spacing.lg,
-    },
-  });
+  useEffect(() => {
+    if (visible) {
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          friction: 8,
+          tension: 40,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+  }, [visible]);
+
+  const getButtonColor = () => {
+    switch (type) {
+      case 'danger':
+        return theme.colors.error.main;
+      case 'success':
+        return theme.colors.success.main;
+      default:
+        return theme.colors.primary.main;
+    }
+  };
 
   return (
     <Modal
@@ -54,54 +65,89 @@ export const Dialog = ({
       onRequestClose={onCancel}
     >
       <TouchableOpacity
-        style={[
-          styles.overlay,
-          { backgroundColor: 'rgba(0, 0, 0, 0.5)' }
-        ]}
+        style={[styles.overlay, { backgroundColor: 'rgba(0, 0, 0, 0.5)' }]}
         onPress={onCancel}
         activeOpacity={1}
       >
-        <View
+        <Animated.View
           style={[
             styles.dialog,
             {
               backgroundColor: theme.colors.background.paper,
               ...theme.shadows.lg,
+              opacity: fadeAnim,
+              transform: [{ scale: scaleAnim }],
             }
           ]}
         >
-          <Typography variant="h3" style={{ marginBottom: theme.spacing.sm }}>
-            {title}
-          </Typography>
-          
-          <Typography
-            variant="body2"
-            color="secondary"
-            style={{ marginBottom: theme.spacing.lg }}
-          >
-            {message}
-          </Typography>
-
-          <View style={styles.actions}>
-            {onCancel && (
-              <Button
-                variant="outline"
-                onPress={onCancel}
-                style={{ flex: 1, marginRight: theme.spacing.sm }}
-              >
-                {cancelText}
-              </Button>
-            )}
-            <Button
-              variant={type === 'danger' ? 'secondary' : 'primary'}
-              onPress={onConfirm}
-              style={{ flex: 1 }}
+          <View style={styles.content}>
+            <Typography 
+              variant="h3" 
+              style={{ 
+                marginBottom: theme.spacing.sm,
+                textAlign: 'center' 
+              }}
             >
-              {confirmText}
-            </Button>
+              {title}
+            </Typography>
+            
+            <Typography
+              variant="body2"
+              color="secondary"
+              style={{ 
+                marginBottom: theme.spacing.lg,
+                textAlign: 'center',
+                paddingHorizontal: theme.spacing.sm 
+              }}
+            >
+              {message}
+            </Typography>
+
+            <View style={styles.actions}>
+              {onCancel && (
+                <Button
+                  variant="outline"
+                  onPress={onCancel}
+                  style={{ flex: 1, marginRight: theme.spacing.sm }}
+                >
+                  {cancelText}
+                </Button>
+              )}
+              <Button
+                variant="primary"
+                onPress={onConfirm}
+                style={{ 
+                  flex: 1,
+                  backgroundColor: getButtonColor()
+                }}
+              >
+                {confirmText}
+              </Button>
+            </View>
           </View>
-        </View>
+        </Animated.View>
       </TouchableOpacity>
     </Modal>
   );
-}; 
+};
+
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dialog: {
+    width: '85%',
+    maxWidth: 340,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  content: {
+    padding: 24,
+  },
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+}); 
