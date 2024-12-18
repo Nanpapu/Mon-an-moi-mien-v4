@@ -1,10 +1,17 @@
-import React, { useState, useRef } from "react";
-import { View, StyleSheet, TouchableOpacity, Animated, Platform, TextInput } from "react-native";
+import React, { useState, useRef } from 'react';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Animated,
+  Platform,
+  TextInput,
+} from 'react-native';
 import { RandomRecipeButton } from '../../../components/buttons';
 import { SearchBar, Typography } from '../../../components/shared';
-import { useTheme } from "../../../theme/ThemeContext";
+import { useTheme } from '../../../theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
-import { Region } from "../../../types";
+import { Region } from '../../../types';
 
 interface Props {
   onRefresh: () => void;
@@ -13,7 +20,12 @@ interface Props {
   onSearch: (query: string) => void;
 }
 
-export function MapControls({ onRefresh, regions, onRandomSelect, onSearch }: Props) {
+export function MapControls({
+  onRefresh,
+  regions,
+  onRandomSelect,
+  onSearch,
+}: Props) {
   const { theme } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
@@ -21,24 +33,24 @@ export function MapControls({ onRefresh, regions, onRandomSelect, onSearch }: Pr
   const reloadTop = useRef(new Animated.Value(20)).current;
 
   const expandedWidth = Platform.OS === 'ios' ? 358 : 328;
-  
+
   const toggleSearch = () => {
     const toValue = showSearch ? 48 : expandedWidth;
     const newTop = showSearch ? 20 : 80;
-    
+
     setShowSearch(!showSearch);
-    
+
     Animated.parallel([
       Animated.spring(searchWidth, {
         toValue,
         useNativeDriver: false,
-        friction: 10
+        friction: 10,
       }),
       Animated.spring(reloadTop, {
         toValue: newTop,
         useNativeDriver: false,
-        friction: 10
-      })
+        friction: 10,
+      }),
     ]).start();
   };
 
@@ -52,38 +64,34 @@ export function MapControls({ onRefresh, regions, onRandomSelect, onSearch }: Pr
 
   return (
     <>
-      <Animated.View style={[
-        styles.searchContainer,
-        {
-          backgroundColor: theme.colors.background.paper,
-          width: searchWidth,
-          ...theme.shadows.sm
-        }
-      ]}>
+      <Animated.View
+        style={[
+          styles.searchContainer,
+          {
+            backgroundColor: theme.colors.background.paper,
+            width: searchWidth,
+            ...theme.shadows.sm,
+          },
+        ]}
+      >
         {!showSearch ? (
-          <TouchableOpacity 
-            onPress={toggleSearch}
-            style={styles.searchIcon}
-          >
-            <Ionicons 
-              name="search" 
-              size={24} 
-              color={theme.colors.text.secondary} 
+          <TouchableOpacity onPress={toggleSearch} style={styles.searchIcon}>
+            <Ionicons
+              name="search"
+              size={24}
+              color={theme.colors.text.secondary}
             />
           </TouchableOpacity>
         ) : (
           <View style={styles.searchInputWrapper}>
-            <TouchableOpacity 
-              onPress={toggleSearch}
-              style={styles.searchIcon}
-            >
-              <Ionicons 
-                name="search" 
-                size={24} 
-                color={theme.colors.text.secondary} 
+            <TouchableOpacity onPress={toggleSearch} style={styles.searchIcon}>
+              <Ionicons
+                name="arrow-back"
+                size={24}
+                color={theme.colors.text.secondary}
               />
             </TouchableOpacity>
-            
+
             <View style={styles.searchBarWrapper}>
               <TextInput
                 value={searchQuery}
@@ -96,8 +104,8 @@ export function MapControls({ onRefresh, regions, onRandomSelect, onSearch }: Pr
                     color: theme.colors.text.primary,
                     backgroundColor: theme.colors.background.paper,
                     borderColor: theme.colors.divider,
-                    ...theme.shadows.sm
-                  }
+                    ...theme.shadows.sm,
+                  },
                 ]}
                 onSubmitEditing={handleSubmit}
               />
@@ -106,27 +114,22 @@ export function MapControls({ onRefresh, regions, onRandomSelect, onSearch }: Pr
         )}
       </Animated.View>
 
-      <Animated.View style={[
-        styles.reloadButton,
-        {
-          backgroundColor: theme.colors.background.paper,
-          top: reloadTop,
-          ...theme.shadows.sm
-        }
-      ]}>
+      <Animated.View
+        style={[
+          styles.reloadButton,
+          {
+            backgroundColor: theme.colors.background.paper,
+            top: reloadTop,
+            ...theme.shadows.sm,
+          },
+        ]}
+      >
         <TouchableOpacity onPress={onRefresh}>
-          <Ionicons 
-            name="reload" 
-            size={24} 
-            color={theme.colors.primary.main}
-          />
+          <Ionicons name="reload" size={24} color={theme.colors.primary.main} />
         </TouchableOpacity>
       </Animated.View>
 
-      <RandomRecipeButton
-        regions={regions}
-        onRandomSelect={onRandomSelect}
-      />
+      <RandomRecipeButton regions={regions} onRandomSelect={onRandomSelect} />
     </>
   );
 }
