@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import { Animated, StyleSheet } from "react-native";
-import { Typography } from "./";
 import { useTheme } from "../../theme/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
+import { Typography } from "./Typography";
 
 interface ToastProps {
   message: string;
