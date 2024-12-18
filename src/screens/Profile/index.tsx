@@ -1,14 +1,15 @@
-import React, { useState } from "react";
-import { View, Alert } from "react-native";
-import { useTheme } from "../../theme/ThemeContext";
-import { Loading, Typography } from "../../components/shared";
-import { AuthForm } from "./components/AuthForm";
-import { UserProfile } from "./components/UserProfile";
-import { GoogleSignInButton } from "./components/GoogleSignInButton";
-import { useAuth } from "../../context/AuthContext";
-import { useAuthForm } from "./hooks/useAuthForm";
-import { useAuthAnimation } from "./hooks/useAuthAnimation";
-import { useProfileActions } from "./hooks/useProfileActions";
+import React, { useState } from 'react';
+import { View, Alert } from 'react-native';
+import { useTheme } from '../../theme/ThemeContext';
+import { Loading, Typography } from '../../components/shared';
+import { AuthForm } from './components/AuthForm';
+import { UserProfile } from './components/UserProfile';
+import { GoogleSignInButton } from './components/GoogleSignInButton';
+import { useAuth } from '../../context/AuthContext';
+import { useAuthForm } from './hooks/useAuthForm';
+import { useAuthAnimation } from './hooks/useAuthAnimation';
+import { useProfileActions } from './hooks/useProfileActions';
+import { ResetPasswordModal } from './components/ResetPasswordModal';
 
 export default function ProfileScreen() {
   const { theme } = useTheme();
@@ -78,13 +79,13 @@ export default function ProfileScreen() {
     try {
       if (isRegistering) {
         await register(email, password);
-        Alert.alert("Thành công", "Đăng ký tài khoản thành công");
+        Alert.alert('Thành công', 'Đăng ký tài khoản thành công');
       } else {
         await login(email, password);
-        Alert.alert("Thành công", "Đăng nhập thành công");
+        Alert.alert('Thành công', 'Đăng nhập thành công');
       }
     } catch (error: any) {
-      Alert.alert("Lỗi", error.message);
+      Alert.alert('Lỗi', error.message);
     }
   };
 
@@ -94,11 +95,13 @@ export default function ProfileScreen() {
   };
 
   return (
-    <View style={{ 
-      flex: 1, 
-      backgroundColor: theme.colors.background.default,
-      padding: theme.spacing.lg 
-    }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: theme.colors.background.default,
+        padding: theme.spacing.lg,
+      }}
+    >
       {isLoading ? (
         <Loading text="Đang tải..." />
       ) : user ? (
@@ -113,7 +116,9 @@ export default function ProfileScreen() {
           onPickImage={pickImage}
           onLogout={logout}
           onImportData={
-            user.email === "21521059@gm.uit.edu.vn" ? handleImportData : undefined
+            user.email === '21521059@gm.uit.edu.vn'
+              ? handleImportData
+              : undefined
           }
         />
       ) : (
@@ -132,12 +137,21 @@ export default function ProfileScreen() {
             onPasswordChange={setPassword}
             onConfirmPasswordChange={setConfirmPassword}
             onTogglePassword={() => setShowPassword(!showPassword)}
-            onToggleConfirmPassword={() => setShowConfirmPassword(!showConfirmPassword)}
+            onToggleConfirmPassword={() =>
+              setShowConfirmPassword(!showConfirmPassword)
+            }
             onSubmit={handleLogin}
             onForgotPassword={() => setShowResetPassword(true)}
             onToggleAuthMode={toggleAuthMode}
           />
           <GoogleSignInButton onPress={signInWithGoogle} />
+          <ResetPasswordModal
+            visible={showResetPassword}
+            email={resetEmail}
+            onEmailChange={setResetEmail}
+            onClose={() => setShowResetPassword(false)}
+            onSubmit={handleResetPassword}
+          />
         </>
       )}
     </View>
