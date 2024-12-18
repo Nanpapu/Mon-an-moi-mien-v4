@@ -56,26 +56,31 @@ export const RecipeGridItem = ({ recipe, onPress, width, config }: Props) => {
       />
       {config.showTitle && (
         <View style={styles.infoContainer}>
-          <Typography variant="body2" numberOfLines={2} style={styles.name}>
-            {recipe.name}
-          </Typography>
+          <View style={styles.nameContainer}>
+            <Typography variant="body2" numberOfLines={2} style={styles.name}>
+              {recipe.name}
+            </Typography>
+          </View>
 
           {config.showRating && (
-            <View style={styles.ratingContainer}>
-              <View style={styles.stars}>
-                <Ionicons
-                  name="star"
-                  size={14}
-                  color={theme.colors.warning.main}
-                />
-                <Typography variant="caption" style={styles.ratingText}>
-                  {stats.averageRating.toFixed(1)}
+            <>
+              <View style={styles.divider} />
+              <View style={styles.ratingContainer}>
+                <View style={styles.stars}>
+                  <Ionicons
+                    name="star"
+                    size={14}
+                    color={theme.colors.warning.main}
+                  />
+                  <Typography variant="caption" style={styles.ratingText}>
+                    {stats.averageRating.toFixed(1)}
+                  </Typography>
+                </View>
+                <Typography variant="caption" style={styles.reviewCount}>
+                  ({stats.totalReviews})
                 </Typography>
               </View>
-              <Typography variant="caption" style={styles.reviewCount}>
-                ({stats.totalReviews})
-              </Typography>
-            </View>
+            </>
           )}
         </View>
       )}
@@ -105,10 +110,17 @@ const createStyles = (
     infoContainer: {
       padding: theme.spacing.sm,
     },
+    nameContainer: {
+      minHeight: config.minTitleHeight,
+      justifyContent: 'center',
+    },
     name: {
       textAlign: 'center',
-      minHeight: config.minTitleHeight,
-      marginBottom: config.showRating ? theme.spacing.xs : 0,
+    },
+    divider: {
+      height: 1,
+      backgroundColor: theme.colors.divider,
+      marginVertical: theme.spacing.xs,
     },
     ratingContainer: {
       flexDirection: 'row',
@@ -116,6 +128,7 @@ const createStyles = (
       justifyContent: 'center',
       minHeight: config.minRatingHeight,
       gap: theme.spacing.xs,
+      paddingTop: theme.spacing.xs,
     },
     stars: {
       flexDirection: 'row',
