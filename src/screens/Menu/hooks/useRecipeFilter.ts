@@ -18,34 +18,42 @@ export const useRecipeFilter = (savedRecipes: Recipe[]) => {
   };
 
   const filteredRecipes = useMemo(() => {
-    let recipes = savedRecipes;
-
-    if (showFavorites) {
-      recipes = recipes.filter((recipe) =>
-        favoriteRecipes.some((fav) => fav.id === recipe.id)
-      );
-    }
+    let recipes = [...savedRecipes];
 
     if (selectedRegion) {
       recipes = recipes.filter((recipe) => recipe.region === selectedRegion);
     }
 
-    return recipes.filter((recipe) => {
+    recipes = recipes.filter((recipe) => {
       const matchesSearch =
         recipe.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         recipe.ingredients.some((i) =>
           i.toLowerCase().includes(searchQuery.toLowerCase())
         );
-
       return matchesSearch;
     });
-  }, [
-    savedRecipes,
-    searchQuery,
-    selectedRegion,
-    showFavorites,
-    favoriteRecipes,
-  ]);
+
+    if (showFavorites) {
+      return recipes.filter((recipe) =>
+        favoriteRecipes.some((fav) => fav.id === recipe.id)
+      );
+    }
+
+    return [
+      ...recipes.filter((recipe) =>
+        favoriteRecipes.some((fav) => fav.id === recipe.id)
+      ),
+      ...recipes.filter(
+        (recipe) => !favoriteRecipes.some((fav) => fav.id === recipe.id)
+      ),
+    ];
+  }, [savedRecipes, searchQuery, selectedRegion, showFavorites]);
+
+  useEffect(() => {
+    if (!showFavorites) {
+      loadFavorites();
+    }
+  }, [showFavorites]);
 
   return {
     searchQuery,
