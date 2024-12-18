@@ -1,22 +1,24 @@
-import React from "react";
-import { View, TouchableOpacity, Image } from "react-native";
+import React from 'react';
+import { View, TouchableOpacity, Image } from 'react-native';
 import { Card, Typography, Button, Input } from '../../../components/shared';
 import { useTheme } from '../../../theme/ThemeContext';
-import { Ionicons } from "@expo/vector-icons";
-import { User } from "firebase/auth";
+import { Ionicons } from '@expo/vector-icons';
+import { User } from 'firebase/auth';
 import { ThemeToggle } from './ThemeToggle';
 
 interface Props {
   user: User;
   displayName: string;
   isEditing: boolean;
-  onDisplayNameChange: (text: string) => void;
+  onDisplayNameChange: (value: string) => void;
   onEditPress: () => void;
   onSavePress: () => void;
   onCancelPress: () => void;
   onPickImage: () => void;
   onLogout: () => void;
   onImportData?: () => void;
+  photoURL?: string;
+  isUploading?: boolean;
 }
 
 export const UserProfile = ({
@@ -30,6 +32,8 @@ export const UserProfile = ({
   onPickImage,
   onLogout,
   onImportData,
+  photoURL,
+  isUploading,
 }: Props) => {
   const { theme } = useTheme();
 
@@ -47,9 +51,9 @@ export const UserProfile = ({
               marginBottom: theme.spacing.md,
             }}
           >
-            {user?.photoURL ? (
+            {photoURL ? (
               <Image
-                source={{ uri: user.photoURL }}
+                source={{ uri: photoURL }}
                 style={{
                   width: '100%',
                   height: '100%',
@@ -82,19 +86,23 @@ export const UserProfile = ({
               onChangeText={onDisplayNameChange}
               placeholder="Nhập tên hiển thị"
             />
-            <View style={{ flexDirection: 'row', justifyContent: 'center', gap: theme.spacing.sm }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                gap: theme.spacing.sm,
+              }}
+            >
               <Button variant="outline" onPress={onCancelPress}>
                 Hủy
               </Button>
-              <Button onPress={onSavePress}>
-                Lưu
-              </Button>
+              <Button onPress={onSavePress}>Lưu</Button>
             </View>
           </View>
         ) : (
           <View style={{ alignItems: 'center' }}>
             <Typography variant="h3" style={{ marginBottom: theme.spacing.xs }}>
-              {displayName || "Người dùng"}
+              {displayName || 'Người dùng'}
             </Typography>
             <Typography
               variant="body2"
@@ -124,7 +132,7 @@ export const UserProfile = ({
           Đăng xuất
         </Button>
 
-        {user?.email === "21521059@gm.uit.edu.vn" && onImportData && (
+        {user?.email === '21521059@gm.uit.edu.vn' && onImportData && (
           <Button
             variant="outline"
             icon="cloud-upload-outline"

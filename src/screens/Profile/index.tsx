@@ -36,12 +36,13 @@ export default function ProfileScreen() {
     displayName,
     setDisplayName,
     isEditing,
-    setIsEditing,
+    handleStartEditing,
+    handleCancelEditing,
     handleImportData,
     pickImage,
     handleSaveProfile,
-    handleStartEditing,
-    handleCancelEditing,
+    isUploading,
+    photoURL,
   } = useProfileActions(user);
 
   const {
@@ -123,6 +124,8 @@ export default function ProfileScreen() {
               ? handleImportData
               : undefined
           }
+          photoURL={photoURL}
+          isUploading={isUploading}
         />
       ) : (
         <>

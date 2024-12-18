@@ -4,6 +4,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { UserService } from '../../../services/userService';
 import { RegionService } from '../../../services/regionService';
 import { User } from 'firebase/auth';
+import { auth } from '../../../config/firebase';
+import { updateProfile } from 'firebase/auth';
 
 export const useProfileActions = (user: User | null) => {
   const { showToast } = useToast();
@@ -12,6 +14,8 @@ export const useProfileActions = (user: User | null) => {
   const [originalDisplayName, setOriginalDisplayName] = useState(
     user?.displayName || ''
   );
+  const [isUploading, setIsUploading] = useState(false);
+  const [photoURL, setPhotoURL] = useState(user?.photoURL || '');
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -57,25 +61,36 @@ export const useProfileActions = (user: User | null) => {
   const pickImage = async () => {
     if (!user) return;
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: 'images',
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
 
-    if (!result.canceled && result.assets[0].uri) {
-      try {
-        const downloadURL = await UserService.uploadAvatar(
-          user.uid,
-          result.assets[0].uri
-        );
-        if (downloadURL) {
-          showToast('success', 'Đã cập nhật ảnh đại diện');
+      if (!result.canceled && result.assets[0].uri) {
+        setIsUploading(true);
+        try {
+          const downloadURL = await UserService.uploadAvatar(
+            user.uid,
+            result.assets[0].uri
+          );
+          if (downloadURL) {
+            setPhotoURL(downloadURL);
+            await updateProfile(auth.currentUser!, {
+              photoURL: downloadURL,
+            });
+            showToast('success', 'Đã cập nhật ảnh đại diện');
+          }
+        } catch (error) {
+          showToast('error', 'Không thể cập nhật ảnh đại diện');
+        } finally {
+          setIsUploading(false);
         }
-      } catch (error) {
-        showToast('error', 'Không thể cập nhật ảnh đại diện');
       }
+    } catch (error) {
+      showToast('error', 'Không thể chọn ảnh');
     }
   };
 
@@ -121,5 +136,7 @@ export const useProfileActions = (user: User | null) => {
     pickImage,
     handleSaveProfile,
     handleCreateUserDocument,
+    isUploading,
+    photoURL,
   };
 };

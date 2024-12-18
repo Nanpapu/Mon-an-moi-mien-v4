@@ -128,4 +128,18 @@ export interface User {
   displayName?: string;
   /** URL ảnh đại diện */
   photoURL?: string;
-} 
+}
+
+/**
+ * Thông tin người dùng
+ * @interface UserProfile
+ */
+export interface UserProfile {
+  uid: string;
+  email: string;
+  displayName?: string;
+  photoURL?: string;
+  avatarUpdatedAt?: number;
+  createdAt: Date;
+  updatedAt?: Date;
+}

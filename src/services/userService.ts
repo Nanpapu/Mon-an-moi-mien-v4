@@ -4,8 +4,14 @@
 
 import { db, storage } from '../config/firebase';
 import { doc, updateDoc, setDoc, getDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from 'firebase/storage';
 import { CacheService, CACHE_KEYS, CACHE_EXPIRY } from './cacheService';
+import { ImageUtils } from '../utils/imageUtils';
 
 /**
  * Service quản lý thông tin người dùng
@@ -69,26 +75,53 @@ export const UserService = {
    */
   uploadAvatar: async (userId: string, imageUri: string) => {
     try {
-      // Tạo reference đến storage
-      const storageRef = ref(storage, `avatars/${userId}`);
+      // Xử lý ảnh trước khi upload
+      const processedUri = await ImageUtils.prepareImageForUpload(imageUri);
+
+      // Tạo reference đến storage với tên file duy nhất
+      const timestamp = new Date().getTime();
+      const storageRef = ref(storage, `avatars/${userId}_${timestamp}`);
 
       // Convert imageUri thành blob
-      const response = await fetch(imageUri);
+      const response = await fetch(processedUri);
       const blob = await response.blob();
 
-      // Upload file
-      await uploadBytes(storageRef, blob);
+      // Upload file với metadata
+      const metadata = {
+        contentType: 'image/jpeg',
+        customMetadata: {
+          userId: userId,
+          uploadedAt: timestamp.toString(),
+        },
+      };
+
+      await uploadBytes(storageRef, blob, metadata);
 
       // Lấy URL download
       const downloadURL = await getDownloadURL(storageRef);
 
       // Cập nhật photoURL trong profile
-      await UserService.updateProfile(userId, { photoURL: downloadURL });
+      await UserService.updateProfile(userId, {
+        photoURL: downloadURL,
+        avatarUpdatedAt: timestamp,
+      });
+
+      // Xóa ảnh cũ nếu có
+      const userDoc = await getDoc(doc(db, 'users', userId));
+      const oldPhotoURL = userDoc.data()?.photoURL;
+      if (oldPhotoURL) {
+        try {
+          const oldRef = ref(storage, oldPhotoURL);
+          await deleteObject(oldRef);
+        } catch (error) {
+          console.warn('Không thể xóa ảnh cũ:', error);
+        }
+      }
 
       return downloadURL;
     } catch (error) {
       console.error('Lỗi khi upload avatar:', error);
-      return null;
+      throw new Error('Không thể upload ảnh đại diện');
     }
   },
 
