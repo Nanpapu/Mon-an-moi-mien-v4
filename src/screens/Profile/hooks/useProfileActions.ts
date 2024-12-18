@@ -18,6 +18,14 @@ export const useProfileActions = (user: User | null) => {
   const [photoURL, setPhotoURL] = useState(user?.photoURL || '');
 
   useEffect(() => {
+    if (user) {
+      setPhotoURL(user.photoURL || '');
+      setDisplayName(user.displayName || '');
+      setOriginalDisplayName(user.displayName || '');
+    }
+  }, [user]);
+
+  useEffect(() => {
     const fetchUserData = async () => {
       if (!user) return;
 
@@ -77,13 +85,18 @@ export const useProfileActions = (user: User | null) => {
             result.assets[0].uri
           );
           if (downloadURL) {
-            setPhotoURL(downloadURL);
             await updateProfile(auth.currentUser!, {
               photoURL: downloadURL,
             });
+            setPhotoURL(downloadURL);
+            if (auth.currentUser) {
+              const updatedUser = { ...auth.currentUser };
+              auth.currentUser.reload();
+            }
             showToast('success', 'Đã cập nhật ảnh đại diện');
           }
         } catch (error) {
+          console.error('Lỗi khi upload:', error);
           showToast('error', 'Không thể cập nhật ảnh đại diện');
         } finally {
           setIsUploading(false);
