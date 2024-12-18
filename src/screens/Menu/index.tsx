@@ -10,6 +10,7 @@ import { RecipeList } from './components/RecipeList';
 import { Ionicons } from '@expo/vector-icons';
 import { useGridZoom } from './hooks/useGridZoom';
 import { createStyles } from './styles';
+import { ZoomControls } from './components/ZoomControls';
 
 export default function MenuScreen() {
   const { theme } = useTheme();
@@ -60,45 +61,29 @@ export default function MenuScreen() {
           selectedRegion={selectedRegion}
           onSelectRegion={setSelectedRegion}
         />
-
-        <View style={styles.zoomControls}>
-          <TouchableOpacity
-            onPress={zoomOut}
-            disabled={!canZoomOut}
-            style={[
-              styles.zoomButton,
-              !canZoomOut && styles.zoomButtonDisabled,
-            ]}
-          >
-            <Ionicons
-              name="remove"
-              size={24}
-              color={theme.colors.text.primary}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={zoomIn}
-            disabled={!canZoomIn}
-            style={[styles.zoomButton, !canZoomIn && styles.zoomButtonDisabled]}
-          >
-            <Ionicons name="add" size={24} color={theme.colors.text.primary} />
-          </TouchableOpacity>
-        </View>
       </View>
 
       {isLoading ? (
         <Loading text="Đang tải..." />
       ) : (
-        <RecipeList
-          isRefreshing={isRefreshing}
-          isLoading={isLoading}
-          filteredRecipes={filteredRecipes}
-          savedRecipes={savedRecipes}
-          onRefresh={refreshSavedRecipes}
-          onDeleteRecipe={handleDeleteRecipe}
-          currentConfig={currentConfig}
-          calculateItemWidth={calculateItemWidth}
-        />
+        <>
+          <RecipeList
+            isRefreshing={isRefreshing}
+            isLoading={isLoading}
+            filteredRecipes={filteredRecipes}
+            savedRecipes={savedRecipes}
+            onRefresh={refreshSavedRecipes}
+            onDeleteRecipe={handleDeleteRecipe}
+            currentConfig={currentConfig}
+            calculateItemWidth={calculateItemWidth}
+          />
+          <ZoomControls
+            onZoomIn={zoomIn}
+            onZoomOut={zoomOut}
+            canZoomIn={canZoomIn}
+            canZoomOut={canZoomOut}
+          />
+        </>
       )}
     </View>
   );
