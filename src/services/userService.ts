@@ -75,6 +75,10 @@ export const UserService = {
    */
   uploadAvatar: async (userId: string, imageUri: string) => {
     try {
+      // Lấy thông tin user hiện tại để check ảnh cũ
+      const userDoc = await getDoc(doc(db, 'users', userId));
+      const oldPhotoURL = userDoc.data()?.photoURL;
+
       // Xử lý ảnh trước khi upload
       const processedUri = await ImageUtils.prepareImageForUpload(imageUri);
 
@@ -95,6 +99,24 @@ export const UserService = {
         photoURL: downloadURL,
         avatarUpdatedAt: new Date(),
       });
+
+      // Xóa ảnh cũ nếu có
+      if (oldPhotoURL) {
+        try {
+          // Lấy reference từ URL cũ
+          const oldStorageRef = ref(
+            storage,
+            oldPhotoURL.replace(
+              `https://firebasestorage.googleapis.com/v0/b/mon-an-moi-mien-v2.appspot.com/o/`, // TODO: change to https://firebasestorage.googleapis.com/v0/b/your-project-id.appspot.com/o/
+              ''
+            )
+          );
+
+          await deleteObject(oldStorageRef);
+        } catch (error) {
+          console.warn('Không thể xóa ảnh cũ:', error);
+        }
+      }
 
       return downloadURL;
     } catch (error) {
@@ -179,7 +201,7 @@ export const UserService = {
 /**
  * Ẩn một phần email
  * @param {string} email - Email cần ẩn
- * @returns {string} Email đã được ẩn một phần
+ * @returns {string} Email đ�� được ẩn một phần
  */
 const maskEmail = (email: string) => {
   const [username, domain] = email.split('@');
