@@ -210,8 +210,4 @@ export const createStyles = (theme: Theme) =>
       alignItems: 'center',
       gap: theme.spacing.sm,
     },
-    favoriteButton: {
-      backgroundColor: 'transparent',
-      marginRight: theme.spacing.xs,
-    },
   });

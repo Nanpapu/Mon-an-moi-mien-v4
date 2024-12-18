@@ -20,7 +20,6 @@ import { Typography } from '../shared';
 import { onSnapshot, doc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { COLLECTIONS } from '../../constants';
-import { FavoriteButton } from '../buttons/FavoriteButton';
 
 interface Props {
   recipe: Recipe;
@@ -34,7 +33,7 @@ export function RecipeCard({
   recipe,
   onSave,
   onDelete,
-  showActions = true,
+  showActions = false,
   showReviews = false,
 }: Props) {
   const { theme } = useTheme();
@@ -118,7 +117,7 @@ export function RecipeCard({
         source={recipe.image}
         style={styles.image}
         contentFit="cover"
-        transition={1000}
+        transition={200}
       />
 
       <View style={styles.content}>
@@ -131,25 +130,13 @@ export function RecipeCard({
             },
           ]}
         >
-          <View>
-            <Typography variant="h3">{recipe.name}</Typography>
-            <Typography variant="body2" color="secondary">
-              Vùng miền: {recipe.region}
+          <View style={styles.headerContent}>
+            <Typography variant="h3" style={styles.name}>
+              {recipe.name}
             </Typography>
-          </View>
-
-          <View style={styles.headerActions}>
-            <FavoriteButton recipe={recipe} style={styles.favoriteButton} />
-            <TouchableOpacity
-              style={styles.expandButton}
-              onPress={() => setShowDetails(!showDetails)}
-            >
-              <Ionicons
-                name={showDetails ? 'chevron-up' : 'chevron-down'}
-                size={24}
-                color={theme.colors.text.secondary}
-              />
-            </TouchableOpacity>
+            <Typography variant="body2" style={styles.region}>
+              {recipe.region}
+            </Typography>
           </View>
         </View>
 
