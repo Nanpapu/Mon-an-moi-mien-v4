@@ -9,7 +9,7 @@ interface DialogOptions {
 }
 
 interface DialogConfig extends DialogOptions {
-  onConfirm?: () => void | Promise<void>;
+  onConfirm?: () => void;
   onCancel?: () => void;
 }
 
@@ -43,27 +43,26 @@ export const useDialog = () => {
 
   const confirm = useCallback(
     async (options: DialogOptions) => {
-      const confirmed = await showDialog({
-        title: 'Xác nhận',
+      return showDialog({
         confirmText: 'Đồng ý',
         cancelText: 'Hủy',
         type: 'default',
         ...options,
       });
-      return confirmed;
     },
     [showDialog]
   );
 
   const alert = useCallback(
     async (options: DialogOptions | string) => {
-      const config = typeof options === 'string' ? { message: options } : options;
-      await showDialog({
+      const config =
+        typeof options === 'string' ? { message: options } : options;
+      return showDialog({
         title: 'Thông báo',
         confirmText: 'OK',
         type: 'default',
         ...config,
-        cancelText: undefined, // Ẩn nút Cancel cho alert
+        cancelText: undefined,
       });
     },
     [showDialog]

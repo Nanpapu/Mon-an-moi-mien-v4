@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
+import { Alert } from 'react-native';
 import { Recipe } from '../../../types';
 import { removeRecipe } from '../../../utils/storage';
 import { useRecipes } from '../../../context/RecipeContext';
-import { useDialog } from '../../../hooks/useDialog';
 
 export const useMenuData = () => {
   const { savedRecipes, refreshSavedRecipes } = useRecipes();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const { confirm, alert } = useDialog();
 
   useEffect(() => {
     loadData();
@@ -21,22 +20,37 @@ export const useMenuData = () => {
   };
 
   const handleDeleteRecipe = async (recipe: Recipe) => {
-    const confirmed = await confirm({
-      title: "Xác nhận xóa",
-      message: `Bạn có chắc muốn xóa công thức "${recipe.name}" không?`,
-      type: 'danger'
-    });
+    try {
+      Alert.alert(
+        'Xác nhận xóa',
+        `Bạn có chắc muốn xóa công thức "${recipe.name}" không?`,
+        [
+          {
+            text: 'Hủy',
+            style: 'cancel',
+          },
+          {
+            text: 'Xóa',
+            style: 'destructive',
+            onPress: async () => {
+              setIsLoading(true);
+              const success = await removeRecipe(recipe.id);
 
-    if (confirmed) {
-      const success = await removeRecipe(recipe.id);
-      if (success) {
-        await refreshSavedRecipes();
-        await alert({
-          title: "Thành công",
-          message: "Đã xóa công thức",
-          type: 'success'
-        });
-      }
+              if (success) {
+                await refreshSavedRecipes();
+                Alert.alert('Thành công', 'Đã xóa công thức');
+              } else {
+                Alert.alert('Lỗi', 'Không thể xóa công thức');
+              }
+              setIsLoading(false);
+            },
+          },
+        ]
+      );
+    } catch (error) {
+      console.error('Lỗi khi xóa công thức:', error);
+      Alert.alert('Lỗi', 'Không thể xóa công thức');
+      setIsLoading(false);
     }
   };
 
@@ -45,6 +59,6 @@ export const useMenuData = () => {
     isRefreshing,
     isLoading,
     refreshSavedRecipes,
-    handleDeleteRecipe
+    handleDeleteRecipe,
   };
 };

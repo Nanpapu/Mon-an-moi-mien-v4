@@ -13,11 +13,14 @@ export const saveRecipe = async (recipe: Recipe) => {
     // Lấy danh sách công thức hiện có
     const savedRecipes = await getSavedRecipes();
     // Kiểm tra xem công thức đã tồn tại chưa
-    if (!savedRecipes.find(r => r.id === recipe.id)) {
+    if (!savedRecipes.find((r) => r.id === recipe.id)) {
       // Thêm công thức mới vào danh sách
       const newSavedRecipes = [...savedRecipes, recipe];
       // Lưu danh sách mới vào storage
-      await AsyncStorage.setItem(SAVED_RECIPES_KEY, JSON.stringify(newSavedRecipes));
+      await AsyncStorage.setItem(
+        SAVED_RECIPES_KEY,
+        JSON.stringify(newSavedRecipes)
+      );
       return true;
     }
     return false;
@@ -41,14 +44,25 @@ export const getSavedRecipes = async (): Promise<Recipe[]> => {
 };
 
 // Xóa một công thức khỏi danh sách đã lưu
-export const removeRecipe = async (recipeId: string) => {
+export const removeRecipe = async (recipeId: string): Promise<boolean> => {
   try {
-    // Lấy danh sách hiện tại
-    const savedRecipes = await getSavedRecipes();
+    // Lấy danh sách công thức hiện tại
+    const savedRecipesStr = await AsyncStorage.getItem(SAVED_RECIPES_KEY);
+    if (!savedRecipesStr) return false;
+
+    const savedRecipes: Recipe[] = JSON.parse(savedRecipesStr);
+
     // Lọc bỏ công thức cần xóa
-    const newSavedRecipes = savedRecipes.filter(recipe => recipe.id !== recipeId);
+    const updatedRecipes = savedRecipes.filter(
+      (recipe) => recipe.id !== recipeId
+    );
+
     // Lưu lại danh sách mới
-    await AsyncStorage.setItem(SAVED_RECIPES_KEY, JSON.stringify(newSavedRecipes));
+    await AsyncStorage.setItem(
+      SAVED_RECIPES_KEY,
+      JSON.stringify(updatedRecipes)
+    );
+
     return true;
   } catch (error) {
     console.error('Lỗi khi xóa công thức:', error);

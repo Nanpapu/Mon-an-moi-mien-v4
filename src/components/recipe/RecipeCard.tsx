@@ -1,16 +1,22 @@
 // Component hiển thị thông tin chi tiết của một công thức nấu ăn
 // Bao gồm hình ảnh, tên món, vùng miền, nguyên liệu và cách làm
-import React, { useEffect, useState } from "react";
-import { View, Modal, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
-import { Image } from "expo-image";
-import { Recipe, Review } from "../../types";
-import { useAuth } from "../../context/AuthContext";
-import { ReviewService } from "../../services/reviewService";
-import { Ionicons } from "@expo/vector-icons";
-import { ReviewModal, ReviewsList } from "../reviews";
-import { createStyles } from "./RecipeCard.styles";
-import { useTheme } from "../../theme/ThemeContext";
-import { Typography } from "../shared";
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Modal,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import { Image } from 'expo-image';
+import { Recipe, Review } from '../../types';
+import { useAuth } from '../../context/AuthContext';
+import { ReviewService } from '../../services/reviewService';
+import { Ionicons } from '@expo/vector-icons';
+import { ReviewModal, ReviewsList } from '../reviews';
+import { createStyles } from './RecipeCard.styles';
+import { useTheme } from '../../theme/ThemeContext';
+import { Typography } from '../shared';
 import { onSnapshot, doc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { COLLECTIONS } from '../../constants';
@@ -18,7 +24,7 @@ import { COLLECTIONS } from '../../constants';
 interface Props {
   recipe: Recipe;
   onSave?: () => void;
-  onDelete?: () => void;
+  onDelete?: (recipe: Recipe) => void;
   showActions?: boolean;
   showReviews?: boolean;
 }
@@ -44,7 +50,7 @@ export function RecipeCard({
   useEffect(() => {
     if (showReviews) {
       setIsLoadingStats(true);
-      
+
       const unsubscribe = onSnapshot(
         doc(db, COLLECTIONS.RECIPE_STATS, recipe.id),
         (doc) => {
@@ -52,13 +58,13 @@ export function RecipeCard({
             const data = doc.data();
             setStats({
               averageRating: data.averageRating || 0,
-              totalReviews: data.totalReviews || 0
+              totalReviews: data.totalReviews || 0,
             });
           }
           setIsLoadingStats(false);
         },
         (error) => {
-          console.error("Lỗi khi lắng nghe thay đổi stats:", error);
+          console.error('Lỗi khi lắng nghe thay đổi stats:', error);
           setIsLoadingStats(false);
         }
       );
@@ -74,7 +80,10 @@ export function RecipeCard({
   useEffect(() => {
     if (user && showReviews) {
       const loadUserReview = async () => {
-        const review = await ReviewService.getUserReviewForRecipe(recipe.id, user.uid);
+        const review = await ReviewService.getUserReviewForRecipe(
+          recipe.id,
+          user.uid
+        );
         setExistingReview(review);
       };
       loadUserReview();
@@ -98,7 +107,7 @@ export function RecipeCard({
       const reviewsList = await ReviewService.getRecipeReviews(recipe.id);
       setAllReviews(reviewsList);
     } catch (error) {
-      console.error("Lỗi khi tải đánh giá:", error);
+      console.error('Lỗi khi tải đánh giá:', error);
     }
   };
 
@@ -133,7 +142,7 @@ export function RecipeCard({
             onPress={() => setShowDetails(!showDetails)}
           >
             <Ionicons
-              name={showDetails ? "chevron-up" : "chevron-down"}
+              name={showDetails ? 'chevron-up' : 'chevron-down'}
               size={24}
               color={theme.colors.text.secondary}
             />
@@ -144,16 +153,29 @@ export function RecipeCard({
           <View style={styles.details}>
             <Typography variant="subtitle1">Nguyên liệu:</Typography>
             {recipe.ingredients.map((ingredient, index) => (
-              <Typography key={index} variant="body2" color="secondary" style={styles.listItem}>
+              <Typography
+                key={index}
+                variant="body2"
+                color="secondary"
+                style={styles.listItem}
+              >
                 • {ingredient}
               </Typography>
             ))}
 
-            <Typography variant="subtitle1" style={{ marginTop: theme.spacing.md }}>
+            <Typography
+              variant="subtitle1"
+              style={{ marginTop: theme.spacing.md }}
+            >
               Cách làm:
             </Typography>
             {recipe.instructions.map((instruction, index) => (
-              <Typography key={index} variant="body2" color="secondary" style={styles.listItem}>
+              <Typography
+                key={index}
+                variant="body2"
+                color="secondary"
+                style={styles.listItem}
+              >
                 {index + 1}. {instruction}
               </Typography>
             ))}
@@ -164,16 +186,37 @@ export function RecipeCard({
           <View style={styles.actions}>
             {onSave && (
               <TouchableOpacity style={styles.saveButton} onPress={onSave}>
-                <Ionicons name="bookmark-outline" size={20} color={theme.colors.background.default} />
-                <Typography variant="body1" style={{ color: theme.colors.background.default }}>
+                <Ionicons
+                  name="bookmark-outline"
+                  size={20}
+                  color={theme.colors.background.default}
+                />
+                <Typography
+                  variant="body1"
+                  style={{ color: theme.colors.background.default }}
+                >
                   Lưu công thức
                 </Typography>
               </TouchableOpacity>
             )}
             {onDelete && (
-              <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
-                <Ionicons name="trash-outline" size={20} color={theme.colors.background.default} />
-                <Typography variant="body1" style={{ color: theme.colors.background.default }}>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => {
+                  if (onDelete) {
+                    onDelete(recipe);
+                  }
+                }}
+              >
+                <Ionicons
+                  name="trash-outline"
+                  size={20}
+                  color={theme.colors.background.default}
+                />
+                <Typography
+                  variant="body1"
+                  style={{ color: theme.colors.background.default }}
+                >
                   Xóa công thức
                 </Typography>
               </TouchableOpacity>
@@ -194,7 +237,11 @@ export function RecipeCard({
                       {[1, 2, 3, 4, 5].map((star) => (
                         <Ionicons
                           key={star}
-                          name={star <= stats.averageRating ? "star" : "star-outline"}
+                          name={
+                            star <= stats.averageRating
+                              ? 'star'
+                              : 'star-outline'
+                          }
                           size={16}
                           color="#FFD700"
                         />
@@ -205,7 +252,10 @@ export function RecipeCard({
                     </Typography>
                   </>
                 ) : isLoadingStats ? (
-                    <ActivityIndicator size="small" color={theme.colors.primary.main} />
+                  <ActivityIndicator
+                    size="small"
+                    color={theme.colors.primary.main}
+                  />
                 ) : (
                   <Typography variant="body2" style={styles.noReviews}>
                     Chưa có đánh giá
@@ -219,12 +269,15 @@ export function RecipeCard({
                   onPress={() => setModalVisible(true)}
                 >
                   <Ionicons
-                    name={existingReview ? "create" : "add"}
+                    name={existingReview ? 'create' : 'add'}
                     size={20}
                     color={theme.colors.primary.contrast}
                   />
-                  <Typography variant="body1" style={{ color: theme.colors.primary.contrast }}>
-                    {existingReview ? "Sửa đánh giá" : "Đánh giá"}
+                  <Typography
+                    variant="body1"
+                    style={{ color: theme.colors.primary.contrast }}
+                  >
+                    {existingReview ? 'Sửa đánh giá' : 'Đánh giá'}
                   </Typography>
                 </TouchableOpacity>
               )}
@@ -237,16 +290,13 @@ export function RecipeCard({
                 setShowReviewsList(true);
               }}
             >
-              <Typography 
-                variant="body1" 
-                style={styles.viewAllText}
-              >
+              <Typography variant="body1" style={styles.viewAllText}>
                 Xem tất cả {stats.totalReviews} đánh giá
               </Typography>
-              <Ionicons 
-                name="chevron-forward" 
-                size={20} 
-                color={theme.colors.primary.main} 
+              <Ionicons
+                name="chevron-forward"
+                size={20}
+                color={theme.colors.primary.main}
               />
             </TouchableOpacity>
           </View>
@@ -281,29 +331,44 @@ export function RecipeCard({
         animationType="slide"
         onRequestClose={() => setShowReviewsList(false)}
       >
-        <View style={[styles.modalContainer, {
-          backgroundColor: theme.colors.background.paper,
-          ...theme.shadows.lg
-        }]}>
-          <View style={[styles.modalContent, { 
-            flex: 1,
-            backgroundColor: theme.colors.background.default
-          }]}>
-            <View style={[styles.modalHeader, {
-              borderBottomColor: theme.colors.divider
-            }]}>
+        <View
+          style={[
+            styles.modalContainer,
+            {
+              backgroundColor: theme.colors.background.paper,
+              ...theme.shadows.lg,
+            },
+          ]}
+        >
+          <View
+            style={[
+              styles.modalContent,
+              {
+                flex: 1,
+                backgroundColor: theme.colors.background.default,
+              },
+            ]}
+          >
+            <View
+              style={[
+                styles.modalHeader,
+                {
+                  borderBottomColor: theme.colors.divider,
+                },
+              ]}
+            >
               <Typography variant="h3">Đánh giá</Typography>
               <TouchableOpacity
                 onPress={() => setShowReviewsList(false)}
                 style={{
                   padding: theme.spacing.sm,
-                  borderRadius: theme.spacing.sm
+                  borderRadius: theme.spacing.sm,
                 }}
               >
-                <Ionicons 
-                  name="close" 
-                  size={24} 
-                  color={theme.colors.text.primary} 
+                <Ionicons
+                  name="close"
+                  size={24}
+                  color={theme.colors.text.primary}
                 />
               </TouchableOpacity>
             </View>

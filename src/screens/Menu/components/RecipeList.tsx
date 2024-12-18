@@ -13,7 +13,7 @@ interface Props {
   filteredRecipes: Recipe[];
   savedRecipes: Recipe[];
   onRefresh: () => void;
-  onDeleteRecipe: (recipe: Recipe) => void;
+  onDeleteRecipe: (recipe: Recipe) => Promise<void>;
 }
 
 export const RecipeList = ({
@@ -22,7 +22,7 @@ export const RecipeList = ({
   filteredRecipes,
   savedRecipes,
   onRefresh,
-  onDeleteRecipe
+  onDeleteRecipe,
 }: Props) => {
   const { theme } = useTheme();
   const styles = createStyles(theme);

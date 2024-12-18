@@ -1,21 +1,23 @@
-import React from "react";
-import { View } from "react-native";
+import React from 'react';
+import { View } from 'react-native';
 import { useTheme } from '../../theme/ThemeContext';
-import { Loading } from '../../components/shared';
-import { SearchBar } from "../../components/shared/SearchBar";
-import { useMenuData } from "./hooks/useMenuData";
-import { useRecipeFilter } from "./hooks/useRecipeFilter";
-import { RegionFilter } from "./components/RegionFilter";
-import { RecipeList } from "./components/RecipeList";
+import { Loading, Dialog } from '../../components/shared';
+import { SearchBar } from '../../components/shared/SearchBar';
+import { useMenuData } from './hooks/useMenuData';
+import { useRecipeFilter } from './hooks/useRecipeFilter';
+import { RegionFilter } from './components/RegionFilter';
+import { RecipeList } from './components/RecipeList';
+import { useDialog } from '../../hooks/useDialog';
 
 export default function MenuScreen() {
   const { theme } = useTheme();
-  const { 
-    savedRecipes, 
-    isRefreshing, 
-    isLoading, 
-    refreshSavedRecipes, 
-    handleDeleteRecipe 
+  const { visible, dialogConfig, hideDialog } = useDialog();
+  const {
+    savedRecipes,
+    isRefreshing,
+    isLoading,
+    refreshSavedRecipes,
+    handleDeleteRecipe,
   } = useMenuData();
 
   const {
@@ -28,10 +30,12 @@ export default function MenuScreen() {
   } = useRecipeFilter(savedRecipes);
 
   return (
-    <View style={{ 
-      flex: 1, 
-      backgroundColor: theme.colors.background.default 
-    }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: theme.colors.background.default,
+      }}
+    >
       <SearchBar
         value={searchQuery}
         onChangeText={setSearchQuery}
@@ -58,6 +62,17 @@ export default function MenuScreen() {
           onDeleteRecipe={handleDeleteRecipe}
         />
       )}
+
+      <Dialog
+        visible={visible}
+        title={dialogConfig.title}
+        message={dialogConfig.message}
+        confirmText={dialogConfig.confirmText}
+        cancelText={dialogConfig.cancelText}
+        type={dialogConfig.type}
+        onConfirm={dialogConfig.onConfirm}
+        onCancel={dialogConfig.onCancel}
+      />
     </View>
   );
 }

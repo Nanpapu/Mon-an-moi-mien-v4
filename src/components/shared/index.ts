@@ -6,3 +6,4 @@ export * from './Modal';
 export * from './Loading';
 export * from './SearchBar';
 export * from './Toast';
+export * from './Dialog';
