@@ -60,4 +60,25 @@ export const createStyles = (theme: Theme) =>
       flexWrap: 'wrap',
       justifyContent: 'space-between',
     },
+    headerControls: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: theme.spacing.sm,
+      paddingBottom: theme.spacing.sm,
+    },
+    zoomControls: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: theme.spacing.xs,
+    },
+    zoomButton: {
+      padding: theme.spacing.xs,
+      backgroundColor: theme.colors.background.paper,
+      borderRadius: theme.spacing.sm,
+      ...theme.shadows.sm,
+    },
+    zoomButtonDisabled: {
+      opacity: 0.5,
+    },
   });

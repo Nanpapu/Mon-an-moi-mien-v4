@@ -1,23 +1,21 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 import { Typography } from '../../../components/shared';
 import { Recipe } from '../../../types';
 import { useTheme } from '../../../theme/ThemeContext';
-
-const COLUMN_COUNT = 2;
-const SPACING = 8;
-const windowWidth = Dimensions.get('window').width;
-const itemWidth = (windowWidth - SPACING * 3) / COLUMN_COUNT;
+import { ZOOM_LEVELS } from '../hooks/useGridZoom';
 
 interface Props {
   recipe: Recipe;
   onPress: () => void;
+  width: number;
+  config: (typeof ZOOM_LEVELS)[keyof typeof ZOOM_LEVELS];
 }
 
-export const RecipeGridItem = ({ recipe, onPress }: Props) => {
+export const RecipeGridItem = ({ recipe, onPress, width, config }: Props) => {
   const { theme } = useTheme();
-  const styles = createStyles(theme);
+  const styles = createStyles(theme, width, config);
 
   return (
     <TouchableOpacity
@@ -31,31 +29,37 @@ export const RecipeGridItem = ({ recipe, onPress }: Props) => {
         contentFit="cover"
         transition={200}
       />
-      <Typography variant="body2" numberOfLines={2} style={styles.name}>
-        {recipe.name}
-      </Typography>
+      {config.showTitle && (
+        <Typography variant="body2" numberOfLines={2} style={styles.name}>
+          {recipe.name}
+        </Typography>
+      )}
     </TouchableOpacity>
   );
 };
 
-const createStyles = (theme: any) =>
+const createStyles = (
+  theme: any,
+  width: number,
+  config: (typeof ZOOM_LEVELS)[keyof typeof ZOOM_LEVELS]
+) =>
   StyleSheet.create({
     container: {
-      width: itemWidth,
+      width: width,
       backgroundColor: theme.colors.background.paper,
       borderRadius: theme.spacing.sm,
       overflow: 'hidden',
       ...theme.shadows.sm,
-      marginBottom: SPACING * 2,
+      margin: config.spacing / 2,
     },
     image: {
       width: '100%',
-      height: itemWidth,
+      height: width,
       backgroundColor: theme.colors.background.default,
     },
     name: {
       padding: theme.spacing.sm,
       textAlign: 'center',
-      minHeight: 50,
+      minHeight: config.minTitleHeight,
     },
   });
