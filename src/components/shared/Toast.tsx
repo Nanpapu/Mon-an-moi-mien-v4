@@ -1,117 +1,106 @@
-import React, { useEffect, useRef } from "react";
-import { Animated, StyleSheet } from "react-native";
-import { useTheme } from "../../theme/ThemeContext";
-import { Ionicons } from "@expo/vector-icons";
-import { Typography } from "./Typography";
+import React, { useEffect } from 'react';
+import { Animated, StyleSheet, View } from 'react-native';
+import { Typography } from './Typography';
+import { useTheme } from '../../theme/ThemeContext';
+import { Ionicons } from '@expo/vector-icons';
+import { ToastType } from '../../hooks/useToast';
+import { THEME_CONSTANTS } from '../../theme/constants';
 
-interface ToastProps {
+interface Props {
+  visible: boolean;
   message: string;
-  type?: "success" | "error" | "info";
-  duration?: number;
-  onHide: () => void;
+  type: ToastType;
 }
 
-export const Toast = ({
-  message,
-  type = "info",
-  duration = 3000,
-  onHide,
-}: ToastProps) => {
+export const Toast = ({ visible, message, type }: Props) => {
   const { theme } = useTheme();
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(20)).current;
+  const translateY = new Animated.Value(100);
 
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-      Animated.timing(translateY, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-    ]).start();
-
-    const timer = setTimeout(() => {
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-        Animated.timing(translateY, {
-          toValue: 20,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-      ]).start(() => onHide());
-    }, duration);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  const getToastStyle = () => {
+  const getToastColor = () => {
     switch (type) {
       case 'success':
-        return {
-          backgroundColor: theme.colors.success.main,
-          icon: 'checkmark-circle' as keyof typeof Ionicons.glyphMap,
-        };
+        return theme.colors.success.main;
       case 'error':
-        return {
-          backgroundColor: theme.colors.error.main,
-          icon: 'alert-circle' as keyof typeof Ionicons.glyphMap,
-        };
+        return theme.colors.error.main;
+      case 'warning':
+        return theme.colors.warning.main;
       default:
-        return {
-          backgroundColor: theme.colors.primary.main,
-          icon: 'information-circle' as keyof typeof Ionicons.glyphMap,
-        };
+        return theme.colors.info.main;
     }
   };
 
-  const toastStyle = getToastStyle();
+  const getIcon = () => {
+    switch (type) {
+      case 'success':
+        return 'checkmark-circle';
+      case 'error':
+        return 'alert-circle';
+      case 'warning':
+        return 'warning';
+      default:
+        return 'information-circle';
+    }
+  };
+
+  useEffect(() => {
+    if (visible) {
+      Animated.spring(translateY, {
+        toValue: 0,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(translateY, {
+        toValue: 100,
+        duration: THEME_CONSTANTS.animation.duration,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [visible]);
 
   return (
     <Animated.View
       style={[
         styles.container,
         {
-          backgroundColor: toastStyle.backgroundColor,
-          ...theme.shadows.md,
-          opacity: fadeAnim,
           transform: [{ translateY }],
+          backgroundColor: getToastColor(),
+          bottom: THEME_CONSTANTS.layout.tabBarHeight + theme.spacing.md,
+          left: theme.spacing.md,
+          right: theme.spacing.md,
+          padding: theme.spacing.md,
+          borderRadius: THEME_CONSTANTS.layout.borderRadius.sm,
+          ...theme.shadows.md,
         },
       ]}
     >
-      <Ionicons
-        name={toastStyle.icon}
-        size={24}
-        color={theme.colors.background.contrast}
-        style={styles.icon}
-      />
-      <Typography variant="body2" style={styles.message}>
-        {message}
-      </Typography>
+      <View style={styles.content}>
+        <Ionicons
+          name={getIcon()}
+          size={24}
+          color={theme.colors.text.contrast}
+        />
+        <Typography
+          variant="body2"
+          style={{
+            color: theme.colors.text.contrast,
+            marginLeft: theme.spacing.sm,
+          }}
+        >
+          {message}
+        </Typography>
+      </View>
     </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 16,
+    position: 'absolute',
+    bottom: 0,
+    zIndex: 9999,
   },
-  icon: {
-    marginRight: 16,
-  },
-  message: {
-    flex: 1,
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

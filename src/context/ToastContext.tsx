@@ -1,47 +1,35 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
-import { Toast } from '../components/shared';
-
-type ToastType = 'success' | 'error' | 'info';
+import React, { createContext, useState, useCallback } from 'react';
+import { Toast } from '../components/shared/Toast';
+import { ToastType } from '../hooks/useToast';
 
 interface ToastContextType {
-  showToast: (message: string, type?: ToastType) => void;
+  showToast: (type: ToastType, message: string) => void;
 }
 
-const ToastContext = createContext<ToastContextType | undefined>(undefined);
+export const ToastContext = createContext<ToastContextType | null>(null);
 
-export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [toast, setToast] = useState<{
-    visible: boolean;
-    message: string;
-    type: ToastType;
-  }>({
-    visible: false,
-    message: '',
-    type: 'info',
-  });
+export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
+  const [visible, setVisible] = useState(false);
+  const [message, setMessage] = useState('');
+  const [type, setType] = useState<ToastType>('success');
 
-  const showToast = useCallback((message: string, type: ToastType = 'info') => {
-    setToast({ visible: true, message, type });
-  }, []);
+  const showToast = useCallback(
+    (toastType: ToastType, toastMessage: string) => {
+      setType(toastType);
+      setMessage(toastMessage);
+      setVisible(true);
+
+      setTimeout(() => {
+        setVisible(false);
+      }, 3000);
+    },
+    []
+  );
 
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      {toast.visible && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onHide={() => setToast(prev => ({ ...prev, visible: false }))}
-        />
-      )}
+      <Toast visible={visible} message={message} type={type} />
     </ToastContext.Provider>
   );
 };
-
-export const useToast = () => {
-  const context = useContext(ToastContext);
-  if (context === undefined) {
-    throw new Error('useToast must be used within a ToastProvider');
-  }
-  return context;
-}; 

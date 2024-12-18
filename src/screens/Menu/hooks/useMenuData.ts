@@ -3,11 +3,13 @@ import { Alert } from 'react-native';
 import { Recipe } from '../../../types';
 import { removeRecipe } from '../../../utils/storage';
 import { useRecipes } from '../../../context/RecipeContext';
+import { useToast } from '../../../hooks/useToast';
 
 export const useMenuData = () => {
   const { savedRecipes, refreshSavedRecipes } = useRecipes();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const { showToast } = useToast();
 
   useEffect(() => {
     loadData();
@@ -38,9 +40,9 @@ export const useMenuData = () => {
 
               if (success) {
                 await refreshSavedRecipes();
-                Alert.alert('Thành công', 'Đã xóa công thức');
+                showToast('success', 'Đã xóa công thức');
               } else {
-                Alert.alert('Lỗi', 'Không thể xóa công thức');
+                showToast('error', 'Không thể xóa công thức');
               }
               setIsLoading(false);
             },
@@ -49,7 +51,7 @@ export const useMenuData = () => {
       );
     } catch (error) {
       console.error('Lỗi khi xóa công thức:', error);
-      Alert.alert('Lỗi', 'Không thể xóa công thức');
+      showToast('error', 'Không thể xóa công thức');
       setIsLoading(false);
     }
   };
