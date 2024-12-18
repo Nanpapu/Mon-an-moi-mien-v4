@@ -57,6 +57,8 @@ export const Toast = ({ visible, message, type }: Props) => {
     }
   }, [visible]);
 
+  if (!visible) return null;
+
   return (
     <Animated.View
       style={[
@@ -96,7 +98,6 @@ export const Toast = ({ visible, message, type }: Props) => {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 0,
     zIndex: 9999,
   },
   content: {
