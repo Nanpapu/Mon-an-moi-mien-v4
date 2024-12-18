@@ -121,15 +121,7 @@ export function RecipeCard({
       />
 
       <View style={styles.content}>
-        <View
-          style={[
-            styles.header,
-            showDetails && {
-              borderBottomWidth: 1,
-              borderBottomColor: theme.colors.divider,
-            },
-          ]}
-        >
+        <View style={styles.header}>
           <View style={styles.headerContent}>
             <Typography variant="h3" style={styles.name}>
               {recipe.name}
@@ -138,6 +130,20 @@ export function RecipeCard({
               {recipe.region}
             </Typography>
           </View>
+
+          <TouchableOpacity
+            style={[
+              styles.expandButton,
+              showDetails && styles.expandButtonRotate,
+            ]}
+            onPress={() => setShowDetails(!showDetails)}
+          >
+            <Ionicons
+              name="chevron-up"
+              size={24}
+              color={theme.colors.text.primary}
+            />
+          </TouchableOpacity>
         </View>
 
         {showDetails && (
