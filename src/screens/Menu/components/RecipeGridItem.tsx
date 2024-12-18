@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { onSnapshot, doc } from 'firebase/firestore';
 import { db } from '../../../config/firebase';
 import { COLLECTIONS } from '../../../constants';
+import { FavoriteButton } from '../../../components/buttons';
 
 interface Props {
   recipe: Recipe;
@@ -56,6 +57,7 @@ export const RecipeGridItem = ({ recipe, onPress, width, config }: Props) => {
       onPress={onPress}
       activeOpacity={0.7}
     >
+      <FavoriteButton recipe={recipe} />
       <Image
         source={recipe.image}
         style={styles.image}

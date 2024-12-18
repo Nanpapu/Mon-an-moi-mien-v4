@@ -29,6 +29,8 @@ export default function MenuScreen() {
     setSearchQuery,
     selectedRegion,
     setSelectedRegion,
+    showFavorites,
+    setShowFavorites,
     filteredRecipes,
     regions,
   } = useRecipeFilter(savedRecipes);
@@ -60,6 +62,8 @@ export default function MenuScreen() {
           regions={regions}
           selectedRegion={selectedRegion}
           onSelectRegion={setSelectedRegion}
+          showFavorites={showFavorites}
+          onToggleFavorites={() => setShowFavorites(!showFavorites)}
         />
       </View>
 

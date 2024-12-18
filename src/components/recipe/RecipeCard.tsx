@@ -20,6 +20,7 @@ import { Typography } from '../shared';
 import { onSnapshot, doc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { COLLECTIONS } from '../../constants';
+import { FavoriteButton } from '../buttons/FavoriteButton';
 
 interface Props {
   recipe: Recipe;
@@ -137,16 +138,19 @@ export function RecipeCard({
             </Typography>
           </View>
 
-          <TouchableOpacity
-            style={styles.expandButton}
-            onPress={() => setShowDetails(!showDetails)}
-          >
-            <Ionicons
-              name={showDetails ? 'chevron-up' : 'chevron-down'}
-              size={24}
-              color={theme.colors.text.secondary}
-            />
-          </TouchableOpacity>
+          <View style={styles.headerActions}>
+            <FavoriteButton recipe={recipe} style={styles.favoriteButton} />
+            <TouchableOpacity
+              style={styles.expandButton}
+              onPress={() => setShowDetails(!showDetails)}
+            >
+              <Ionicons
+                name={showDetails ? 'chevron-up' : 'chevron-down'}
+                size={24}
+                color={theme.colors.text.secondary}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {showDetails && (

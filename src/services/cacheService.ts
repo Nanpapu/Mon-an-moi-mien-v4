@@ -2,7 +2,7 @@
  * @fileoverview Service xử lý cache dữ liệu trong ứng dụng
  */
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 /**
  * Các key được sử dụng để lưu cache
@@ -10,15 +10,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
  */
 export const CACHE_KEYS = {
   /** Cache cho danh sách vùng miền */
-  REGIONS: "cached_regions",
+  REGIONS: 'cached_regions',
   /** Cache cho công thức nấu ăn */
-  RECIPES: "cached_recipes_",
+  RECIPES: 'cached_recipes_',
   /** Cache cho công thức đã lưu */
-  SAVED_RECIPES: "cached_saved_recipes_",
+  SAVED_RECIPES: 'cached_saved_recipes_',
   /** Cache cho thông tin người dùng */
-  USER_PROFILE: "cached_user_",
+  USER_PROFILE: 'cached_user_',
   /** Cache cho đánh giá công thức */
-  RECIPE_REVIEWS: "cached_reviews_"
+  RECIPE_REVIEWS: 'cached_reviews_',
+  /** Cache cho công thức yêu thích */
+  FAVORITE_RECIPES: 'cached_favorite_recipes_',
 };
 
 /**
@@ -35,7 +37,9 @@ export const CACHE_EXPIRY = {
   /** 1 giờ cho thông tin người dùng */
   USER_PROFILE: 1 * 60 * 60 * 1000,
   /** 30 phút cho đánh giá */
-  RECIPE_REVIEWS: 30 * 60 * 1000
+  RECIPE_REVIEWS: 30 * 60 * 1000,
+  /** 6 giờ cho công thức yêu thích */
+  FAVORITE_RECIPES: 6 * 60 * 60 * 1000,
 };
 
 /**
@@ -56,7 +60,7 @@ export const CacheService = {
       };
       await AsyncStorage.setItem(key, JSON.stringify(cacheData));
     } catch (error) {
-      console.error("Lỗi khi lưu cache:", error);
+      console.error('Lỗi khi lưu cache:', error);
     }
   },
 
@@ -81,7 +85,7 @@ export const CacheService = {
 
       return data;
     } catch (error) {
-      console.error("Lỗi khi đọc cache:", error);
+      console.error('Lỗi khi ��ọc cache:', error);
       return null;
     }
   },
@@ -94,7 +98,7 @@ export const CacheService = {
     try {
       await AsyncStorage.removeItem(key);
     } catch (error) {
-      console.error("Lỗi khi xóa cache:", error);
+      console.error('Lỗi khi xóa cache:', error);
     }
   },
 };
