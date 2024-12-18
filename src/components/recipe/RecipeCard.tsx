@@ -257,9 +257,16 @@ export function RecipeCard({
                     color={theme.colors.primary.main}
                   />
                 ) : (
-                  <Typography variant="body2" style={styles.noReviews}>
-                    Chưa có đánh giá
-                  </Typography>
+                  <View style={styles.noReviewsContainer}>
+                    <Ionicons
+                      name="star-outline"
+                      size={24}
+                      color={theme.colors.text.secondary}
+                    />
+                    <Typography variant="body2" style={styles.noReviews}>
+                      Chưa có đánh giá
+                    </Typography>
+                  </View>
                 )}
               </View>
 

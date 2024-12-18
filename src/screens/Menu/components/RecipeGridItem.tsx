@@ -33,14 +33,22 @@ export const RecipeGridItem = ({ recipe, onPress, width, config }: Props) => {
             totalReviews: data.totalReviews || 0,
           });
         }
-      },
-      (error) => {
-        console.error('Lỗi khi lắng nghe thay đổi stats:', error);
       }
     );
-
     return () => unsubscribe();
   }, [recipe.id]);
+
+  const renderStars = () => {
+    return [...Array(5)].map((_, index) => (
+      <Ionicons
+        key={index}
+        name={index < stats.averageRating ? 'star' : 'star-outline'}
+        size={12}
+        color={theme.colors.warning.main}
+        style={{ marginRight: 2 }}
+      />
+    ));
+  };
 
   return (
     <TouchableOpacity
@@ -66,19 +74,35 @@ export const RecipeGridItem = ({ recipe, onPress, width, config }: Props) => {
             <>
               <View style={styles.divider} />
               <View style={styles.ratingContainer}>
-                <View style={styles.stars}>
-                  <Ionicons
-                    name="star"
-                    size={14}
-                    color={theme.colors.warning.main}
-                  />
-                  <Typography variant="caption" style={styles.ratingText}>
-                    {stats.averageRating.toFixed(1)}
-                  </Typography>
-                </View>
-                <Typography variant="caption" style={styles.reviewCount}>
-                  ({stats.totalReviews})
-                </Typography>
+                {stats.totalReviews > 0 ? (
+                  <>
+                    <View style={styles.starsContainer}>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Ionicons
+                          key={star}
+                          name={star <= stats.averageRating ? 'star' : 'star-outline'}
+                          size={12}
+                          color={theme.colors.warning.main}
+                          style={{ marginRight: 2 }}
+                        />
+                      ))}
+                    </View>
+                    <Typography variant="caption" style={styles.reviewCount}>
+                      ({stats.totalReviews})
+                    </Typography>
+                  </>
+                ) : (
+                  <View style={styles.noReviewsContainer}>
+                    <Ionicons
+                      name="star-outline"
+                      size={16}
+                      color={theme.colors.text.secondary}
+                    />
+                    <Typography variant="caption" style={styles.noReviews}>
+                      Chưa có đánh giá
+                    </Typography>
+                  </View>
+                )}
               </View>
             </>
           )}
@@ -97,7 +121,7 @@ const createStyles = (
     container: {
       width: width,
       backgroundColor: theme.colors.background.paper,
-      borderRadius: theme.spacing.sm,
+      borderRadius: theme.spacing.md,
       overflow: 'hidden',
       ...theme.shadows.sm,
       margin: config.spacing / 2,
@@ -116,6 +140,7 @@ const createStyles = (
     },
     name: {
       textAlign: 'center',
+      fontWeight: '500',
     },
     divider: {
       height: 1,
@@ -123,22 +148,28 @@ const createStyles = (
       marginVertical: theme.spacing.xs,
     },
     ratingContainer: {
-      flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
       minHeight: config.minRatingHeight,
       gap: theme.spacing.xs,
-      paddingTop: theme.spacing.xs,
     },
-    stars: {
+    starsContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 2,
-    },
-    ratingText: {
-      color: theme.colors.text.primary,
     },
     reviewCount: {
       color: theme.colors.text.secondary,
+      fontSize: 12,
+    },
+    noReviewsContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: theme.spacing.xs,
+      paddingVertical: theme.spacing.xs,
+    },
+    noReviews: {
+      color: theme.colors.text.secondary,
+      fontSize: 12,
     },
   });
