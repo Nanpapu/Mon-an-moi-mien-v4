@@ -53,12 +53,6 @@ export const useAuthForm = (
         return;
       }
 
-      const methods = await fetchSignInMethodsForEmail(auth, resetEmail);
-      if (methods.length === 0) {
-        Alert.alert("Lỗi", "Email này chưa được đăng ký");
-        return;
-      }
-
       await resetPassword(resetEmail);
       Alert.alert(
         "Thành công",
@@ -66,7 +60,11 @@ export const useAuthForm = (
       );
       setShowResetPassword(false);
     } catch (error: any) {
-      Alert.alert("Lỗi", error.message);
+      if (error.code === 'auth/user-not-found') {
+        Alert.alert("Lỗi", "Email này chưa được đăng ký");
+      } else {
+        Alert.alert("Lỗi", error.message);
+      }
     }
   };
 
