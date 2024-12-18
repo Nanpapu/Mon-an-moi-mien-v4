@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollView, View, RefreshControl } from 'react-native';
 import { Recipe } from '../../../types';
-import { RecipeCard } from '../../../components/recipe';
-import { RecipeCardSkeleton } from '../../../components/recipe';
+import { RecipeGridItem } from './RecipeGridItem';
+import { RecipeDetailModal } from './RecipeDetailModal';
 import { EmptyState } from './EmptyState';
 import { createStyles } from '../styles';
 import { useTheme } from '../../../theme/ThemeContext';
@@ -26,39 +26,43 @@ export const RecipeList = ({
 }: Props) => {
   const { theme } = useTheme();
   const styles = createStyles(theme);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
   return (
-    <ScrollView
-      style={styles.recipeList}
-      refreshControl={
-        <RefreshControl
-          refreshing={isRefreshing}
-          onRefresh={onRefresh}
-          colors={[theme.colors.primary.main]}
-          tintColor={theme.colors.primary.main}
-        />
-      }
-    >
-      {isLoading ? (
-        <>
-          <RecipeCardSkeleton />
-          <RecipeCardSkeleton />
-          <RecipeCardSkeleton />
-        </>
-      ) : filteredRecipes.length === 0 ? (
-        <EmptyState hasRecipes={savedRecipes.length > 0} />
-      ) : (
-        filteredRecipes.map((recipe) => (
-          <View key={recipe.id} style={styles.recipeCard}>
-            <RecipeCard
-              recipe={recipe}
-              onDelete={() => onDeleteRecipe(recipe)}
-              showActions={true}
-              showReviews={true}
-            />
+    <>
+      <ScrollView
+        style={styles.recipeList}
+        contentContainerStyle={styles.gridContainer}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={onRefresh}
+            colors={[theme.colors.primary.main]}
+            tintColor={theme.colors.primary.main}
+          />
+        }
+      >
+        {filteredRecipes.length === 0 ? (
+          <EmptyState hasRecipes={savedRecipes.length > 0} />
+        ) : (
+          <View style={styles.grid}>
+            {filteredRecipes.map((recipe) => (
+              <RecipeGridItem
+                key={recipe.id}
+                recipe={recipe}
+                onPress={() => setSelectedRecipe(recipe)}
+              />
+            ))}
           </View>
-        ))
-      )}
-    </ScrollView>
+        )}
+      </ScrollView>
+
+      <RecipeDetailModal
+        visible={!!selectedRecipe}
+        recipe={selectedRecipe}
+        onClose={() => setSelectedRecipe(null)}
+        onDelete={onDeleteRecipe}
+      />
+    </>
   );
 };
