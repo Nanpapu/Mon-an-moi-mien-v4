@@ -178,7 +178,9 @@ export const createStyles = (theme: Theme) =>
       backgroundColor: theme.colors.background.paper,
       borderTopLeftRadius: theme.spacing.lg,
       borderTopRightRadius: theme.spacing.lg,
-      ...theme.shadows.md,
+      // ...theme.shadows.md,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.divider,
     },
     modalTitle: {
       ...theme.typography.h3,

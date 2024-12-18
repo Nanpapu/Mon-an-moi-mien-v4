@@ -65,12 +65,15 @@ export const ReviewsList = ({
             <Ionicons
               key={star}
               name={star <= (averageRating || 0) ? 'star' : 'star-outline'}
-              size={16}
+              size={20}
               color={theme.colors.warning.main}
               style={{ marginRight: 4 }}
             />
           ))}
-          <Typography variant="subtitle1" style={{ marginLeft: 8 }}>
+          <Typography
+            variant="subtitle1"
+            style={{ marginLeft: 8, fontWeight: 'bold' }}
+          >
             {averageRating?.toFixed(1) || '0.0'} ({totalReviews} đánh giá)
           </Typography>
         </View>

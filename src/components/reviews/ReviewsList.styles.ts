@@ -11,11 +11,14 @@ export const createStyles = (theme: Theme) =>
       padding: theme.spacing.md,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.divider,
+      marginBottom: theme.spacing.md,
+      backgroundColor: theme.colors.background.paper,
     },
     reviewContainer: {
       padding: theme.spacing.md,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.divider,
+      backgroundColor: theme.colors.background.paper,
     },
     userInfoContainer: {
       flexDirection: 'row',
@@ -31,7 +34,7 @@ export const createStyles = (theme: Theme) =>
     ratingContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      // marginBottom: theme.spacing.sm,
+      // justifyContent: 'center',
     },
     starsContainer: {
       flexDirection: 'row',
