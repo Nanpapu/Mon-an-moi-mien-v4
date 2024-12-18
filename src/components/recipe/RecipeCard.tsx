@@ -11,6 +11,9 @@ import { ReviewModal, ReviewsList } from "../reviews";
 import { createStyles } from "./RecipeCard.styles";
 import { useTheme } from "../../theme/ThemeContext";
 import { Typography } from "../shared";
+import { onSnapshot, doc } from 'firebase/firestore';
+import { db } from '../../config/firebase';
+import { COLLECTIONS } from '../../constants';
 
 interface Props {
   recipe: Recipe;
@@ -40,9 +43,27 @@ export function RecipeCard({
 
   useEffect(() => {
     if (showReviews) {
-      loadReviewStats();
+      // Lắng nghe thay đổi từ recipeStats
+      const unsubscribe = onSnapshot(
+        doc(db, COLLECTIONS.RECIPE_STATS, recipe.id),
+        (doc) => {
+          if (doc.exists()) {
+            const data = doc.data();
+            setStats({
+              averageRating: data.averageRating || 0,
+              totalReviews: data.totalReviews || 0
+            });
+          }
+        },
+        (error) => {
+          console.error("Lỗi khi lắng nghe thay đổi stats:", error);
+        }
+      );
+
+      // Cleanup subscription
+      return () => unsubscribe();
     }
-  }, [showReviews]);
+  }, [showReviews, recipe.id]);
 
   useEffect(() => {
     if (user && showReviews) {
@@ -54,17 +75,17 @@ export function RecipeCard({
     }
   }, [user, showReviews]);
 
-  const loadReviewStats = async () => {
-    setIsLoadingStats(true);
-    try {
-      const recipeStats = await ReviewService.getRecipeStats(recipe.id);
-      setStats(recipeStats);
-    } catch (error) {
-      console.error("Lỗi khi tải thống kê đánh giá:", error);
-    } finally {
-      setIsLoadingStats(false);
-    }
-  };
+  // const loadReviewStats = async () => {
+  //   setIsLoadingStats(true);
+  //   try {
+  //     const recipeStats = await ReviewService.getRecipeStats(recipe.id);
+  //     setStats(recipeStats);
+  //   } catch (error) {
+  //     console.error("Lỗi khi tải thống kê đánh giá:", error);
+  //   } finally {
+  //     setIsLoadingStats(false);
+  //   }
+  // };
 
   const loadReviews = async () => {
     try {

@@ -90,6 +90,7 @@ export const ReviewService = {
 
       // Clear cache sau khi tạo review mới
       await ReviewService.clearRecipeStatsCache(recipeId);
+      await CacheService.clearCache(`${CACHE_KEYS.RECIPE_REVIEWS}${recipeId}`);
 
       return {
         id: docRef.id,
@@ -226,6 +227,7 @@ export const ReviewService = {
 
       // Clear cache sau khi update
       await ReviewService.clearRecipeStatsCache(recipeId);
+      await CacheService.clearCache(`${CACHE_KEYS.RECIPE_REVIEWS}${recipeId}`);
     } catch (error: any) {
       throw new Error(error.message);
     }
