@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { ScrollView, TouchableOpacity, StyleSheet, View } from 'react-native';
 import { Typography } from '../../../components/shared';
 import { useTheme } from '../../../theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
@@ -23,78 +23,81 @@ export const RegionFilter = ({
   const styles = createStyles(theme);
 
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.container}
-    >
+    <View style={styles.mainContainer}>
       <TouchableOpacity
         style={[
           styles.filterButton,
-          showFavorites && styles.selectedButton,
           styles.favoriteFilter,
+          showFavorites && styles.selectedFavoriteButton,
         ]}
         onPress={onToggleFavorites}
       >
-        <Ionicons
-          name={showFavorites ? 'heart' : 'heart-outline'}
-          size={20}
-          color={
-            showFavorites
-              ? theme.colors.primary.contrast
-              : theme.colors.text.primary
-          }
-          style={{ marginRight: theme.spacing.xs }}
-        />
-        <Typography
-          variant="body1"
-          style={[styles.buttonText, showFavorites && styles.selectedText]}
-        >
-          Yêu thích
-        </Typography>
+        <View style={styles.favoriteIconContainer}>
+          <Ionicons
+            name={showFavorites ? 'heart' : 'heart-outline'}
+            size={24}
+            color={
+              showFavorites
+                ? theme.colors.primary.contrast
+                : theme.colors.error.main
+            }
+          />
+        </View>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={[styles.filterButton, !selectedRegion && styles.selectedButton]}
-        onPress={() => onSelectRegion(null)}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContainer}
       >
-        <Typography
-          variant="body1"
-          style={[styles.buttonText, !selectedRegion && styles.selectedText]}
-        >
-          Tất cả
-        </Typography>
-      </TouchableOpacity>
-
-      {regions.map((region) => (
         <TouchableOpacity
-          key={region}
           style={[
             styles.filterButton,
-            selectedRegion === region && styles.selectedButton,
+            !selectedRegion && styles.selectedButton,
           ]}
-          onPress={() => onSelectRegion(region)}
+          onPress={() => onSelectRegion(null)}
         >
           <Typography
             variant="body1"
-            style={[
-              styles.buttonText,
-              selectedRegion === region && styles.selectedText,
-            ]}
+            style={[styles.buttonText, !selectedRegion && styles.selectedText]}
           >
-            {region}
+            Tất cả
           </Typography>
         </TouchableOpacity>
-      ))}
-    </ScrollView>
+
+        {regions.map((region) => (
+          <TouchableOpacity
+            key={region}
+            style={[
+              styles.filterButton,
+              selectedRegion === region && styles.selectedButton,
+            ]}
+            onPress={() => onSelectRegion(region)}
+          >
+            <Typography
+              variant="body1"
+              style={[
+                styles.buttonText,
+                selectedRegion === region && styles.selectedText,
+              ]}
+            >
+              {region}
+            </Typography>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View>
   );
 };
 
 const createStyles = (theme: any) =>
   StyleSheet.create({
-    container: {
-      paddingHorizontal: theme.spacing.md,
-      paddingVertical: theme.spacing.sm,
+    mainContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    scrollContainer: {
+      paddingLeft: 0,
       gap: theme.spacing.sm,
     },
     filterButton: {
@@ -116,6 +119,26 @@ const createStyles = (theme: any) =>
       color: theme.colors.primary.contrast,
     },
     favoriteFilter: {
-      borderColor: theme.colors.primary.main,
+      borderColor: theme.colors.error.main,
+      borderWidth: 1.5,
+      width: 44,
+      height: 44,
+      padding: 0,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: theme.spacing.sm,
+    },
+    favoriteIconContainer: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    selectedFavoriteButton: {
+      backgroundColor: theme.colors.error.main,
+      borderColor: theme.colors.error.main,
     },
   });
