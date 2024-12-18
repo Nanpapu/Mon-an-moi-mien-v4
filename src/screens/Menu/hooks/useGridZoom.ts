@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Dimensions } from 'react-native';
 
 const windowWidth = Dimensions.get('window').width;
@@ -8,14 +8,14 @@ export const ZOOM_LEVELS = {
   LEVEL_1: {
     // 2x2
     columns: 2,
-    spacing: 16,
+    spacing: 8,
     showTitle: true,
     minTitleHeight: 50,
   },
   LEVEL_2: {
     // 3x3
     columns: 3,
-    spacing: 12,
+    spacing: 8,
     showTitle: true,
     minTitleHeight: 40,
   },
@@ -26,7 +26,7 @@ export const ZOOM_LEVELS = {
     showTitle: false,
     minTitleHeight: 0,
   },
-};
+} as const;
 
 export const useGridZoom = () => {
   const [zoomLevel, setZoomLevel] =
@@ -34,24 +34,31 @@ export const useGridZoom = () => {
 
   const currentConfig = ZOOM_LEVELS[zoomLevel];
 
-  const calculateItemWidth = () => {
+  const calculateItemWidth = useCallback(() => {
     const { columns, spacing } = currentConfig;
-    return (windowWidth - spacing * (columns + 1)) / columns;
-  };
+    const containerPadding = 16; // theme.spacing.md
+    const availableWidth = windowWidth - containerPadding * 2; // Trừ padding container
+    const itemMargin = spacing; // Margin giữa các items
+    const totalMarginWidth = itemMargin * (columns - 1); // Tổng margin giữa các items
+    const itemWidth = (availableWidth - totalMarginWidth) / columns;
+    return Math.floor(itemWidth); // Làm tròn xuống để tránh lỗi pixel
+  }, [currentConfig]);
 
-  const zoomIn = () => {
-    console.log('Zoom In - Current level:', zoomLevel);
-    if (zoomLevel === 'LEVEL_1') setZoomLevel('LEVEL_2');
-    else if (zoomLevel === 'LEVEL_2') setZoomLevel('LEVEL_3');
-    console.log('New level:', zoomLevel);
-  };
+  const zoomIn = useCallback(() => {
+    setZoomLevel((current) => {
+      if (current === 'LEVEL_1') return 'LEVEL_2';
+      if (current === 'LEVEL_2') return 'LEVEL_3';
+      return current;
+    });
+  }, []);
 
-  const zoomOut = () => {
-    console.log('Zoom Out - Current level:', zoomLevel);
-    if (zoomLevel === 'LEVEL_3') setZoomLevel('LEVEL_2');
-    else if (zoomLevel === 'LEVEL_2') setZoomLevel('LEVEL_1');
-    console.log('New level:', zoomLevel);
-  };
+  const zoomOut = useCallback(() => {
+    setZoomLevel((current) => {
+      if (current === 'LEVEL_3') return 'LEVEL_2';
+      if (current === 'LEVEL_2') return 'LEVEL_1';
+      return current;
+    });
+  }, []);
 
   return {
     zoomLevel,

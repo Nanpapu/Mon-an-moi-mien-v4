@@ -53,18 +53,20 @@ export const createStyles = (theme: Theme) =>
       overflow: 'hidden',
     },
     gridContainer: {
-      padding: theme.spacing.sm,
+      padding: theme.spacing.md,
     },
     grid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      justifyContent: 'flex-start',
+      margin: -theme.spacing.xs,
     },
     headerControls: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingHorizontal: theme.spacing.sm,
+      paddingHorizontal: theme.spacing.md,
       paddingBottom: theme.spacing.sm,
     },
     zoomControls: {
