@@ -78,50 +78,28 @@ export const UserService = {
       // Xử lý ảnh trước khi upload
       const processedUri = await ImageUtils.prepareImageForUpload(imageUri);
 
-      // Tạo reference đến storage với tên file duy nhất
+      // Tạo reference đến storage với cấu trúc thư mục phân cấp
       const timestamp = new Date().getTime();
-      const storageRef = ref(storage, `avatars/${userId}_${timestamp}`);
+      const storageRef = ref(storage, `avatars/${userId}/${timestamp}`);
 
-      // Convert imageUri thành blob
+      // Upload ảnh mới
       const response = await fetch(processedUri);
       const blob = await response.blob();
-
-      // Upload file với metadata
-      const metadata = {
-        contentType: 'image/jpeg',
-        customMetadata: {
-          userId: userId,
-          uploadedAt: timestamp.toString(),
-        },
-      };
-
-      await uploadBytes(storageRef, blob, metadata);
+      await uploadBytes(storageRef, blob);
 
       // Lấy URL download
       const downloadURL = await getDownloadURL(storageRef);
 
-      // Cập nhật photoURL trong profile
+      // Cập nhật URL trong Firestore
       await UserService.updateProfile(userId, {
         photoURL: downloadURL,
-        avatarUpdatedAt: timestamp,
+        avatarUpdatedAt: new Date(),
       });
-
-      // Xóa ảnh cũ nếu có
-      const userDoc = await getDoc(doc(db, 'users', userId));
-      const oldPhotoURL = userDoc.data()?.photoURL;
-      if (oldPhotoURL) {
-        try {
-          const oldRef = ref(storage, oldPhotoURL);
-          await deleteObject(oldRef);
-        } catch (error) {
-          console.warn('Không thể xóa ảnh cũ:', error);
-        }
-      }
 
       return downloadURL;
     } catch (error) {
       console.error('Lỗi khi upload avatar:', error);
-      throw new Error('Không thể upload ảnh đại diện');
+      throw error;
     }
   },
 
