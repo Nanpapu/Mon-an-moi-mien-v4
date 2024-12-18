@@ -10,21 +10,27 @@ export const ZOOM_LEVELS = {
     columns: 2,
     spacing: 8,
     showTitle: true,
+    showRating: true,
     minTitleHeight: 50,
+    minRatingHeight: 30,
   },
   LEVEL_2: {
     // 3x3
     columns: 3,
     spacing: 8,
     showTitle: true,
+    showRating: true,
     minTitleHeight: 40,
+    minRatingHeight: 25,
   },
   LEVEL_3: {
     // 4x4
     columns: 4,
     spacing: 8,
     showTitle: false,
+    showRating: false,
     minTitleHeight: 0,
+    minRatingHeight: 0,
   },
 } as const;
 
