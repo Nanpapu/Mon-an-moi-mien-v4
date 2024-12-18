@@ -13,6 +13,7 @@ export const ZOOM_LEVELS = {
     showRating: true,
     minTitleHeight: 50,
     minRatingHeight: 30,
+    titleLines: 2,
   },
   LEVEL_2: {
     // 3x3
@@ -20,8 +21,9 @@ export const ZOOM_LEVELS = {
     spacing: 8,
     showTitle: true,
     showRating: true,
-    minTitleHeight: 40,
-    minRatingHeight: 25,
+    minTitleHeight: 25,
+    minRatingHeight: 20,
+    titleLines: 1,
   },
   LEVEL_3: {
     // 4x4
@@ -31,6 +33,7 @@ export const ZOOM_LEVELS = {
     showRating: false,
     minTitleHeight: 0,
     minRatingHeight: 0,
+    titleLines: 0,
   },
 } as const;
 

@@ -64,8 +64,14 @@ export const RecipeGridItem = ({ recipe, onPress, width, config }: Props) => {
       />
       {config.showTitle && (
         <View style={styles.infoContainer}>
-          <View style={styles.nameContainer}>
-            <Typography variant="body2" numberOfLines={2} style={styles.name}>
+          <View
+            style={[styles.nameContainer, { minHeight: config.minTitleHeight }]}
+          >
+            <Typography
+              variant="body2"
+              numberOfLines={config.titleLines || 2}
+              style={styles.name}
+            >
               {recipe.name}
             </Typography>
           </View>
@@ -73,7 +79,12 @@ export const RecipeGridItem = ({ recipe, onPress, width, config }: Props) => {
           {config.showRating && (
             <>
               <View style={styles.divider} />
-              <View style={styles.ratingContainer}>
+              <View
+                style={[
+                  styles.ratingContainer,
+                  { minHeight: config.minRatingHeight },
+                ]}
+              >
                 {stats.totalReviews > 0 ? (
                   <View style={styles.ratingContainer}>
                     <View style={styles.starsContainer}>
@@ -99,7 +110,7 @@ export const RecipeGridItem = ({ recipe, onPress, width, config }: Props) => {
                   <View style={styles.noReviewsContainer}>
                     <Ionicons
                       name="star-outline"
-                      size={16}
+                      size={12}
                       color={theme.colors.text.secondary}
                     />
                     <Typography variant="caption" style={styles.noReviews}>
@@ -170,11 +181,10 @@ const createStyles = (
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: theme.spacing.xs,
-      paddingVertical: theme.spacing.xs,
+      gap: theme.spacing.xxs,
     },
     noReviews: {
       color: theme.colors.text.secondary,
-      fontSize: 12,
+      fontSize: 10,
     },
   });
