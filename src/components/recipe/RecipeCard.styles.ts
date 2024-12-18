@@ -158,23 +158,27 @@ export const createStyles = (theme: Theme) =>
     },
     modalContainer: {
       flex: 1,
+      justifyContent: 'flex-end',
       backgroundColor: 'rgba(0,0,0,0.5)',
     },
     modalContent: {
-      flex: 1,
       backgroundColor: theme.colors.background.default,
-      marginTop: 60,
+      borderTopLeftRadius: theme.spacing.lg,
+      borderTopRightRadius: theme.spacing.lg,
+      height: '60%',
     },
     modalHeader: {
+      zIndex: 1,
+    },
+    modalHeaderBackground: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: theme.spacing.md,
-      position: 'absolute',
-      top: -60,
-      left: 0,
-      right: 0,
-      zIndex: 1,
+      backgroundColor: theme.colors.background.paper,
+      borderTopLeftRadius: theme.spacing.lg,
+      borderTopRightRadius: theme.spacing.lg,
+      ...theme.shadows.md,
     },
     modalTitle: {
       ...theme.typography.h3,
@@ -184,7 +188,7 @@ export const createStyles = (theme: Theme) =>
       padding: theme.spacing.sm,
     },
     modalBody: {
-      padding: theme.spacing.md,
+      flex: 1,
     },
     reviewsList: {
       maxHeight: width * 1.2,
