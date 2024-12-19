@@ -152,7 +152,7 @@ export const RegionService = {
         // 4. Tạo documents cho recipes và recipeStats
         for (const recipe of regionRecipes) {
           // Tạo đường dẫn tương đối cho ảnh
-          const imagePath = ImageUtils.getRecipeImagePath(region.id, recipe.id);
+          const imagePath = `recipes/images/${region.id}/${recipe.id}.jpg`;
 
           // Upload ảnh lên storage nếu có URL
           if (recipe.image && recipe.image.startsWith('http')) {
