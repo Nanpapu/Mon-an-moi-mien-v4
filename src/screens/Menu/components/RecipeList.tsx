@@ -7,6 +7,7 @@ import { EmptyState } from './EmptyState';
 import { createStyles } from '../styles';
 import { useTheme } from '../../../theme/ThemeContext';
 import { useGridZoom } from '../hooks/useGridZoom';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface Props {
   isLoading: boolean;
@@ -18,6 +19,10 @@ interface Props {
   currentConfig: any;
   calculateItemWidth: () => number;
   onFavoriteChange: () => void;
+  isSelectionMode?: boolean;
+  selectedRecipes?: Set<string>;
+  onLongPress?: (recipeId: string) => void;
+  onToggleSelect?: (recipeId: string) => void;
 }
 
 export const RecipeList = ({
@@ -30,13 +35,24 @@ export const RecipeList = ({
   currentConfig,
   calculateItemWidth,
   onFavoriteChange,
+  isSelectionMode = false,
+  selectedRecipes = new Set(),
+  onLongPress,
+  onToggleSelect,
 }: Props) => {
   const { theme } = useTheme();
-  const styles = createStyles(theme);
+  const insets = useSafeAreaInsets();
+  const styles = createStyles(theme, insets);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
   if (!isLoading && filteredRecipes.length === 0) {
-    return <EmptyState hasRecipes={savedRecipes.length > 0} />;
+    return (
+      <EmptyState 
+        hasRecipes={savedRecipes.length > 0} 
+        isRefreshing={isRefreshing}
+        onRefresh={onRefresh}
+      />
+    );
   }
 
   return (
@@ -57,17 +73,23 @@ export const RecipeList = ({
               width={calculateItemWidth()}
               config={currentConfig}
               onFavoriteChange={onFavoriteChange}
+              isSelectionMode={isSelectionMode}
+              isSelected={selectedRecipes.has(recipe.id)}
+              onLongPress={() => onLongPress?.(recipe.id)}
+              onToggleSelect={() => onToggleSelect?.(recipe.id)}
             />
           ))}
         </View>
       </ScrollView>
 
-      <RecipeDetailModal
-        visible={!!selectedRecipe}
-        recipe={selectedRecipe}
-        onClose={() => setSelectedRecipe(null)}
-        onDelete={onDeleteRecipe}
-      />
+      {!isSelectionMode && (
+        <RecipeDetailModal
+          visible={!!selectedRecipe}
+          recipe={selectedRecipe}
+          onClose={() => setSelectedRecipe(null)}
+          onDelete={onDeleteRecipe}
+        />
+      )}
     </>
   );
 };

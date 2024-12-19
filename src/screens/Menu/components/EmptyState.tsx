@@ -1,22 +1,25 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, ScrollView, RefreshControl } from 'react-native';
 import { Typography } from '../../../components/shared';
 import { useTheme } from '../../../theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 
 interface Props {
   hasRecipes: boolean;
+  isRefreshing?: boolean;
+  onRefresh?: () => void;
 }
 
-export const EmptyState = ({ hasRecipes }: Props) => {
+export const EmptyState = ({ hasRecipes, isRefreshing = false, onRefresh }: Props) => {
   const { theme } = useTheme();
 
-  return (
+  const EmptyContent = () => (
     <View style={{ 
       flex: 1, 
       alignItems: 'center', 
       justifyContent: 'center',
-      padding: theme.spacing.xl 
+      padding: theme.spacing.xl,
+      minHeight: 400 // Đảm bảo có đủ không gian để scroll
     }}>
       <Ionicons
         name={hasRecipes ? "search" : "book-outline"}
@@ -35,4 +38,21 @@ export const EmptyState = ({ hasRecipes }: Props) => {
       </Typography>
     </View>
   );
+
+  // Nếu có onRefresh, wrap content trong ScrollView với RefreshControl
+  if (onRefresh) {
+    return (
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        refreshControl={
+          <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+        }
+      >
+        <EmptyContent />
+      </ScrollView>
+    );
+  }
+
+  // Nếu không có onRefresh, render content bình thường
+  return <EmptyContent />;
 };

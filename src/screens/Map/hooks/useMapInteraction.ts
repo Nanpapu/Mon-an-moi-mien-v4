@@ -32,9 +32,7 @@ export const useMapInteraction = () => {
 
   // Tính toán mức zoom dựa trên latitudeDelta
   const calculateZoom = (latitudeDelta: number) => {
-    const zoom = Math.round(Math.log(360 / latitudeDelta) / Math.LN2);
-    console.log('Current calculated zoom:', zoom); // Debug log
-    return zoom;
+    return Math.round(Math.log(360 / latitudeDelta) / Math.LN2);
   };
 
   const shouldShowMarker = (regionId: string, zoom: number) => {

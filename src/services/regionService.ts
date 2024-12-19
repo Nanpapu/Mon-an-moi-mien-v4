@@ -131,6 +131,7 @@ export const RegionService = {
 
       // 1. Xóa tất cả ảnh cũ trong storage
       const storageRef = ref(storage, 'recipes/images');
+      console.log('Checking storage path:', storageRef.fullPath);
       const oldFiles = await listAll(storageRef);
       const deletePromises = oldFiles.items.map(item => deleteObject(item));
       await Promise.all(deletePromises);
@@ -151,15 +152,17 @@ export const RegionService = {
         // 4. Tạo documents cho recipes và recipeStats
         for (const recipe of regionRecipes) {
           // Tạo đường dẫn tương đối cho ảnh
-          const imagePath = ImageUtils.getRecipeImageRelativePath(region.id, recipe.id);
+          const imagePath = `recipes/images/${region.id}/${recipe.id}.jpg`;
 
           // Upload ảnh lên storage nếu có URL
           if (recipe.image && recipe.image.startsWith('http')) {
             try {
               const response = await fetch(recipe.image);
               const blob = await response.blob();
-              const imageRef = ref(storage, `recipes/${imagePath}`);
+              const imageRef = ref(storage, imagePath);
+              console.log('Uploading image to:', imagePath);
               await uploadBytes(imageRef, blob);
+              console.log('Upload success for:', recipe.id);
             } catch (error) {
               console.error(`Lỗi khi upload ảnh cho recipe ${recipe.id}:`, error);
             }

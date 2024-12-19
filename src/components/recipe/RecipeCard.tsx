@@ -21,10 +21,11 @@ import { onSnapshot, doc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { COLLECTIONS } from '../../constants';
 import { ImageUtils } from '../../utils/imageUtils';
+import { ImageCacheService } from '../../services/imageCacheService';
 
 interface Props {
   recipe: Recipe;
-  onSave?: () => void;
+  onSave?: () => Promise<boolean>;
   onDelete?: (recipe: Recipe) => void;
   showActions?: boolean;
   showReviews?: boolean;
@@ -48,11 +49,15 @@ export function RecipeCard({
   const [showDetails, setShowDetails] = useState(false);
   const [allReviews, setAllReviews] = useState<Review[]>([]);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
+  const [wasSaved, setWasSaved] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
     const loadImage = async () => {
       if (recipe.image) {
-        const url = await ImageUtils.getRecipeImageUrl(recipe.image);
+        const url = await ImageCacheService.getImageUrl(recipe.image);
         setImageUrl(url);
       }
     };
@@ -131,6 +136,7 @@ export function RecipeCard({
         style={styles.image}
         contentFit="cover"
         transition={200}
+        cachePolicy="memory-disk"
       />
 
       <View style={styles.content}>
@@ -161,52 +167,120 @@ export function RecipeCard({
 
         {showDetails && (
           <View style={styles.details}>
-            <Typography variant="subtitle1">Nguyên liệu:</Typography>
-            {recipe.ingredients.map((ingredient, index) => (
-              <Typography
-                key={index}
-                variant="body2"
-                color="secondary"
-                style={styles.listItem}
-              >
-                • {ingredient}
-              </Typography>
-            ))}
+            <View style={styles.ingredientsContainer}>
+              <View style={styles.sectionTitle}>
+                <Ionicons
+                  name="restaurant-outline"
+                  size={20}
+                  color={theme.colors.primary.main}
+                  style={styles.sectionIcon}
+                />
+                <Typography variant="h3">Nguyên liệu</Typography>
+              </View>
+              <View style={styles.ingredientsList}>
+                {recipe.ingredients.map((ingredient, index) => (
+                  <View key={index} style={styles.ingredientItem}>
+                    <View style={styles.ingredientBullet} />
+                    <Typography variant="body1" style={styles.ingredientText}>
+                      {ingredient}
+                    </Typography>
+                  </View>
+                ))}
+              </View>
+            </View>
 
-            <Typography
-              variant="subtitle1"
-              style={{ marginTop: theme.spacing.md }}
-            >
-              Cách làm:
-            </Typography>
-            {recipe.instructions.map((instruction, index) => (
-              <Typography
-                key={index}
-                variant="body2"
-                color="secondary"
-                style={styles.listItem}
-              >
-                {index + 1}. {instruction}
-              </Typography>
-            ))}
+            <View style={styles.instructionsContainer}>
+              <View style={styles.sectionTitle}>
+                <Ionicons
+                  name="book-outline"
+                  size={20}
+                  color={theme.colors.primary.main}
+                  style={styles.sectionIcon}
+                />
+                <Typography variant="h3">Cách làm</Typography>
+              </View>
+              <View style={styles.instructionsList}>
+                {recipe.instructions.map((instruction, index) => (
+                  <View key={index} style={styles.instructionItem}>
+                    <View style={styles.instructionNumber}>
+                      <Typography style={styles.instructionNumberText}>
+                        {index + 1}
+                      </Typography>
+                    </View>
+                    <Typography variant="body1" style={styles.instructionText}>
+                      {instruction}
+                    </Typography>
+                  </View>
+                ))}
+              </View>
+            </View>
           </View>
         )}
 
         {showActions && (
           <View style={styles.actions}>
             {onSave && (
-              <TouchableOpacity style={styles.saveButton} onPress={onSave}>
+              <TouchableOpacity 
+                style={[
+                  styles.saveButton,
+                  isSaving && styles.savingButton,
+                  justSaved && styles.savedButton,
+                  wasSaved && styles.wasSavedButton
+                ]} 
+                onPress={async () => {
+                  if (isSaving) return;
+                  
+                  setIsSaving(true);
+                  if (onSave) {
+                    const success = await onSave();
+                    if (success) {
+                      // Công thức mới được lưu - chỉ hiện "Đã lưu!"
+                      setJustSaved(true);
+                      setTimeout(() => {
+                        setJustSaved(false);
+                      }, 2000);
+                    } else {
+                      // Công thức đã lưu trước đó
+                      setWasSaved(true);
+                      setTimeout(() => {
+                        setWasSaved(false);
+                      }, 2000);
+                    }
+                  }
+                  setIsSaving(false);
+                }}
+                disabled={isSaving}
+              >
                 <Ionicons
-                  name="bookmark-outline"
+                  name={
+                    isSaving ? "hourglass-outline" :
+                    justSaved ? "checkmark-circle" :
+                    wasSaved ? "bookmark" : 
+                    "bookmark-outline"
+                  }
                   size={20}
                   color={theme.colors.background.default}
+                  style={{ marginRight: 8 }}
                 />
                 <Typography
                   variant="body1"
-                  style={{ color: theme.colors.background.default }}
+                  style={{ 
+                    color: theme.colors.background.default,
+                    fontWeight: justSaved ? 'bold' : 'normal'
+                  }}
                 >
-                  Lưu công thức
+                  {isSaving ? "Đang lưu..." : 
+                   justSaved ? "Đã lưu!" :
+                   wasSaved ? "Đã lưu trước đó" :
+                   "Lưu công thức"}
                 </Typography>
+                {isSaving && (
+                  <ActivityIndicator 
+                    size="small" 
+                    color={theme.colors.background.default}
+                    style={{marginLeft: 8}}
+                  />
+                )}
               </TouchableOpacity>
             )}
             {onDelete && (

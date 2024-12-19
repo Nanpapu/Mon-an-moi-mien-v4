@@ -1,22 +1,29 @@
 // Module xử lý lưu trữ dữ liệu local sử dụng AsyncStorage
 // Bao gồm các hàm để lưu, lấy và xóa công thức nấu ăn
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Recipe } from '../types';
+import { Recipe, Region } from '../types';
 
 // Khóa lưu trữ cho danh sách công thức
 const SAVED_RECIPES_KEY = '@saved_recipes';
 
 // FUNCTIONS
 // Lưu một công thức mới vào storage
-export const saveRecipe = async (recipe: Recipe) => {
+export const saveRecipe = async (recipe: Recipe, region: Region) => {
   try {
-    // Lấy danh sách công thức hiện có
     const savedRecipes = await getSavedRecipes();
-    // Kiểm tra xem công thức đã tồn tại chưa
+
+    // Lấy regionId từ id của recipe (vd: "01_01" -> "01")
+    const regionId = region.id;
+
+    const updatedRecipe = {
+      ...recipe,
+      image: recipe.image.startsWith('http')
+        ? `recipes/images/${regionId}/${recipe.id}.jpg`
+        : recipe.image,
+    };
+
     if (!savedRecipes.find((r) => r.id === recipe.id)) {
-      // Thêm công thức mới vào danh sách
-      const newSavedRecipes = [...savedRecipes, recipe];
-      // Lưu danh sách mới vào storage
+      const newSavedRecipes = [...savedRecipes, updatedRecipe];
       await AsyncStorage.setItem(
         SAVED_RECIPES_KEY,
         JSON.stringify(newSavedRecipes)
@@ -66,6 +73,33 @@ export const removeRecipe = async (recipeId: string): Promise<boolean> => {
     return true;
   } catch (error) {
     console.error('Lỗi khi xóa công thức:', error);
+    return false;
+  }
+};
+
+export const migrateSavedRecipes = async () => {
+  try {
+    const savedRecipes = await getSavedRecipes();
+
+    const updatedRecipes = savedRecipes.map((recipe) => {
+      const regionId = recipe.id.split('_')[0];
+      return {
+        ...recipe,
+        regionId,
+        image: recipe.image.startsWith('http')
+          ? `recipes/images/${regionId}/${recipe.id}.jpg`
+          : recipe.image,
+      };
+    });
+
+    await AsyncStorage.setItem(
+      SAVED_RECIPES_KEY,
+      JSON.stringify(updatedRecipes)
+    );
+
+    return true;
+  } catch (error) {
+    console.error('Lỗi khi migrate dữ liệu:', error);
     return false;
   }
 };
