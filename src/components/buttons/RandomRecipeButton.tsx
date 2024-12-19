@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { TouchableOpacity, StyleSheet, Animated } from 'react-native';
-import { Typography } from '../shared';
+import React, { useState, useRef } from 'react';
+import { TouchableOpacity, StyleSheet, Animated, Easing } from 'react-native';
 import { useTheme } from '../../theme/ThemeContext';
 import { Ionicons } from "@expo/vector-icons";
 import { Region } from '../../types';
@@ -16,7 +15,8 @@ interface Props {
 export function RandomRecipeButton({ regions, onRandomSelect, disabled }: Props) {
   const { theme } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
-  const spinValue = new Animated.Value(0);
+  const spinValue = useRef(new Animated.Value(0)).current;
+  const scaleValue = useRef(new Animated.Value(1)).current;
 
   const spin = spinValue.interpolate({
     inputRange: [0, 1],
@@ -30,11 +30,31 @@ export function RandomRecipeButton({ regions, onRandomSelect, disabled }: Props)
     setIsLoading(true);
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
-    Animated.timing(spinValue, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true
-    }).start();
+    // Animation khi nhấn
+    Animated.sequence([
+      Animated.spring(scaleValue, {
+        toValue: 0.8,
+        useNativeDriver: true,
+        speed: 50,
+        bounciness: 10
+      }),
+      Animated.spring(scaleValue, {
+        toValue: 1,
+        useNativeDriver: true,
+        speed: 50,
+        bounciness: 10
+      })
+    ]).start();
+
+    // Animation xoay liên tục
+    Animated.loop(
+      Animated.timing(spinValue, {
+        toValue: 1,
+        duration: 1000,
+        easing: Easing.linear,
+        useNativeDriver: true
+      })
+    ).start();
 
     setTimeout(() => {
       const randomRegion = allRegions[Math.floor(Math.random() * allRegions.length)];
@@ -62,7 +82,14 @@ export function RandomRecipeButton({ regions, onRandomSelect, disabled }: Props)
         onPress={handleRandomRecipe}
         disabled={disabled || isLoading}
       >
-        <Animated.View style={{ transform: [{ rotate: spin }] }}>
+        <Animated.View 
+          style={{ 
+            transform: [
+              { rotate: spin },
+              { scale: scaleValue }
+            ]
+          }}
+        >
           <Ionicons
             name="dice"
             size={24}
@@ -77,8 +104,8 @@ export function RandomRecipeButton({ regions, onRandomSelect, disabled }: Props)
 const styles = StyleSheet.create({
   button: {
     position: 'absolute',
-    bottom: 160,
-    right: 16,
+    bottom: 20, // Đưa xuống sát bottom
+    left: 16, // Đặt bên trái màn hình
     width: 48,
     height: 48,
     borderRadius: 24,
