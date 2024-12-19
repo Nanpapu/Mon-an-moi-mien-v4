@@ -45,9 +45,12 @@ export const createStyles = (theme: Theme) =>
       paddingTop: theme.spacing.md,
     },
     sectionTitle: {
-      ...theme.typography.h3,
-      color: theme.colors.text.primary,
+      flexDirection: 'row',
+      alignItems: 'center',
       marginBottom: theme.spacing.sm,
+    },
+    sectionIcon: {
+      marginRight: theme.spacing.sm,
     },
     listItem: {
       ...theme.typography.body1,
@@ -214,5 +217,61 @@ export const createStyles = (theme: Theme) =>
       flexDirection: 'row',
       alignItems: 'center',
       gap: theme.spacing.sm,
+    },
+    ingredientsContainer: {
+      backgroundColor: theme.colors.background.paper,
+      borderRadius: theme.spacing.md,
+      padding: theme.spacing.md,
+      marginTop: theme.spacing.md,
+    },
+    ingredientsList: {
+      marginTop: theme.spacing.sm,
+    },
+    ingredientItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: theme.spacing.xs,
+    },
+    ingredientBullet: {
+      width: 6,
+      height: 6,
+      borderRadius: 3,
+      backgroundColor: theme.colors.primary.main,
+      marginRight: theme.spacing.sm,
+    },
+    ingredientText: {
+      flex: 1,
+      color: theme.colors.text.primary,
+    },
+    instructionsContainer: {
+      backgroundColor: theme.colors.background.paper,
+      borderRadius: theme.spacing.md,
+      padding: theme.spacing.md,
+      marginTop: theme.spacing.md,
+    },
+    instructionsList: {
+      marginTop: theme.spacing.sm,
+    },
+    instructionItem: {
+      flexDirection: 'row',
+      marginBottom: theme.spacing.md,
+    },
+    instructionNumber: {
+      width: 24,
+      height: 24,
+      borderRadius: 12,
+      backgroundColor: theme.colors.primary.main,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: theme.spacing.sm,
+    },
+    instructionNumberText: {
+      color: theme.colors.primary.contrast,
+      fontSize: 14,
+      fontWeight: 'bold',
+    },
+    instructionText: {
+      flex: 1,
+      color: theme.colors.text.primary,
     },
   });

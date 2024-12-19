@@ -161,34 +161,53 @@ export function RecipeCard({
 
         {showDetails && (
           <View style={styles.details}>
-            <Typography variant="subtitle1">Nguyên liệu:</Typography>
-            {recipe.ingredients.map((ingredient, index) => (
-              <Typography
-                key={index}
-                variant="body2"
-                color="secondary"
-                style={styles.listItem}
-              >
-                • {ingredient}
-              </Typography>
-            ))}
+            <View style={styles.ingredientsContainer}>
+              <View style={styles.sectionTitle}>
+                <Ionicons
+                  name="restaurant-outline"
+                  size={20}
+                  color={theme.colors.primary.main}
+                  style={styles.sectionIcon}
+                />
+                <Typography variant="h3">Nguyên liệu</Typography>
+              </View>
+              <View style={styles.ingredientsList}>
+                {recipe.ingredients.map((ingredient, index) => (
+                  <View key={index} style={styles.ingredientItem}>
+                    <View style={styles.ingredientBullet} />
+                    <Typography variant="body1" style={styles.ingredientText}>
+                      {ingredient}
+                    </Typography>
+                  </View>
+                ))}
+              </View>
+            </View>
 
-            <Typography
-              variant="subtitle1"
-              style={{ marginTop: theme.spacing.md }}
-            >
-              Cách làm:
-            </Typography>
-            {recipe.instructions.map((instruction, index) => (
-              <Typography
-                key={index}
-                variant="body2"
-                color="secondary"
-                style={styles.listItem}
-              >
-                {index + 1}. {instruction}
-              </Typography>
-            ))}
+            <View style={styles.instructionsContainer}>
+              <View style={styles.sectionTitle}>
+                <Ionicons
+                  name="book-outline"
+                  size={20}
+                  color={theme.colors.primary.main}
+                  style={styles.sectionIcon}
+                />
+                <Typography variant="h3">Cách làm</Typography>
+              </View>
+              <View style={styles.instructionsList}>
+                {recipe.instructions.map((instruction, index) => (
+                  <View key={index} style={styles.instructionItem}>
+                    <View style={styles.instructionNumber}>
+                      <Typography style={styles.instructionNumberText}>
+                        {index + 1}
+                      </Typography>
+                    </View>
+                    <Typography variant="body1" style={styles.instructionText}>
+                      {instruction}
+                    </Typography>
+                  </View>
+                ))}
+              </View>
+            </View>
           </View>
         )}
 
