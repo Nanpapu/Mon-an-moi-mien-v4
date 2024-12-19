@@ -44,7 +44,7 @@ export const ImageUtils = {
       if (imagePath.startsWith('http')) {
         return imagePath;
       }
-      const storageRef = ref(storage, `recipes/${imagePath}`);
+      const storageRef = ref(storage, imagePath);
       return await getDownloadURL(storageRef);
     } catch (error) {
       console.error('Lỗi khi lấy URL ảnh:', error);
@@ -59,6 +59,6 @@ export const ImageUtils = {
    * @returns Đường dẫn tương đối để lưu vào Firestore
    */
   getRecipeImageRelativePath: (regionId: string, recipeId: string) => {
-    return `images/${regionId}/${recipeId}.jpg`;
+    return `recipes/images/${regionId}/${recipeId}.jpg`;
   }
 };
