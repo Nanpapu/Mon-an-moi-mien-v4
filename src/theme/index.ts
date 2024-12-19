@@ -1,3 +1,4 @@
+export { themes, ThemeType } from './themes';
 export { lightColors } from './colors';
 export { typography } from './typography';
 export { spacing, layout } from './spacing';
