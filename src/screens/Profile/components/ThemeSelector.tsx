@@ -125,13 +125,7 @@ export const ThemeSelector = () => {
     setDefaultTheme(theme.id);
     showToast(
       'success',
-      `Đã chuyển sang giao diện ${theme.name}\n${
-        theme.id.includes('-special')
-          ? 'Đã lưu làm giao diện đặc biệt mặc định'
-          : theme.id.includes('dark')
-          ? 'Đã lưu làm giao diện tối mặc định'
-          : 'Đã lưu làm giao diện sáng mặc định'
-      }`
+      `Đã chuyển sang ${theme.name}`
     );
   };
 

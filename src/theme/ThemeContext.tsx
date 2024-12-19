@@ -74,15 +74,16 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     const currentIsSpecial = currentTheme.id.includes('-special');
     const currentIsDark = currentTheme.id.includes('dark');
 
+    let newTheme;
     if (currentIsSpecial) {
-      const lightTheme = themes.find(t => t.id === defaultLightTheme)!;
-      setCurrentTheme(lightTheme);
+      newTheme = themes.find(t => t.id === defaultLightTheme)!;
+      setCurrentTheme(newTheme);
     } else if (currentIsDark) {
-      const specialTheme = themes.find(t => t.id === defaultSpecialTheme)!;
-      setCurrentTheme(specialTheme);
+      newTheme = themes.find(t => t.id === defaultSpecialTheme)!;
+      setCurrentTheme(newTheme);
     } else {
-      const darkTheme = themes.find(t => t.id === defaultDarkTheme)!;
-      setCurrentTheme(darkTheme);
+      newTheme = themes.find(t => t.id === defaultDarkTheme)!;
+      setCurrentTheme(newTheme);
     }
   };
 
