@@ -39,6 +39,17 @@ import { indigoDarkTheme } from './dark/indigoDark';
 import { amberDarkTheme } from './dark/amberDark';
 import { roseDarkTheme } from './dark/roseDark';
 
+// Import các theme đặc biệt
+import { neonDarkTheme } from './special/neonDark';
+import { retroWaveTheme } from './special/retroWave';
+import { cyberpunkTheme } from './special/cyberpunk';
+import { matrixTheme } from './special/matrix';
+import { pastelDreamTheme } from './special/pastelDream';
+import { galaxyTheme } from './special/galaxy';
+import { sunsetTheme } from './special/sunset';
+import { oceanTheme } from './special/ocean';
+import { forestTheme } from './special/forest';
+
 // Export danh sách theme
 export const themes = [
   lightTheme,
@@ -59,4 +70,24 @@ export const themes = [
   indigoDarkTheme,
   amberDarkTheme,
   roseDarkTheme,
+  neonDarkTheme,
+  retroWaveTheme,
+  cyberpunkTheme,
+  matrixTheme,
+  pastelDreamTheme,
+  galaxyTheme,
+  sunsetTheme,
+  oceanTheme,
+  forestTheme,
 ];
+
+// Export các theme đặc biệt
+export * from './special/neonDark';
+export * from './special/retroWave';
+export * from './special/cyberpunk';
+export * from './special/matrix';
+export * from './special/pastelDream';
+export * from './special/galaxy';
+export * from './special/sunset';
+export * from './special/ocean';
+export * from './special/forest';
