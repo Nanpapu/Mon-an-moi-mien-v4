@@ -32,6 +32,10 @@ type ThemeContextType = {
   setTheme: (themeId: string) => void;
   availableThemes: ThemeType[];
   theme: Theme;
+  defaultLightTheme: string;
+  defaultDarkTheme: string;
+  setDefaultTheme: (themeId: string) => void;
+  toggleTheme: () => void;
 };
 
 // Tạo context
@@ -42,44 +46,32 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [currentTheme, setCurrentTheme] = useState<ThemeType>(themes[0]);
-  const fadeAnim = useRef(new Animated.Value(1)).current;
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const [defaultLightTheme, setDefaultLightTheme] = useState('light');
+  const [defaultDarkTheme, setDefaultDarkTheme] = useState('classic-dark');
+
+  const setDefaultTheme = (themeId: string) => {
+    const theme = themes.find(t => t.id === themeId);
+    if (!theme) return;
+    
+    if (theme.id.includes('dark')) {
+      setDefaultDarkTheme(theme.id);
+    } else {
+      setDefaultLightTheme(theme.id);
+    }
+  };
 
   const setTheme = (themeId: string) => {
     const newTheme = themes.find(t => t.id === themeId);
     if (!newTheme) return;
+    setCurrentTheme(newTheme);
+    setDefaultTheme(themeId);
+  };
 
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 0.8,
-        duration: 200,
-        useNativeDriver: true,
-        easing: Easing.ease,
-      }),
-      Animated.timing(scaleAnim, {
-        toValue: 0.98,
-        duration: 300,
-        useNativeDriver: true,
-        easing: Easing.ease,
-      }),
-    ]).start(() => {
-      setCurrentTheme(newTheme);
-      
-      Animated.parallel([
-        Animated.spring(fadeAnim, {
-          toValue: 1,
-          useNativeDriver: true,
-          damping: 20,
-          stiffness: 150,
-        }),
-        Animated.spring(scaleAnim, {
-          toValue: 1,
-          useNativeDriver: true,
-          damping: 20,
-          stiffness: 150,
-        }),
-      ]).start();
-    });
+  const toggleTheme = () => {
+    const isDark = currentTheme.id.includes('dark');
+    setCurrentTheme(
+      themes.find(t => t.id === (isDark ? defaultLightTheme : defaultDarkTheme))!
+    );
   };
 
   // Tạo theme cũ từ currentTheme
@@ -95,13 +87,48 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     },
   };
 
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0.95,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 0.98,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 100,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleAnim, {
+          toValue: 1,
+          duration: 100,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    });
+  }, [currentTheme]);
+
   return (
     <ThemeContext.Provider 
       value={{ 
         currentTheme,
         setTheme,
         availableThemes: themes,
-        theme
+        theme,
+        defaultLightTheme,
+        defaultDarkTheme,
+        setDefaultTheme,
+        toggleTheme,
       }}
     >
       <Animated.View

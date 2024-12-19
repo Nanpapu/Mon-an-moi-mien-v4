@@ -4,16 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from '../../theme/ThemeContext';
 
 export const ThemeToggle = () => {
-  const { theme, currentTheme, setTheme } = useTheme();
-  
-  const toggleTheme = () => {
-    // Chỉ chuyển đổi giữa light và classic dark
-    if (currentTheme.id === 'light') {
-      setTheme('classic-dark');
-    } else {
-      setTheme('light');
-    }
-  };
+  const { theme, toggleTheme } = useTheme();
   
   return (
     <TouchableOpacity

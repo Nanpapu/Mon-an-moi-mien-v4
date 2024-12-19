@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Alert } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { useTheme } from '../../theme/ThemeContext';
 import { Loading, Typography } from '../../components/shared';
 import { AuthForm } from './components/AuthForm';
@@ -100,12 +100,16 @@ export default function ProfileScreen() {
   };
 
   return (
-    <View
+    <ScrollView 
       style={{
         flex: 1,
         backgroundColor: theme.colors.background.default,
-        padding: theme.spacing.lg,
       }}
+      contentContainerStyle={{
+        padding: theme.spacing.lg,
+        flexGrow: 1,
+      }}
+      showsVerticalScrollIndicator={false}
     >
       {isLoading ? (
         <Loading text="Đang tải..." />
@@ -148,7 +152,7 @@ export default function ProfileScreen() {
             onToggleConfirmPassword={() =>
               setShowConfirmPassword(!showConfirmPassword)
             }
-            onSubmit={handleLogin}
+            onSubmit={isRegistering ? handleRegister : handleLogin}
             onForgotPassword={() => setShowResetPassword(true)}
             onToggleAuthMode={toggleAuthMode}
           />
@@ -162,6 +166,6 @@ export default function ProfileScreen() {
           />
         </>
       )}
-    </View>
+    </ScrollView>
   );
 }
