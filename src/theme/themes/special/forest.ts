@@ -1,7 +1,7 @@
 import { ThemeType } from '../types';
 
 export const forestTheme: ThemeType = {
-  id: 'forest',
+  id: 'forest-special',
   name: 'Rừng Rậm',
   icon: 'leaf-outline',
   colors: {

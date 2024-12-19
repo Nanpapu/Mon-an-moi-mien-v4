@@ -1,7 +1,7 @@
 import { ThemeType } from '../types';
 
 export const neonDarkTheme: ThemeType = {
-  id: 'neon-dark',
+  id: 'neon-dark-special',
   name: 'Tối Neon',
   icon: 'flash-outline',
   colors: {

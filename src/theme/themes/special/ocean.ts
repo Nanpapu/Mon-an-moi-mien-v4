@@ -1,7 +1,7 @@
 import { ThemeType } from '../types';
 
 export const oceanTheme: ThemeType = {
-  id: 'ocean',
+  id: 'ocean-special',
   name: 'Đại Dương',
   icon: 'water-outline',
   colors: {

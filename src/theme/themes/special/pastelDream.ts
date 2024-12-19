@@ -1,7 +1,7 @@
 import { ThemeType } from '../types';
 
 export const pastelDreamTheme: ThemeType = {
-  id: 'pastel-dream',
+  id: 'pastel-dream-special',
   name: 'Giấc Mơ Pastel',
   icon: 'color-palette-outline',
   colors: {

@@ -1,7 +1,7 @@
 import { ThemeType } from '../types';
 
 export const retroWaveTheme: ThemeType = {
-  id: 'retro-wave',
+  id: 'retro-wave-special',
   name: 'RetroWave',
   icon: 'radio-outline',
   colors: {

@@ -1,7 +1,7 @@
 import { ThemeType } from '../types';
 
 export const cyberpunkTheme: ThemeType = {
-  id: 'cyberpunk',
+  id: 'cyberpunk-special',
   name: 'Cyberpunk',
   icon: 'hardware-chip-outline',
   colors: {

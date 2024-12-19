@@ -1,7 +1,7 @@
 import { ThemeType } from '../types';
 
 export const matrixTheme: ThemeType = {
-  id: 'matrix',
+  id: 'matrix-special',
   name: 'Matrix',
   icon: 'code-outline',
   colors: {

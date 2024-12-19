@@ -45,8 +45,9 @@ export const ThemeSelector = () => {
     }
   };
 
-  const lightThemes = availableThemes.filter((t) => !t.id.includes('dark'));
-  const darkThemes = availableThemes.filter((t) => t.id.includes('dark'));
+  const lightThemes = availableThemes.filter(t => !t.id.includes('dark') && !t.id.includes('-special'));
+  const darkThemes = availableThemes.filter(t => t.id.includes('dark') && !t.id.includes('-special'));
+  const specialThemes = availableThemes.filter(t => t.id.includes('-special'));
 
   const renderThemeButton = (theme: any, isDefaultTheme: boolean) => (
     <TouchableOpacity
@@ -71,7 +72,7 @@ export const ThemeSelector = () => {
         variant="caption"
         style={[
           styles.themeName,
-          { color: theme.id.includes('dark') ? '#fff' : '#000' },
+          { color: theme.colors.text.primary },
         ]}
       >
         {theme.name}
@@ -162,7 +163,7 @@ export const ThemeSelector = () => {
             </View>
           </View>
 
-          <View style={[styles.section, styles.darkSection]}>
+          <View style={[styles.section]}>
             <View style={styles.sectionHeader}>
               <Ionicons
                 name="moon-outline"
@@ -186,6 +187,33 @@ export const ThemeSelector = () => {
               )}
             </View>
           </View>
+
+          {specialThemes.length > 0 && (
+            <View style={[styles.section]}>
+              <View style={styles.sectionHeader}>
+                <Ionicons
+                  name="star-outline"
+                  size={18}
+                  color={currentTheme.colors.text.primary}
+                  style={{ marginRight: 6 }}
+                />
+                <Typography
+                  variant="subtitle1"
+                  style={[
+                    styles.sectionTitle,
+                    { color: currentTheme.colors.text.primary },
+                  ]}
+                >
+                  Giao diện đặc biệt
+                </Typography>
+              </View>
+              <View style={styles.themeGrid}>
+                {specialThemes.map((theme) =>
+                  renderThemeButton(theme, false)
+                )}
+              </View>
+            </View>
+          )}
         </View>
       </Animated.View>
     </View>
@@ -195,22 +223,11 @@ export const ThemeSelector = () => {
 const styles = StyleSheet.create({
   container: {
     marginBottom: 16,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 16,
   },
   headerContent: {
@@ -218,16 +235,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   content: {
-    position: 'absolute',
-    width: '100%',
     padding: 16,
   },
   section: {
-    marginBottom: 16,
-  },
-  darkSection: {
-    marginTop: 24,
-    marginBottom: 0,
+    marginBottom: 24,
   },
   sectionHeader: {
     flexDirection: 'row',

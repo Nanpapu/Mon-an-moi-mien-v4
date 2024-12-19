@@ -1,7 +1,7 @@
 import { ThemeType } from '../types';
 
 export const galaxyTheme: ThemeType = {
-  id: 'galaxy',
+  id: 'galaxy-special',
   name: 'Dải Ngân Hà',
   icon: 'planet-outline',
   colors: {
@@ -61,4 +61,4 @@ export const galaxyTheme: ThemeType = {
       contrast: '#FFFFFF',
     },
   },
-}; 
+};

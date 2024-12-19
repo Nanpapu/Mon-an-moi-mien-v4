@@ -1,7 +1,7 @@
 import { ThemeType } from '../types';
 
 export const sunsetTheme: ThemeType = {
-  id: 'sunset',
+  id: 'sunset-special',
   name: 'Hoàng Hôn',
   icon: 'sunny-outline',
   colors: {
@@ -61,4 +61,4 @@ export const sunsetTheme: ThemeType = {
       contrast: '#000000',
     },
   },
-}; 
+};
