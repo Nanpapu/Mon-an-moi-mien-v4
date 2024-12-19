@@ -40,7 +40,7 @@ type ThemeContextType = {
 // Tạo context
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-// Provider component để cung cấp theme cho toàn ứng dụng
+// Provider component để cung c���p theme cho toàn ứng dụng
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -67,10 +67,19 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const toggleTheme = () => {
-    const isDark = currentTheme.id.includes('dark');
-    setCurrentTheme(
-      themes.find(t => t.id === (isDark ? defaultLightTheme : defaultDarkTheme))!
-    );
+    // Kiểm tra xem theme hiện tại có phải là theme đặc biệt không
+    const currentIsSpecial = currentTheme.id.includes('-special');
+    const currentIsDark = currentTheme.id.includes('dark');
+
+    // Nếu đang ở theme đặc biệt hoặc theme tối, chuyển sang theme sáng mặc định
+    if (currentIsSpecial || currentIsDark) {
+      const lightTheme = themes.find(t => t.id === defaultLightTheme)!;
+      setCurrentTheme(lightTheme);
+    } else {
+      // Nếu đang ở theme sáng, chuyển sang theme tối mặc định
+      const darkTheme = themes.find(t => t.id === defaultDarkTheme)!;
+      setCurrentTheme(darkTheme);
+    }
   };
 
   // Tạo theme cũ từ currentTheme

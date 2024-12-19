@@ -19,6 +19,7 @@ export const ThemeSelector = () => {
     availableThemes,
     defaultLightTheme,
     defaultDarkTheme,
+    setDefaultTheme,
   } = useTheme();
   const { user } = useAuth();
   const [expanded, setExpanded] = useState(false);
@@ -60,7 +61,7 @@ export const ThemeSelector = () => {
           borderWidth: 1,
         },
       ]}
-      onPress={() => setTheme(theme.id)}
+      onPress={() => handleThemePress(theme)}
     >
       <View
         style={[
@@ -87,6 +88,15 @@ export const ThemeSelector = () => {
       )}
     </TouchableOpacity>
   );
+
+  const handleThemePress = (theme: any) => {
+    if (theme.id.includes('-special')) {
+      setTheme(theme.id);
+    } else {
+      setTheme(theme.id);
+      setDefaultTheme(theme.id);
+    }
+  };
 
   return (
     <View style={[styles.container, { borderRadius: 16, overflow: 'hidden' }]}>
