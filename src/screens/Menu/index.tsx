@@ -126,12 +126,19 @@ export default function MenuScreen() {
             >
               <Ionicons
                 name="close"
-                size={24}
-                color={theme.colors.text.primary}
+                size={20}
+                color={theme.colors.error.main}
               />
             </TouchableOpacity>
-            <Typography variant="h3" style={{ marginLeft: theme.spacing.md }}>
-              Đã chọn {selectedRecipes.size} công thức
+            <Typography 
+              variant="h3" 
+              style={[styles.selectionText, { marginLeft: theme.spacing.md }]}
+            >
+              Đã chọn{' '}
+              <Typography variant="h3" style={styles.selectionCount}>
+                {selectedRecipes.size}
+              </Typography>
+              {' '}công thức
             </Typography>
           </View>
           <TouchableOpacity
@@ -144,8 +151,8 @@ export default function MenuScreen() {
           >
             <Ionicons
               name="trash-outline"
-              size={24}
-              color={theme.colors.error.main}
+              size={20}
+              color={theme.colors.background.paper}
             />
           </TouchableOpacity>
         </View>
