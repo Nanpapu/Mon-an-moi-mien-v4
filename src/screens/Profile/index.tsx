@@ -110,8 +110,8 @@ export default function ProfileScreen() {
         onClose={() => setShowResetPassword(false)}
         onSubmit={handleResetPassword}
       />
-      
-      <ScrollView 
+
+      <ScrollView
         style={{
           flex: 1,
           backgroundColor: theme.colors.background.default,
@@ -125,13 +125,15 @@ export default function ProfileScreen() {
           <Loading text="Đang tải..." />
         ) : user ? (
           <View style={styles.container}>
-            <Card style={[
-              styles.profileCard, 
-              {
-                backgroundColor: theme.colors.background.paper,
-                ...theme.shadows.md,
-              }
-            ]}>
+            <Card
+              style={[
+                styles.profileCard,
+                {
+                  backgroundColor: theme.colors.background.paper,
+                  ...theme.shadows.md,
+                },
+              ]}
+            >
               <UserProfile
                 user={user}
                 displayName={displayName}
@@ -155,13 +157,15 @@ export default function ProfileScreen() {
 
             <ThemeSelector />
 
-            <Card style={[
-              styles.logoutCard,
-              {
-                backgroundColor: theme.colors.background.paper,
-                ...theme.shadows.md,
-              }
-            ]}>
+            <Card
+              style={[
+                styles.logoutCard,
+                {
+                  backgroundColor: theme.colors.background.paper,
+                  ...theme.shadows.md,
+                },
+              ]}
+            >
               <Button
                 variant="secondary"
                 icon="log-out-outline"

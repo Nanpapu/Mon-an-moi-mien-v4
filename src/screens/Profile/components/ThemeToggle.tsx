@@ -9,13 +9,13 @@ export const ThemeToggle = () => {
   const { currentTheme, toggleTheme, availableThemes, setTheme } = useTheme();
   const { showToast } = useToast();
   
-  const getThemeIcon = () => {
-    if (currentTheme.id.includes('-special')) {
-      return 'star-outline';
-    } else if (currentTheme.id.includes('dark')) {
-      return 'moon-outline';
+  const getThemeIcon = (themeId: string) => {
+    if (themeId.includes('-special')) {
+      return 'star';
+    } else if (themeId.includes('dark')) {
+      return 'moon';
     }
-    return 'sunny-outline';
+    return 'sunny';
   };
 
   const handleToggle = () => {
@@ -44,7 +44,7 @@ export const ThemeToggle = () => {
         onPress={handleToggle}
       >
         <Ionicons 
-          name={getThemeIcon()}
+          name={getThemeIcon(currentTheme.id)}
           size={24}
           color={currentTheme.colors.text.primary}
         />
@@ -69,7 +69,7 @@ export const ThemeToggle = () => {
           onPress={() => setTheme(theme.id)}
         >
           <Ionicons 
-            name={theme.id.includes('-special') ? 'star-outline' : theme.id.includes('dark') ? 'moon-outline' : 'sunny-outline'}
+            name={getThemeIcon(theme.id)}
             size={24}
             color={theme.colors.text.primary}
           />
