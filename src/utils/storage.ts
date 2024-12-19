@@ -12,11 +12,14 @@ export const saveRecipe = async (recipe: Recipe) => {
   try {
     const savedRecipes = await getSavedRecipes();
     
-    // Kiểm tra và cập nhật đường dẫn ảnh nếu cần
+    // Lấy regionId từ id của recipe (vd: "01_01" -> "01")
+    const regionId = recipe.id.split('_')[0];
+    
     const updatedRecipe = {
       ...recipe,
+      regionId,
       image: recipe.image.startsWith('http') 
-        ? `recipes/images/${recipe.regionId}/${recipe.id}.jpg`
+        ? `recipes/images/${regionId}/${recipe.id}.jpg`
         : recipe.image
     };
 
@@ -79,15 +82,17 @@ export const migrateSavedRecipes = async () => {
   try {
     const savedRecipes = await getSavedRecipes();
     
-    // Cập nhật đường dẫn ảnh cho tất cả công thức
-    const updatedRecipes = savedRecipes.map(recipe => ({
-      ...recipe,
-      image: recipe.image.startsWith('http') 
-        ? `recipes/images/${recipe.regionId}/${recipe.id}.jpg`
-        : recipe.image
-    }));
+    const updatedRecipes = savedRecipes.map(recipe => {
+      const regionId = recipe.id.split('_')[0];
+      return {
+        ...recipe,
+        regionId,
+        image: recipe.image.startsWith('http') 
+          ? `recipes/images/${regionId}/${recipe.id}.jpg`
+          : recipe.image
+      };
+    });
 
-    // Lưu lại danh sách đã cập nhật
     await AsyncStorage.setItem(
       SAVED_RECIPES_KEY,
       JSON.stringify(updatedRecipes)
