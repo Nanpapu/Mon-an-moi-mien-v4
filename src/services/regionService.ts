@@ -20,6 +20,8 @@ import { regions } from '../data/regions';
 import { COLLECTIONS } from '../constants/collections';
 import { CacheService, CACHE_KEYS, CACHE_EXPIRY } from './cacheService';
 import { ImageUtils } from '../utils/imageUtils';
+import { ref, uploadBytes, deleteObject, listAll } from 'firebase/storage';
+import { storage } from '../config/firebase';
 
 /**
  * Service quản lý thông tin vùng miền
@@ -127,7 +129,13 @@ export const RegionService = {
     try {
       const batch = writeBatch(db);
 
-      // 1. Lấy danh sách tất cả recipeStats hiện tại
+      // 1. Xóa tất cả ảnh cũ trong storage
+      const storageRef = ref(storage, 'recipes/images');
+      const oldFiles = await listAll(storageRef);
+      const deletePromises = oldFiles.items.map(item => deleteObject(item));
+      await Promise.all(deletePromises);
+
+      // 2. Lấy danh sách tất cả recipeStats hiện tại
       const statsSnapshot = await getDocs(
         collection(db, COLLECTIONS.RECIPE_STATS)
       );
@@ -136,14 +144,26 @@ export const RegionService = {
       for (const region of regions) {
         const { recipes: regionRecipes, ...regionData } = region;
 
-        // 2. Tạo document cho region
+        // 3. Tạo document cho region
         const regionRef = doc(db, COLLECTIONS.REGIONS, region.id);
         batch.set(regionRef, regionData);
 
-        // 3. Tạo documents cho recipes và recipeStats
+        // 4. Tạo documents cho recipes và recipeStats
         for (const recipe of regionRecipes) {
           // Tạo đường dẫn tương đối cho ảnh
           const imagePath = ImageUtils.getRecipeImageRelativePath(region.id, recipe.id);
+
+          // Upload ảnh lên storage nếu có URL
+          if (recipe.image && recipe.image.startsWith('http')) {
+            try {
+              const response = await fetch(recipe.image);
+              const blob = await response.blob();
+              const imageRef = ref(storage, `recipes/${imagePath}`);
+              await uploadBytes(imageRef, blob);
+            } catch (error) {
+              console.error(`Lỗi khi upload ảnh cho recipe ${recipe.id}:`, error);
+            }
+          }
 
           // Tạo recipe document với đường dẫn ảnh mới
           const recipeRef = doc(db, COLLECTIONS.RECIPES, recipe.id);

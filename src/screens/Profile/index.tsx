@@ -43,6 +43,7 @@ export default function ProfileScreen() {
     handleSaveProfile,
     isUploading,
     photoURL,
+    isImporting,
   } = useProfileActions(user);
 
   const {
@@ -126,6 +127,7 @@ export default function ProfileScreen() {
           }
           photoURL={photoURL}
           isUploading={isUploading}
+          isImporting={isImporting}
         />
       ) : (
         <>

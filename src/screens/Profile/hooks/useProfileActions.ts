@@ -6,6 +6,7 @@ import { RegionService } from '../../../services/regionService';
 import { User } from 'firebase/auth';
 import { auth } from '../../../config/firebase';
 import { updateProfile } from 'firebase/auth';
+import { Alert } from 'react-native';
 
 export const useProfileActions = (user: User | null) => {
   const { showToast } = useToast();
@@ -16,6 +17,7 @@ export const useProfileActions = (user: User | null) => {
   );
   const [isUploading, setIsUploading] = useState(false);
   const [photoURL, setPhotoURL] = useState(user?.photoURL || '');
+  const [isImporting, setIsImporting] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -54,6 +56,37 @@ export const useProfileActions = (user: User | null) => {
   };
 
   const handleImportData = async () => {
+    Alert.alert(
+      'Cảnh báo Reset Database',
+      'Hành động này sẽ xóa toàn bộ dữ liệu recipes và hình ảnh hiện tại, sau đó import lại từ đầu. Bạn có chắc chắn muốn tiếp tục?',
+      [
+        { text: 'Hủy', style: 'cancel' },
+        {
+          text: 'Tiếp tục',
+          style: 'destructive',
+          onPress: showSecondConfirmation,
+        },
+      ]
+    );
+  };
+
+  const showSecondConfirmation = () => {
+    Alert.alert(
+      'Xác nhận lần cuối',
+      'Đây là thao tác không thể hoàn tác. Tất cả dữ liệu recipes và hình ảnh sẽ bị reset. Bạn thực sự muốn tiếp tục?',
+      [
+        { text: 'Hủy', style: 'cancel' },
+        {
+          text: 'Reset & Import',
+          style: 'destructive',
+          onPress: importData,
+        },
+      ]
+    );
+  };
+
+  const importData = async () => {
+    setIsImporting(true);
     try {
       const success = await RegionService.importDataToFirestore();
       if (success) {
@@ -63,6 +96,8 @@ export const useProfileActions = (user: User | null) => {
       }
     } catch (error) {
       showToast('error', 'Có lỗi xảy ra khi import dữ liệu');
+    } finally {
+      setIsImporting(false);
     }
   };
 
@@ -151,5 +186,6 @@ export const useProfileActions = (user: User | null) => {
     handleCreateUserDocument,
     isUploading,
     photoURL,
+    isImporting,
   };
 };

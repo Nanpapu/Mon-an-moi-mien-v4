@@ -19,6 +19,7 @@ interface Props {
   onImportData?: () => void;
   photoURL?: string;
   isUploading?: boolean;
+  isImporting: boolean;
 }
 
 export const UserProfile = ({
@@ -34,6 +35,7 @@ export const UserProfile = ({
   onImportData,
   photoURL,
   isUploading,
+  isImporting,
 }: Props) => {
   const { theme } = useTheme();
 
@@ -137,9 +139,10 @@ export const UserProfile = ({
             variant="outline"
             icon="cloud-upload-outline"
             onPress={onImportData}
+            disabled={isImporting}
             style={{ marginTop: theme.spacing.md }}
           >
-            Import Dữ Liệu
+            {isImporting ? 'Đang Import...' : 'Import Dữ Liệu'}
           </Button>
         )}
       </View>

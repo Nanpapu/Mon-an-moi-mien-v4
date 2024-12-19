@@ -25,6 +25,36 @@ export function ImportButton() {
   const [isImporting, setIsImporting] = useState(false);
   const { showToast } = useToast();
 
+  const showFirstConfirmation = () => {
+    Alert.alert(
+      'Cảnh báo Reset Database',
+      'Hành động này sẽ xóa toàn bộ dữ liệu recipes và hình ảnh hiện tại, sau đó import lại từ đầu. Bạn có chắc chắn muốn tiếp tục?',
+      [
+        { text: 'Hủy', style: 'cancel' },
+        {
+          text: 'Tiếp tục',
+          style: 'destructive',
+          onPress: showSecondConfirmation,
+        },
+      ]
+    );
+  };
+
+  const showSecondConfirmation = () => {
+    Alert.alert(
+      'Xác nhận lần cuối',
+      'Đây là thao tác không thể hoàn tác. Tất cả dữ liệu recipes và hình ảnh sẽ bị reset. Bạn thực sự muốn tiếp tục?',
+      [
+        { text: 'Hủy', style: 'cancel' },
+        {
+          text: 'Reset & Import',
+          style: 'destructive',
+          onPress: handleImportData,
+        },
+      ]
+    );
+  };
+
   const handleImportData = async () => {
     setIsImporting(true);
     try {
@@ -105,7 +135,7 @@ export function ImportButton() {
             ...theme.shadows.sm,
           },
         ]}
-        onPress={handleImportData}
+        onPress={showFirstConfirmation}
         disabled={isImporting}
       >
         <Typography
