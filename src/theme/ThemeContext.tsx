@@ -33,6 +33,7 @@ type ThemeContextType = {
   theme: Theme;
   defaultLightTheme: string;
   defaultDarkTheme: string;
+  defaultSpecialTheme: string;
   setDefaultTheme: (themeId: string) => void;
   toggleTheme: () => void;
 };
@@ -40,19 +41,22 @@ type ThemeContextType = {
 // Tạo context
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-// Provider component để cung c���p theme cho toàn ứng dụng
+// Provider component để cung cấp theme cho toàn ứng dụng
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [currentTheme, setCurrentTheme] = useState<ThemeType>(themes[0]);
   const [defaultLightTheme, setDefaultLightTheme] = useState('light');
   const [defaultDarkTheme, setDefaultDarkTheme] = useState('classic-dark');
+  const [defaultSpecialTheme, setDefaultSpecialTheme] = useState('neon-dark-special');
 
   const setDefaultTheme = (themeId: string) => {
     const theme = themes.find(t => t.id === themeId);
     if (!theme) return;
     
-    if (theme.id.includes('dark')) {
+    if (theme.id.includes('-special')) {
+      setDefaultSpecialTheme(theme.id);
+    } else if (theme.id.includes('dark')) {
       setDefaultDarkTheme(theme.id);
     } else {
       setDefaultLightTheme(theme.id);
@@ -67,16 +71,16 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const toggleTheme = () => {
-    // Kiểm tra xem theme hiện tại có phải là theme đặc biệt không
     const currentIsSpecial = currentTheme.id.includes('-special');
     const currentIsDark = currentTheme.id.includes('dark');
 
-    // Nếu đang ở theme đặc biệt hoặc theme tối, chuyển sang theme sáng mặc định
-    if (currentIsSpecial || currentIsDark) {
+    if (currentIsSpecial) {
       const lightTheme = themes.find(t => t.id === defaultLightTheme)!;
       setCurrentTheme(lightTheme);
+    } else if (currentIsDark) {
+      const specialTheme = themes.find(t => t.id === defaultSpecialTheme)!;
+      setCurrentTheme(specialTheme);
     } else {
-      // Nếu đang ở theme sáng, chuyển sang theme tối mặc định
       const darkTheme = themes.find(t => t.id === defaultDarkTheme)!;
       setCurrentTheme(darkTheme);
     }
@@ -135,6 +139,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
         theme,
         defaultLightTheme,
         defaultDarkTheme,
+        defaultSpecialTheme,
         setDefaultTheme,
         toggleTheme,
       }}

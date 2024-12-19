@@ -19,8 +19,10 @@ const isCurrentTheme = (themeId: string, currentThemeId: string) => {
 };
 
 // Helper function để kiểm tra theme có phải là theme mặc định không
-const isDefaultTheme = (themeId: string, defaultLightId: string, defaultDarkId: string) => {
-  if (themeId.includes('-special')) return false;
+const isDefaultTheme = (themeId: string, defaultLightId: string, defaultDarkId: string, defaultSpecialId: string) => {
+  if (themeId.includes('-special')) {
+    return themeId === defaultSpecialId;
+  }
   return themeId === defaultLightId || themeId === defaultDarkId;
 };
 
@@ -52,6 +54,7 @@ export const ThemeSelector = () => {
     availableThemes,
     defaultLightTheme,
     defaultDarkTheme,
+    defaultSpecialTheme,
     setDefaultTheme,
   } = useTheme();
   const { user } = useAuth();
@@ -111,31 +114,25 @@ export const ThemeSelector = () => {
       >
         {theme.name}
       </Typography>
-      {isDefaultTheme(theme.id, defaultLightTheme, defaultDarkTheme) && (
+      {isDefaultTheme(theme.id, defaultLightTheme, defaultDarkTheme, defaultSpecialTheme) && (
         <DefaultThemeDot theme={theme} />
       )}
     </TouchableOpacity>
   );
 
   const handleThemePress = (theme: any) => {
-    if (theme.id.includes('-special')) {
-      setTheme(theme.id);
-      showToast(
-        'info',
-        `Đã chuyển sang giao diện ${theme.name}\nTheme đặc biệt sẽ không được lưu làm mặc định`
-      );
-    } else {
-      setTheme(theme.id);
-      setDefaultTheme(theme.id);
-      showToast(
-        'success',
-        `Đã chuyển sang giao diện ${theme.name}\n${
-          theme.id.includes('dark')
-            ? 'Đã lưu làm giao diện tối mặc định'
-            : 'Đã lưu làm giao diện sáng mặc định'
-        }`
-      );
-    }
+    setTheme(theme.id);
+    setDefaultTheme(theme.id);
+    showToast(
+      'success',
+      `Đã chuyển sang giao diện ${theme.name}\n${
+        theme.id.includes('-special')
+          ? 'Đã lưu làm giao diện đặc biệt mặc định'
+          : theme.id.includes('dark')
+          ? 'Đã lưu làm giao diện tối mặc định'
+          : 'Đã lưu làm giao diện sáng mặc định'
+      }`
+    );
   };
 
   return (
