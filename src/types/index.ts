@@ -35,6 +35,7 @@ export interface Recipe extends BaseRecipe {
   difficulty?: number;
   /** Số người ăn */
   servings?: number;
+  regionId: string;
 }
 
 /**

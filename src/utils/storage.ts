@@ -10,13 +10,18 @@ const SAVED_RECIPES_KEY = '@saved_recipes';
 // Lưu một công thức mới vào storage
 export const saveRecipe = async (recipe: Recipe) => {
   try {
-    // Lấy danh sách công thức hiện có
     const savedRecipes = await getSavedRecipes();
-    // Kiểm tra xem công thức đã tồn tại chưa
+    
+    // Kiểm tra và cập nhật đường dẫn ảnh nếu cần
+    const updatedRecipe = {
+      ...recipe,
+      image: recipe.image.startsWith('http') 
+        ? `recipes/images/${recipe.regionId}/${recipe.id}.jpg`
+        : recipe.image
+    };
+
     if (!savedRecipes.find((r) => r.id === recipe.id)) {
-      // Thêm công thức mới vào danh sách
-      const newSavedRecipes = [...savedRecipes, recipe];
-      // Lưu danh sách mới vào storage
+      const newSavedRecipes = [...savedRecipes, updatedRecipe];
       await AsyncStorage.setItem(
         SAVED_RECIPES_KEY,
         JSON.stringify(newSavedRecipes)
@@ -66,6 +71,31 @@ export const removeRecipe = async (recipeId: string): Promise<boolean> => {
     return true;
   } catch (error) {
     console.error('Lỗi khi xóa công thức:', error);
+    return false;
+  }
+};
+
+export const migrateSavedRecipes = async () => {
+  try {
+    const savedRecipes = await getSavedRecipes();
+    
+    // Cập nhật đường dẫn ảnh cho tất cả công thức
+    const updatedRecipes = savedRecipes.map(recipe => ({
+      ...recipe,
+      image: recipe.image.startsWith('http') 
+        ? `recipes/images/${recipe.regionId}/${recipe.id}.jpg`
+        : recipe.image
+    }));
+
+    // Lưu lại danh sách đã cập nhật
+    await AsyncStorage.setItem(
+      SAVED_RECIPES_KEY,
+      JSON.stringify(updatedRecipes)
+    );
+
+    return true;
+  } catch (error) {
+    console.error('Lỗi khi migrate dữ liệu:', error);
     return false;
   }
 };
