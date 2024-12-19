@@ -1,6 +1,6 @@
 // Export tất cả các theme và types
 export * from './types';
-export * from './light';
+export * from './classicLight';
 export * from './blueLight';
 export * from './greenLight';
 export * from './orangeLight';
@@ -20,7 +20,7 @@ export * from './amberDark';
 export * from './roseDark';
 
 // Import các theme
-import { lightTheme } from './light';
+import { lightTheme } from './classicLight';
 import { blueLightTheme } from './blueLight';
 import { greenLightTheme } from './greenLight';
 import { orangeLightTheme } from './orangeLight';

@@ -7,15 +7,14 @@ import React, {
   useRef,
 } from "react";
 import { useColorScheme, Animated, Easing } from "react-native";
-import { lightColors} from "./colors";
 import { typography } from "./typography";
 import { spacing, layout } from "./spacing";
 import { shadows } from "./shadows";
-import { themes, ThemeType } from './themes';
+import { themes, ThemeType, ThemeColors } from './themes';
 
 // Định nghĩa kiểu dữ liệu cho theme
 export type Theme = {
-  colors: typeof lightColors;
+  colors: ThemeColors;
   typography: typeof typography;
   spacing: typeof spacing;
   layout: typeof layout;
