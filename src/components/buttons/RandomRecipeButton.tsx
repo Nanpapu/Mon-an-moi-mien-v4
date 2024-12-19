@@ -1,67 +1,88 @@
-import React from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { Typography } from '../shared';
 import { useTheme } from '../../theme/ThemeContext';
 import { Ionicons } from "@expo/vector-icons";
 import { Region } from '../../types';
+import * as Haptics from 'expo-haptics';
+import { Tooltip } from '../shared/Tooltip';
 
 interface Props {
   regions: Region[];
   onRandomSelect: (latitude: number, longitude: number, recipes: any[]) => void;
+  disabled?: boolean;
 }
 
-export function RandomRecipeButton({ regions, onRandomSelect }: Props) {
+export function RandomRecipeButton({ regions, onRandomSelect, disabled }: Props) {
   const { theme } = useTheme();
+  const [isLoading, setIsLoading] = useState(false);
+  const spinValue = new Animated.Value(0);
 
-  const handleRandomRecipe = () => {
+  const spin = spinValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg']
+  });
+
+  const handleRandomRecipe = async () => {
     const allRegions = regions.filter(region => region.recipes.length > 0);
-    if (allRegions.length === 0) return;
+    if (allRegions.length === 0 || disabled) return;
 
-    const randomRegion = allRegions[Math.floor(Math.random() * allRegions.length)];
-    
-    onRandomSelect(
-      randomRegion.coordinate.latitude,
-      randomRegion.coordinate.longitude,
-      randomRegion.recipes
-    );
+    setIsLoading(true);
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+    Animated.timing(spinValue, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true
+    }).start();
+
+    setTimeout(() => {
+      const randomRegion = allRegions[Math.floor(Math.random() * allRegions.length)];
+      onRandomSelect(
+        randomRegion.coordinate.latitude,
+        randomRegion.coordinate.longitude,
+        randomRegion.recipes
+      );
+      setIsLoading(false);
+      spinValue.setValue(0);
+    }, 1000);
   };
 
   return (
-    <TouchableOpacity 
-      style={[
-        styles.button,
-        {
-          backgroundColor: theme.colors.primary.main,
-          ...theme.shadows.md,
-        }
-      ]} 
-      onPress={handleRandomRecipe}
-    >
-      <Ionicons 
-        name="dice" 
-        size={24} 
-        color={theme.colors.primary.contrast}
-        style={{ marginRight: theme.spacing.sm }}
-      />
-      <Typography
-        variant="body1"
-        style={{ color: theme.colors.primary.contrast }}
+    <Tooltip text="Khám phá ngẫu nhiên một công thức nấu ăn">
+      <TouchableOpacity
+        style={[
+          styles.button,
+          {
+            backgroundColor: theme.colors.background.paper,
+            opacity: disabled ? 0.6 : 1,
+            ...theme.shadows.sm,
+          }
+        ]}
+        onPress={handleRandomRecipe}
+        disabled={disabled || isLoading}
       >
-        Công Thức Ngẫu Nhiên
-      </Typography>
-    </TouchableOpacity>
+        <Animated.View style={{ transform: [{ rotate: spin }] }}>
+          <Ionicons
+            name="dice"
+            size={24}
+            color={theme.colors.primary.main}
+          />
+        </Animated.View>
+      </TouchableOpacity>
+    </Tooltip>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
     position: 'absolute',
-    bottom: 20,
-    alignSelf: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 25,
-    flexDirection: 'row',
+    bottom: 160,
+    right: 16,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
     alignItems: 'center',
-  },
+  }
 });
