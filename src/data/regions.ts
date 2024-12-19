@@ -14,7 +14,7 @@ export const regions: Region[] = [
         id: '01_01',
         name: 'Phở Hà Nội',
         region: 'Miền Bắc',
-        image: 'https://photo.znews.vn/w1920/Uploaded/qhj_pwqvdvicbu/2021_10_12/food.is.love13..jpeg',
+        image: 'images/01/01_01.jpg',
         ingredients: [
           'Bánh phở',
           'Thịt bò',
@@ -34,7 +34,7 @@ export const regions: Region[] = [
         id: '01_02',
         name: 'Bún Chả Hà Nội',
         region: 'Miền Bắc',
-        image: 'https://example.com/buncha.jpg',
+        image: 'images/01/01_02.jpg',
         ingredients: [
           'Bún',
           'Thịt lợn nướng',
@@ -53,7 +53,7 @@ export const regions: Region[] = [
         id: '01_03',
         name: 'Chả Cá Lã Vọng',
         region: 'Miền Bắc',
-        image: 'https://example.com/chaca.jpg',
+        image: 'images/01/01_03.jpg',
         ingredients: [
           'Cá lăng',
           'Nghệ',
@@ -83,7 +83,7 @@ export const regions: Region[] = [
         id: '48_01',
         name: 'Mì Quảng',
         region: 'Miền Trung',
-        image: 'https://example.com/miquang.jpg',
+        image: 'images/48/48_01.jpg',
         ingredients: [
           'Mì Quảng',
           'Tôm',
@@ -103,7 +103,7 @@ export const regions: Region[] = [
         id: '48_02',
         name: 'Bánh Tráng Cuốn Thịt Heo',
         region: 'Miền Trung',
-        image: 'https://example.com/banhcuon.jpg',
+        image: 'images/48/48_02.jpg',
         ingredients: [
           'Bánh tráng',
           'Thịt heo luộc',
@@ -132,7 +132,7 @@ export const regions: Region[] = [
         id: '46_01',
         name: 'Bún Bò Huế',
         region: 'Miền Trung',
-        image: 'https://example.com/bunbo.jpg',
+        image: 'images/46/46_01.jpg',
         ingredients: [
           'Bún',
           'Thịt bò',
@@ -152,7 +152,7 @@ export const regions: Region[] = [
         id: '46_02',
         name: 'Cơm Hến',
         region: 'Miền Trung',
-        image: 'https://example.com/comhen.jpg',
+        image: 'images/46/46_02.jpg',
         ingredients: [
           'Cơm nguội',
           'Hến',
@@ -181,7 +181,7 @@ export const regions: Region[] = [
         id: '79_01',
         name: 'Cơm Tấm Sườn Bì Chả',
         region: 'Miền Nam',
-        image: 'https://example.com/comtam.jpg',
+        image: 'images/79/79_01.jpg',
         ingredients: [
           'Cơm tấm',
           'Sườn nướng',
@@ -201,7 +201,7 @@ export const regions: Region[] = [
         id: '79_02',
         name: 'Hủ Tiếu Nam Vang',
         region: 'Miền Nam',
-        image: 'https://example.com/hutieu.jpg',
+        image: 'images/79/79_02.jpg',
         ingredients: [
           'Hủ tiếu',
           'Thịt heo',
@@ -231,7 +231,7 @@ export const regions: Region[] = [
         id: '92_01',
         name: 'Bún Cá Cần Thơ',
         region: 'Miền Nam',
-        image: 'https://example.com/bunca.jpg',
+        image: 'images/92/92_01.jpg',
         ingredients: [
           'Cá lóc',
           'Bún',
@@ -251,7 +251,7 @@ export const regions: Region[] = [
         id: '92_02',
         name: 'Bánh Cống',
         region: 'Miền Nam',
-        image: 'https://example.com/banhcong.jpg',
+        image: 'images/92/92_02.jpg',
         ingredients: [
           'Tôm',
           'Đậu xanh',
@@ -280,7 +280,7 @@ export const regions: Region[] = [
         id: '75_01',
         name: 'Bánh Bèo Biên Hòa',
         region: 'Miền Nam',
-        image: 'https://example.com/banhbeo.jpg',
+        image: 'images/75/75_01.jpg',
         ingredients: [
           'Bột gạo',
           'Tôm khô',
@@ -309,7 +309,7 @@ export const regions: Region[] = [
         id: '54_01',
         name: 'Mắt Cá Ngừ Đại Dương',
         region: 'Miền Trung',
-        image: 'https://example.com/matcaungu.jpg',
+        image: 'images/54/54_01.jpg',
         ingredients: [
           'Mắt cá ngừ',
           'Sả',
@@ -338,7 +338,7 @@ export const regions: Region[] = [
         id: '36_01',
         name: 'Phở Bò Nam Định',
         region: 'Miền Bắc',
-        image: 'https://example.com/phond.jpg',
+        image: 'images/36/36_01.jpg',
         ingredients: [
           'Bánh phở Nam Định',
           'Thịt bò',
@@ -368,7 +368,7 @@ export const regions: Region[] = [
         id: '95_01',
         name: 'Bánh Cống Bạc Liêu',
         region: 'Miền Nam',
-        image: 'https://example.com/banhcongbl.jpg',
+        image: 'images/95/95_01.jpg',
         ingredients: [
           'Tôm tươi',
           'Thịt băm',
@@ -397,7 +397,7 @@ export const regions: Region[] = [
         id: '19_01',
         name: 'Cơm Lam Thái Nguyên',
         region: 'Miền Bắc',
-        image: 'https://example.com/comlam.jpg',
+        image: 'images/19/19_01.jpg',
         ingredients: [
           'Gạo nếp',
           'Ống tre',
