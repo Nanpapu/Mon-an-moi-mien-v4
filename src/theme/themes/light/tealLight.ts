@@ -1,19 +1,19 @@
-import { ThemeType } from './types';
+import { ThemeType } from '../types';
 
-export const orangeLightTheme: ThemeType = {
-  id: 'orange-light',
-  name: 'Sáng cam',
-  icon: 'flame-outline',
+export const tealLightTheme: ThemeType = {
+  id: 'teal-light',
+  name: 'Sáng xanh ngọc',
+  icon: 'water-outline',
   colors: {
     primary: {
-      main: '#F97316', // Cam đậm
-      light: '#FB923C', // Cam nhạt
-      dark: '#EA580C', // Cam tối
+      main: '#14B8A6',
+      light: '#2DD4BF',
+      dark: '#0D9488',
       contrast: '#FFFFFF',
     },
     secondary: {
       main: '#64748B',
-      light: '#94A3B8', 
+      light: '#94A3B8',
       dark: '#475569',
       contrast: '#FFFFFF',
     },
@@ -36,23 +36,23 @@ export const orangeLightTheme: ThemeType = {
       contrast: '#FFFFFF',
     },
     background: {
-      default: '#FFF7ED', // Nền cam rất nhạt
+      default: '#F0FDFA',
       paper: '#FFFFFF',
-      contrast: '#7C2D12',
+      contrast: '#134E4A',
     },
     text: {
-      primary: '#431407',
-      secondary: '#9A3412',
+      primary: '#042F2E',
+      secondary: '#115E59',
       disabled: '#94A3B8',
       contrast: '#FFFFFF',
     },
-    divider: '#FFEDD5',
-    border: '#FED7AA',
+    divider: '#CCFBF1',
+    border: '#99F6E4',
     shadow: '#000000',
     action: {
       disabled: '#94A3B8',
-      hover: 'rgba(249, 115, 22, 0.04)',
-      active: 'rgba(249, 115, 22, 0.08)',
+      hover: 'rgba(20, 184, 166, 0.04)',
+      active: 'rgba(20, 184, 166, 0.08)',
     },
     info: {
       main: '#0EA5E9',

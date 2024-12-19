@@ -1,14 +1,14 @@
-import { ThemeType } from './types';
+import { ThemeType } from '../types';
 
-export const tealLightTheme: ThemeType = {
-  id: 'teal-light',
-  name: 'Sáng xanh ngọc',
-  icon: 'water-outline',
+export const pinkLightTheme: ThemeType = {
+  id: 'pink-light',
+  name: 'Sáng hồng',
+  icon: 'heart-outline',
   colors: {
     primary: {
-      main: '#14B8A6',
-      light: '#2DD4BF',
-      dark: '#0D9488',
+      main: '#EC4899',
+      light: '#F472B6',
+      dark: '#DB2777',
       contrast: '#FFFFFF',
     },
     secondary: {
@@ -36,23 +36,23 @@ export const tealLightTheme: ThemeType = {
       contrast: '#FFFFFF',
     },
     background: {
-      default: '#F0FDFA',
+      default: '#FDF2F8',
       paper: '#FFFFFF',
-      contrast: '#134E4A',
+      contrast: '#831843',
     },
     text: {
-      primary: '#042F2E',
-      secondary: '#115E59',
+      primary: '#500724',
+      secondary: '#9D174D',
       disabled: '#94A3B8',
       contrast: '#FFFFFF',
     },
-    divider: '#CCFBF1',
-    border: '#99F6E4',
+    divider: '#FCE7F3',
+    border: '#FBCFE8',
     shadow: '#000000',
     action: {
       disabled: '#94A3B8',
-      hover: 'rgba(20, 184, 166, 0.04)',
-      active: 'rgba(20, 184, 166, 0.08)',
+      hover: 'rgba(236, 72, 153, 0.04)',
+      active: 'rgba(236, 72, 153, 0.08)',
     },
     info: {
       main: '#0EA5E9',

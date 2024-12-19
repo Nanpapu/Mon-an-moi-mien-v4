@@ -1,14 +1,14 @@
-import { ThemeType } from './types';
+import { ThemeType } from '../types';
 
-export const indigoDarkTheme: ThemeType = {
-  id: 'indigo-dark',
-  name: 'Tối chàm',
-  icon: 'color-palette-outline',
+export const roseDarkTheme: ThemeType = {
+  id: 'rose-dark',
+  name: 'Tối hồng đỏ',
+  icon: 'rose-outline',
   colors: {
     primary: {
-      main: '#818CF8',
-      light: '#C7D2FE',
-      dark: '#6366F1',
+      main: '#FB7185',
+      light: '#FECDD3',
+      dark: '#E11D48',
       contrast: '#000000',
     },
     secondary: {
@@ -36,23 +36,23 @@ export const indigoDarkTheme: ThemeType = {
       contrast: '#000000',
     },
     background: {
-      default: '#18181B',
-      paper: '#27272A',
-      contrast: '#EEF2FF',
+      default: '#1C1917',
+      paper: '#292524',
+      contrast: '#FFF1F2',
     },
     text: {
-      primary: '#E0E7FF',
-      secondary: '#C7D2FE',
-      disabled: '#71717A',
-      contrast: '#18181B',
+      primary: '#FFE4E6',
+      secondary: '#FECDD3',
+      disabled: '#78716C',
+      contrast: '#1C1917',
     },
-    divider: '#3F3F46',
-    border: '#52525B',
+    divider: '#44403C',
+    border: '#57534E',
     shadow: '#000000',
     action: {
-      disabled: '#71717A',
-      hover: 'rgba(129, 140, 248, 0.12)',
-      active: 'rgba(129, 140, 248, 0.2)',
+      disabled: '#78716C',
+      hover: 'rgba(251, 113, 133, 0.12)',
+      active: 'rgba(251, 113, 133, 0.2)',
     },
     info: {
       main: '#38BDF8',

@@ -1,14 +1,14 @@
-import { ThemeType } from './types';
+import { ThemeType } from '../types';
 
-export const pinkDarkTheme: ThemeType = {
-  id: 'pink-dark',
-  name: 'Tối hồng',
-  icon: 'heart-outline',
+export const orangeDarkTheme: ThemeType = {
+  id: 'orange-dark',
+  name: 'Tối cam',
+  icon: 'flame-outline',
   colors: {
     primary: {
-      main: '#F472B6',
-      light: '#FBCFE8',
-      dark: '#EC4899',
+      main: '#FB923C',
+      light: '#FED7AA',
+      dark: '#F97316',
       contrast: '#000000',
     },
     secondary: {
@@ -36,23 +36,23 @@ export const pinkDarkTheme: ThemeType = {
       contrast: '#000000',
     },
     background: {
-      default: '#1F1F1F',
-      paper: '#2D2D2D',
-      contrast: '#FDF2F8',
+      default: '#1C1917',
+      paper: '#292524',
+      contrast: '#FFF7ED',
     },
     text: {
-      primary: '#FCE7F3',
-      secondary: '#FBCFE8',
-      disabled: '#737373',
-      contrast: '#1F1F1F',
+      primary: '#FFEDD5',
+      secondary: '#FED7AA',
+      disabled: '#78716C',
+      contrast: '#1C1917',
     },
-    divider: '#404040',
-    border: '#525252',
+    divider: '#44403C',
+    border: '#57534E',
     shadow: '#000000',
     action: {
-      disabled: '#737373',
-      hover: 'rgba(244, 114, 182, 0.12)',
-      active: 'rgba(244, 114, 182, 0.2)',
+      disabled: '#78716C',
+      hover: 'rgba(251, 146, 60, 0.12)',
+      active: 'rgba(251, 146, 60, 0.2)',
     },
     info: {
       main: '#38BDF8',

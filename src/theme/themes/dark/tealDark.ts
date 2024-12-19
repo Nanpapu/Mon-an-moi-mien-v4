@@ -1,14 +1,14 @@
-import { ThemeType } from './types';
+import { ThemeType } from '../types';
 
-export const amberDarkTheme: ThemeType = {
-  id: 'amber-dark',
-  name: 'Tối hổ phách',
-  icon: 'sunny-outline',
+export const tealDarkTheme: ThemeType = {
+  id: 'teal-dark',
+  name: 'Tối xanh ngọc',
+  icon: 'water-outline',
   colors: {
     primary: {
-      main: '#FBBF24',
-      light: '#FDE68A',
-      dark: '#F59E0B',
+      main: '#2DD4BF',
+      light: '#99F6E4',
+      dark: '#14B8A6',
       contrast: '#000000',
     },
     secondary: {
@@ -36,23 +36,23 @@ export const amberDarkTheme: ThemeType = {
       contrast: '#000000',
     },
     background: {
-      default: '#1A1A1A',
-      paper: '#292929',
-      contrast: '#FFFBEB',
+      default: '#171717',
+      paper: '#262626',
+      contrast: '#F0FDFA',
     },
     text: {
-      primary: '#FEF3C7',
-      secondary: '#FDE68A',
+      primary: '#CCFBF1',
+      secondary: '#99F6E4',
       disabled: '#737373',
-      contrast: '#1A1A1A',
+      contrast: '#171717',
     },
     divider: '#404040',
     border: '#525252',
     shadow: '#000000',
     action: {
       disabled: '#737373',
-      hover: 'rgba(251, 191, 36, 0.12)',
-      active: 'rgba(251, 191, 36, 0.2)',
+      hover: 'rgba(45, 212, 191, 0.12)',
+      active: 'rgba(45, 212, 191, 0.2)',
     },
     info: {
       main: '#38BDF8',

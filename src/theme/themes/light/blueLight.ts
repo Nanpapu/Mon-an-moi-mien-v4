@@ -1,14 +1,14 @@
-import { ThemeType } from './types';
+import { ThemeType } from '../types';
 
-export const lightTheme: ThemeType = {
-  id: 'light',
-  name: 'Chế độ sáng',
-  icon: 'sunny-outline',
+export const blueLightTheme: ThemeType = {
+  id: 'blue-light',
+  name: 'Sáng xanh dương',
+  icon: 'water-outline',
   colors: {
     primary: {
-      main: '#007AFF',
-      light: '#4DA3FF',
-      dark: '#0055B3',
+      main: '#2563EB', // Xanh dương đậm
+      light: '#60A5FA', // Xanh dương nhạt
+      dark: '#1D4ED8', // Xanh dương tối
       contrast: '#FFFFFF',
     },
     secondary: {
@@ -18,9 +18,9 @@ export const lightTheme: ThemeType = {
       contrast: '#FFFFFF',
     },
     error: {
-      main: '#DC2626',
-      light: '#EF4444',
-      dark: '#B91C1C',
+      main: '#EF4444',
+      light: '#F87171',
+      dark: '#DC2626',
       contrast: '#FFFFFF',
     },
     warning: {
@@ -36,13 +36,13 @@ export const lightTheme: ThemeType = {
       contrast: '#FFFFFF',
     },
     background: {
-      default: '#FFFFFF',
-      paper: '#F8FAFC',
-      contrast: '#1E293B',
+      default: '#F0F9FF', // Nền xanh dương rất nhạt
+      paper: '#FFFFFF',
+      contrast: '#0C4A6E',
     },
     text: {
       primary: '#0F172A',
-      secondary: '#334155',
+      secondary: '#475569',
       disabled: '#94A3B8',
       contrast: '#FFFFFF',
     },
@@ -51,8 +51,8 @@ export const lightTheme: ThemeType = {
     shadow: '#000000',
     action: {
       disabled: '#94A3B8',
-      hover: 'rgba(0, 122, 255, 0.04)',
-      active: 'rgba(0, 122, 255, 0.08)',
+      hover: 'rgba(37, 99, 235, 0.04)',
+      active: 'rgba(37, 99, 235, 0.08)',
     },
     info: {
       main: '#0EA5E9',

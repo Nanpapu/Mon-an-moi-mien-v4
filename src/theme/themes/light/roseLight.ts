@@ -1,14 +1,14 @@
-import { ThemeType } from './types';
+import { ThemeType } from '../types';
 
-export const pinkLightTheme: ThemeType = {
-  id: 'pink-light',
-  name: 'Sáng hồng',
-  icon: 'heart-outline',
+export const roseLightTheme: ThemeType = {
+  id: 'rose-light',
+  name: 'Sáng hồng đỏ',
+  icon: 'rose-outline',
   colors: {
     primary: {
-      main: '#EC4899',
-      light: '#F472B6',
-      dark: '#DB2777',
+      main: '#E11D48',
+      light: '#FB7185',
+      dark: '#BE123C',
       contrast: '#FFFFFF',
     },
     secondary: {
@@ -36,23 +36,23 @@ export const pinkLightTheme: ThemeType = {
       contrast: '#FFFFFF',
     },
     background: {
-      default: '#FDF2F8',
+      default: '#FFF1F2',
       paper: '#FFFFFF',
-      contrast: '#831843',
+      contrast: '#881337',
     },
     text: {
-      primary: '#500724',
-      secondary: '#9D174D',
+      primary: '#4C0519',
+      secondary: '#9F1239',
       disabled: '#94A3B8',
       contrast: '#FFFFFF',
     },
-    divider: '#FCE7F3',
-    border: '#FBCFE8',
+    divider: '#FFE4E6',
+    border: '#FECDD3',
     shadow: '#000000',
     action: {
       disabled: '#94A3B8',
-      hover: 'rgba(236, 72, 153, 0.04)',
-      active: 'rgba(236, 72, 153, 0.08)',
+      hover: 'rgba(225, 29, 72, 0.04)',
+      active: 'rgba(225, 29, 72, 0.08)',
     },
     info: {
       main: '#0EA5E9',

@@ -1,14 +1,14 @@
-import { ThemeType } from './types';
+import { ThemeType } from '../types';
 
-export const amberLightTheme: ThemeType = {
-  id: 'amber-light',
-  name: 'Sáng hổ phách',
-  icon: 'sunny-outline',
+export const indigoLightTheme: ThemeType = {
+  id: 'indigo-light',
+  name: 'Sáng chàm',
+  icon: 'color-palette-outline',
   colors: {
     primary: {
-      main: '#F59E0B',
-      light: '#FBBF24',
-      dark: '#D97706',
+      main: '#6366F1',
+      light: '#818CF8',
+      dark: '#4F46E5',
       contrast: '#FFFFFF',
     },
     secondary: {
@@ -36,23 +36,23 @@ export const amberLightTheme: ThemeType = {
       contrast: '#FFFFFF',
     },
     background: {
-      default: '#FFFBEB',
+      default: '#EEF2FF',
       paper: '#FFFFFF',
-      contrast: '#78350F',
+      contrast: '#312E81',
     },
     text: {
-      primary: '#451A03',
-      secondary: '#92400E',
+      primary: '#1E1B4B',
+      secondary: '#3730A3',
       disabled: '#94A3B8',
       contrast: '#FFFFFF',
     },
-    divider: '#FEF3C7',
-    border: '#FDE68A',
+    divider: '#E0E7FF',
+    border: '#C7D2FE',
     shadow: '#000000',
     action: {
       disabled: '#94A3B8',
-      hover: 'rgba(245, 158, 11, 0.04)',
-      active: 'rgba(245, 158, 11, 0.08)',
+      hover: 'rgba(99, 102, 241, 0.04)',
+      active: 'rgba(99, 102, 241, 0.08)',
     },
     info: {
       main: '#0EA5E9',
