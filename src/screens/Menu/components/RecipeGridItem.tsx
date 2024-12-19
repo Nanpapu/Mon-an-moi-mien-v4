@@ -18,6 +18,10 @@ interface Props {
   width: number;
   config: (typeof ZOOM_LEVELS)[keyof typeof ZOOM_LEVELS];
   onFavoriteChange?: () => void;
+  isSelectionMode?: boolean;
+  isSelected?: boolean;
+  onLongPress?: () => void;
+  onToggleSelect?: () => void;
 }
 
 export const RecipeGridItem = ({
@@ -26,6 +30,10 @@ export const RecipeGridItem = ({
   width,
   config,
   onFavoriteChange,
+  isSelectionMode = false,
+  isSelected = false,
+  onLongPress,
+  onToggleSelect,
 }: Props) => {
   const { theme } = useTheme();
   const styles = createStyles(theme, width, config);
@@ -70,12 +78,32 @@ export const RecipeGridItem = ({
     ));
   };
 
+  const handlePress = () => {
+    if (isSelectionMode) {
+      onToggleSelect?.();
+    } else {
+      onPress();
+    }
+  };
+
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={onPress}
+      onPress={handlePress}
+      onLongPress={onLongPress}
       activeOpacity={0.7}
+      delayLongPress={300}
     >
+      {isSelectionMode && (
+        <View style={styles.checkboxContainer}>
+          <Ionicons
+            name={isSelected ? 'checkbox' : 'square-outline'}
+            size={24}
+            color={isSelected ? theme.colors.primary.main : theme.colors.text.secondary}
+          />
+        </View>
+      )}
+
       <FavoriteButton recipe={recipe} onToggle={onFavoriteChange} />
       <Image
         source={imageUrl || require('../../../../assets/default-avatar.png')}
@@ -207,5 +235,15 @@ const createStyles = (
     noReviews: {
       color: theme.colors.text.secondary,
       fontSize: 10,
+    },
+    checkboxContainer: {
+      position: 'absolute',
+      top: theme.spacing.sm,
+      right: theme.spacing.sm,
+      zIndex: 1,
+      backgroundColor: theme.colors.background.paper,
+      borderRadius: 20,
+      padding: 4,
+      ...theme.shadows.sm,
     },
   });

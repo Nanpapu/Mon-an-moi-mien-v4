@@ -18,6 +18,10 @@ interface Props {
   currentConfig: any;
   calculateItemWidth: () => number;
   onFavoriteChange: () => void;
+  isSelectionMode?: boolean;
+  selectedRecipes?: Set<string>;
+  onLongPress?: () => void;
+  onToggleSelect?: (recipeId: string) => void;
 }
 
 export const RecipeList = ({
@@ -30,6 +34,10 @@ export const RecipeList = ({
   currentConfig,
   calculateItemWidth,
   onFavoriteChange,
+  isSelectionMode = false,
+  selectedRecipes = new Set(),
+  onLongPress,
+  onToggleSelect,
 }: Props) => {
   const { theme } = useTheme();
   const styles = createStyles(theme);
@@ -63,17 +71,23 @@ export const RecipeList = ({
               width={calculateItemWidth()}
               config={currentConfig}
               onFavoriteChange={onFavoriteChange}
+              isSelectionMode={isSelectionMode}
+              isSelected={selectedRecipes.has(recipe.id)}
+              onLongPress={() => !isSelectionMode && onLongPress?.()}
+              onToggleSelect={() => onToggleSelect?.(recipe.id)}
             />
           ))}
         </View>
       </ScrollView>
 
-      <RecipeDetailModal
-        visible={!!selectedRecipe}
-        recipe={selectedRecipe}
-        onClose={() => setSelectedRecipe(null)}
-        onDelete={onDeleteRecipe}
-      />
+      {!isSelectionMode && (
+        <RecipeDetailModal
+          visible={!!selectedRecipe}
+          recipe={selectedRecipe}
+          onClose={() => setSelectedRecipe(null)}
+          onDelete={onDeleteRecipe}
+        />
+      )}
     </>
   );
 };

@@ -83,4 +83,31 @@ export const createStyles = (theme: Theme) =>
     zoomButtonDisabled: {
       opacity: 0.5,
     },
+    selectionHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: theme.spacing.md,
+      paddingVertical: theme.spacing.sm,
+      backgroundColor: theme.colors.background.paper,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.divider,
+      ...theme.shadows.sm,
+    },
+    selectionButton: {
+      padding: theme.spacing.sm,
+    },
+    deleteButton: {
+      padding: theme.spacing.sm,
+    },
+    checkboxContainer: {
+      position: 'absolute',
+      top: theme.spacing.sm,
+      right: theme.spacing.sm,
+      zIndex: 1,
+      backgroundColor: theme.colors.background.paper,
+      borderRadius: 20,
+      padding: 4,
+      ...theme.shadows.sm,
+    },
   });

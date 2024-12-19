@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, TouchableOpacity, Alert } from 'react-native';
 import { useTheme } from '../../theme/ThemeContext';
 import { Loading } from '../../components/shared';
 import { SearchBar } from '../../components/shared/SearchBar';
@@ -11,15 +11,20 @@ import { Ionicons } from '@expo/vector-icons';
 import { useGridZoom } from './hooks/useGridZoom';
 import { createStyles } from './styles';
 import { ZoomControls } from './components/ZoomControls';
+import { Typography } from '../../components/shared/Typography';
+import { removeRecipe } from '../../utils/storage';
+import { useToast } from '../../hooks/useToast';
 
 export default function MenuScreen() {
   const { theme } = useTheme();
   const styles = createStyles(theme);
+  const { showToast } = useToast();
 
   const {
     savedRecipes,
     isRefreshing,
     isLoading,
+    setIsLoading,
     refreshSavedRecipes,
     handleDeleteRecipe,
   } = useMenuData();
@@ -45,6 +50,63 @@ export default function MenuScreen() {
     canZoomOut,
   } = useGridZoom();
 
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [selectedRecipes, setSelectedRecipes] = useState<Set<string>>(new Set());
+
+  const handleLongPress = () => {
+    setIsSelectionMode(true);
+  };
+
+  const handleExitSelectionMode = () => {
+    setIsSelectionMode(false);
+    setSelectedRecipes(new Set());
+  };
+
+  const handleToggleSelect = (recipeId: string) => {
+    setSelectedRecipes(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(recipeId)) {
+        newSet.delete(recipeId);
+      } else {
+        newSet.add(recipeId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleDeleteSelected = async () => {
+    Alert.alert(
+      'Xác nhận xóa',
+      `Bạn có chắc muốn xóa ${selectedRecipes.size} công thức đã chọn?`,
+      [
+        {
+          text: 'Hủy',
+          style: 'cancel'
+        },
+        {
+          text: 'Xóa',
+          style: 'destructive',
+          onPress: async () => {
+            setIsLoading(true);
+            try {
+              for (const recipeId of selectedRecipes) {
+                await removeRecipe(recipeId);
+              }
+              await refreshSavedRecipes();
+              showToast('success', 'Đã xóa các công thức đã chọn');
+              handleExitSelectionMode();
+            } catch (error) {
+              console.error('Lỗi khi xóa công thức:', error);
+              showToast('error', 'Không thể xóa một số công thức');
+            } finally {
+              setIsLoading(false);
+            }
+          }
+        }
+      ]
+    );
+  };
+
   return (
     <View
       style={{
@@ -52,6 +114,33 @@ export default function MenuScreen() {
         backgroundColor: theme.colors.background.default,
       }}
     >
+      {isSelectionMode && (
+        <View style={styles.selectionHeader}>
+          <TouchableOpacity 
+            onPress={handleExitSelectionMode}
+            style={styles.selectionButton}
+          >
+            <Ionicons name="close" size={24} color={theme.colors.text.primary} />
+          </TouchableOpacity>
+          
+          <Typography variant="h3">
+            Đã chọn {selectedRecipes.size} công thức
+          </Typography>
+
+          <TouchableOpacity 
+            onPress={handleDeleteSelected}
+            style={styles.deleteButton}
+            disabled={selectedRecipes.size === 0}
+          >
+            <Ionicons 
+              name="trash-outline" 
+              size={24} 
+              color={theme.colors.error.main} 
+            />
+          </TouchableOpacity>
+        </View>
+      )}
+
       <SearchBar
         value={searchQuery}
         onChangeText={setSearchQuery}
@@ -82,6 +171,10 @@ export default function MenuScreen() {
             currentConfig={currentConfig}
             calculateItemWidth={calculateItemWidth}
             onFavoriteChange={refreshFavorites}
+            isSelectionMode={isSelectionMode}
+            selectedRecipes={selectedRecipes}
+            onLongPress={handleLongPress}
+            onToggleSelect={handleToggleSelect}
           />
           <ZoomControls
             onZoomIn={zoomIn}

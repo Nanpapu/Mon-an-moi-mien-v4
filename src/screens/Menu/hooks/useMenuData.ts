@@ -67,6 +67,7 @@ export const useMenuData = () => {
     savedRecipes,
     isRefreshing,
     isLoading,
+    setIsLoading,
     refreshSavedRecipes,
     handleDeleteRecipe,
   };
