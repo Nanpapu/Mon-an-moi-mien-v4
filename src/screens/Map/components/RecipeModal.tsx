@@ -17,7 +17,7 @@ interface Props {
   visible: boolean;
   onClose: () => void;
   recipes: Recipe[];
-  onSaveRecipe: (recipe: Recipe) => void;
+  onSaveRecipe: (recipe: Recipe) => Promise<boolean>;
 }
 
 export function RecipeModal({
@@ -108,7 +108,7 @@ export function RecipeModal({
             >
               <RecipeCard
                 recipe={recipe}
-                onSave={() => onSaveRecipe(recipe)}
+                onSave={async () => await onSaveRecipe(recipe)}
                 showActions={true}
                 showReviews={true}
               />
