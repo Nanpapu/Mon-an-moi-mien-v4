@@ -1,5 +1,6 @@
 import { Region } from '../types';
 
+// Id của các tỉnh là mã hành chính: https://danhmuchanhchinh.gso.gov.vn/
 export const regions: Region[] = [
   {
     id: '01',
@@ -121,7 +122,7 @@ export const regions: Region[] = [
   },
   {
     id: '46',
-    name: 'Huế',
+    name: 'Thừa Thiên Huế',
     coordinate: {
       latitude: 16.4637,
       longitude: 107.5909,
