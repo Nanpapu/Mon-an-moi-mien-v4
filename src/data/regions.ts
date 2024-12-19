@@ -327,30 +327,30 @@ export const regions: Region[] = [
   },
   {
     id: '36',
-    name: 'Thanh Hóa',
+    name: 'Nam Định',
     coordinate: {
-      latitude: 19.8067,
-      longitude: 105.7667,
+      latitude: 20.4333,
+      longitude: 106.1667,
     },
     recipes: [
       {
         id: '36_01',
-        name: 'Nem Chua Thanh Hóa',
+        name: 'Phở Bò Nam Định',
         region: 'Miền Bắc',
-        image: 'https://example.com/nemchuath.jpg',
+        image: 'https://example.com/phond.jpg',
         ingredients: [
-          'Thịt lợn nạc',
-          'Da lợn',
-          'Tỏi',
-          'Ớt',
-          'Lá ổi',
-          'Lá sung'
+          'Bánh phở Nam Định',
+          'Thịt bò',
+          'Xương ống',
+          'Gừng',
+          'Hành tây',
+          'Quế, thảo quả'
         ],
         instructions: [
-          'Xay nhuyễn thịt lợn',
-          'Trộn gia vị và phụ gia',
-          'Gói trong lá ổi',
-          'Ủ từ 2-3 ngày'
+          'Ninh xương làm nước dùng',
+          'Thái thịt bò mỏng',
+          'Trần bánh phở',
+          'Bày trí và thêm gia vị'
         ],
       }
     ],
