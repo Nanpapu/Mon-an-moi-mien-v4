@@ -223,8 +223,9 @@ export function RecipeCard({
               <TouchableOpacity 
                 style={[
                   styles.saveButton,
+                  isSaving && styles.savingButton,
                   justSaved && styles.savedButton,
-                  (wasSaved || isSaved) && styles.wasSavedButton
+                  wasSaved && styles.wasSavedButton
                 ]} 
                 onPress={async () => {
                   if (isSaving) return;
@@ -251,17 +252,26 @@ export function RecipeCard({
                 disabled={isSaving}
               >
                 <Ionicons
-                  name={justSaved ? "checkmark" : (wasSaved || isSaved) ? "bookmark" : "bookmark-outline"}
+                  name={
+                    isSaving ? "hourglass-outline" :
+                    justSaved ? "checkmark-circle" :
+                    wasSaved ? "bookmark" : 
+                    "bookmark-outline"
+                  }
                   size={20}
                   color={theme.colors.background.default}
+                  style={{ marginRight: 8 }}
                 />
                 <Typography
                   variant="body1"
-                  style={{ color: theme.colors.background.default }}
+                  style={{ 
+                    color: theme.colors.background.default,
+                    fontWeight: justSaved ? 'bold' : 'normal'
+                  }}
                 >
                   {isSaving ? "Đang lưu..." : 
                    justSaved ? "Đã lưu!" :
-                   (wasSaved || isSaved) ? "Đã lưu trước đó" :
+                   wasSaved ? "Đã lưu trước đó" :
                    "Lưu công thức"}
                 </Typography>
                 {isSaving && (
