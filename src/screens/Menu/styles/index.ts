@@ -1,8 +1,9 @@
 import { StyleSheet } from 'react-native';
 import { Theme } from '../../../theme/ThemeContext';
+import { EdgeInsets } from 'react-native-safe-area-context';
 
-export const createStyles = (theme: Theme) =>
-  StyleSheet.create({
+export const createStyles = (theme: Theme, insets: EdgeInsets) => {
+  return StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: theme.colors.background.default,
@@ -92,15 +93,20 @@ export const createStyles = (theme: Theme) =>
       backgroundColor: theme.colors.error.light,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.divider,
-      ...theme.shadows.sm,
+      paddingTop: insets.top,
+      ...theme.shadows.md,
     },
     selectionButton: {
       padding: theme.spacing.sm,
       borderRadius: theme.spacing.sm,
+      backgroundColor: theme.colors.background.paper,
+      ...theme.shadows.sm,
     },
     deleteButton: {
       padding: theme.spacing.sm,
       borderRadius: theme.spacing.sm,
+      backgroundColor: theme.colors.error.main,
+      ...theme.shadows.sm,
     },
     checkboxContainer: {
       position: 'absolute',
@@ -113,3 +119,4 @@ export const createStyles = (theme: Theme) =>
       ...theme.shadows.sm,
     },
   });
+};

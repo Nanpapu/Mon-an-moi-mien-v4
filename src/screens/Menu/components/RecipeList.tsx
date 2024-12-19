@@ -7,6 +7,7 @@ import { EmptyState } from './EmptyState';
 import { createStyles } from '../styles';
 import { useTheme } from '../../../theme/ThemeContext';
 import { useGridZoom } from '../hooks/useGridZoom';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface Props {
   isLoading: boolean;
@@ -20,7 +21,7 @@ interface Props {
   onFavoriteChange: () => void;
   isSelectionMode?: boolean;
   selectedRecipes?: Set<string>;
-  onLongPress?: () => void;
+  onLongPress?: (recipeId: string) => void;
   onToggleSelect?: (recipeId: string) => void;
 }
 
@@ -40,7 +41,8 @@ export const RecipeList = ({
   onToggleSelect,
 }: Props) => {
   const { theme } = useTheme();
-  const styles = createStyles(theme);
+  const insets = useSafeAreaInsets();
+  const styles = createStyles(theme, insets);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
   if (!isLoading && filteredRecipes.length === 0) {
@@ -73,7 +75,7 @@ export const RecipeList = ({
               onFavoriteChange={onFavoriteChange}
               isSelectionMode={isSelectionMode}
               isSelected={selectedRecipes.has(recipe.id)}
-              onLongPress={() => !isSelectionMode && onLongPress?.()}
+              onLongPress={() => onLongPress?.(recipe.id)}
               onToggleSelect={() => onToggleSelect?.(recipe.id)}
             />
           ))}

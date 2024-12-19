@@ -20,7 +20,7 @@ interface Props {
   onFavoriteChange?: () => void;
   isSelectionMode?: boolean;
   isSelected?: boolean;
-  onLongPress?: () => void;
+  onLongPress?: (recipeId: string) => void;
   onToggleSelect?: () => void;
 }
 
@@ -93,7 +93,7 @@ export const RecipeGridItem = ({
         isSelected && styles.containerSelected,
       ]}
       onPress={handlePress}
-      onLongPress={onLongPress}
+      onLongPress={() => onLongPress?.(recipe.id)}
       activeOpacity={0.7}
       delayLongPress={300}
     >

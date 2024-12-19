@@ -14,10 +14,12 @@ import { ZoomControls } from './components/ZoomControls';
 import { Typography } from '../../components/shared/Typography';
 import { removeRecipe } from '../../utils/storage';
 import { useToast } from '../../hooks/useToast';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function MenuScreen() {
   const { theme } = useTheme();
-  const styles = createStyles(theme);
+  const insets = useSafeAreaInsets();
+  const styles = createStyles(theme, insets);
   const { showToast } = useToast();
 
   const {
@@ -53,8 +55,9 @@ export default function MenuScreen() {
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedRecipes, setSelectedRecipes] = useState<Set<string>>(new Set());
 
-  const handleLongPress = () => {
+  const handleLongPress = (recipeId: string) => {
     setIsSelectionMode(true);
+    setSelectedRecipes(new Set([recipeId]));
   };
 
   const handleExitSelectionMode = () => {
