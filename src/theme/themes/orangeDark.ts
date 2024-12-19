@@ -6,9 +6,9 @@ export const orangeDarkTheme: ThemeType = {
   icon: 'flame-outline',
   colors: {
     primary: {
-      main: '#FB923C', // Cam sáng
-      light: '#FED7AA', // Cam rất sáng
-      dark: '#F97316', // Cam đậm
+      main: '#FB923C',
+      light: '#FED7AA',
+      dark: '#F97316',
       contrast: '#000000',
     },
     secondary: {
@@ -36,23 +36,23 @@ export const orangeDarkTheme: ThemeType = {
       contrast: '#000000',
     },
     background: {
-      default: '#431407', // Nền cam tối
-      paper: '#7C2D12', // Nền cam tối nhạt hơn
+      default: '#1C1917',
+      paper: '#292524',
       contrast: '#FFF7ED',
     },
     text: {
       primary: '#FFEDD5',
       secondary: '#FED7AA',
-      disabled: '#9A3412',
-      contrast: '#431407',
+      disabled: '#78716C',
+      contrast: '#1C1917',
     },
-    divider: '#9A3412',
-    border: '#C2410C',
+    divider: '#44403C',
+    border: '#57534E',
     shadow: '#000000',
     action: {
-      disabled: '#9A3412',
-      hover: 'rgba(255, 237, 213, 0.05)',
-      active: 'rgba(255, 237, 213, 0.08)',
+      disabled: '#78716C',
+      hover: 'rgba(251, 146, 60, 0.12)',
+      active: 'rgba(251, 146, 60, 0.2)',
     },
     info: {
       main: '#38BDF8',
