@@ -16,6 +16,7 @@ import * as Location from 'expo-location';
 import { RegionService } from '../../services/regionService';
 import { ViewVietnamButton } from './components/ViewVietnamButton';
 import { useToast } from '../../hooks/useToast';
+import { useRandomRecipeAnimation } from './hooks/useRandomRecipeAnimation';
 
 export default function MapScreen({ navigation }: { navigation: any }) {
   const { theme } = useTheme();
@@ -38,6 +39,7 @@ export default function MapScreen({ navigation }: { navigation: any }) {
   } = useMapInteraction();
 
   const { showToast } = useToast();
+  const { animateRandomSearch } = useRandomRecipeAnimation(mapRef);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -84,44 +86,15 @@ export default function MapScreen({ navigation }: { navigation: any }) {
     shouldAnimate = false
   ) => {
     if (shouldAnimate) {
-      // Tạo 4 điểm ngẫu nhiên với zoom level xa hơn
-      const randomPoints = Array(4).fill(0).map(() => ({
-        latitude: 8 + Math.random() * 16, // Trong phạm vi Việt Nam
-        longitude: 102 + Math.random() * 8,
-        latitudeDelta: 6, // Zoom level xa hơn
-        longitudeDelta: 6,
-      }));
-
-      // Di chuyển qua từng điểm với thời gian lâu hơn
-      let delay = 0;
-      randomPoints.forEach((point, index) => {
-        setTimeout(() => {
-          mapRef.current?.animateToRegion(point, 600); // Tăng thời gian animation
-        }, delay);
-        delay += 600; // Tăng delay giữa các điểm
-      });
-
-      // Cuối cùng di chuyển đến điểm đích với zoom level vừa phải
-      setTimeout(() => {
-        mapRef.current?.animateToRegion({
-          latitude,
-          longitude,
-          latitudeDelta: 2, // Zoom level vừa phải
-          longitudeDelta: 2,
-        }, 800);
-      }, delay);
-
-      // Hiện modal sau khi animation hoàn tất
-      setTimeout(() => {
+      animateRandomSearch(latitude, longitude, recipes, (recipes) => {
         setSelectedRecipes(recipes);
         setModalVisible(true);
-      }, delay + 800);
+      });
     } else {
-      // Xử lý như cũ nếu không cần animation
       mapRef.current?.animateToRegion({
         latitude,
         longitude,
-        latitudeDelta: 2, // Giữ nhất quán với zoom level mới
+        latitudeDelta: 2,
         longitudeDelta: 2,
       }, 1000);
 
