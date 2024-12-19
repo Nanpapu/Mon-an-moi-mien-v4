@@ -116,26 +116,33 @@ export default function MenuScreen() {
     >
       {isSelectionMode && (
         <View style={styles.selectionHeader}>
-          <TouchableOpacity 
-            onPress={handleExitSelectionMode}
-            style={styles.selectionButton}
-          >
-            <Ionicons name="close" size={24} color={theme.colors.text.primary} />
-          </TouchableOpacity>
-          
-          <Typography variant="h3">
-            Đã chọn {selectedRecipes.size} công thức
-          </Typography>
-
-          <TouchableOpacity 
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity
+              onPress={handleExitSelectionMode}
+              style={styles.selectionButton}
+            >
+              <Ionicons
+                name="close"
+                size={24}
+                color={theme.colors.text.primary}
+              />
+            </TouchableOpacity>
+            <Typography variant="h3" style={{ marginLeft: theme.spacing.md }}>
+              Đã chọn {selectedRecipes.size} công thức
+            </Typography>
+          </View>
+          <TouchableOpacity
             onPress={handleDeleteSelected}
-            style={styles.deleteButton}
             disabled={selectedRecipes.size === 0}
+            style={[
+              styles.deleteButton,
+              selectedRecipes.size === 0 && { opacity: 0.5 },
+            ]}
           >
-            <Ionicons 
-              name="trash-outline" 
-              size={24} 
-              color={theme.colors.error.main} 
+            <Ionicons
+              name="trash-outline"
+              size={24}
+              color={theme.colors.error.main}
             />
           </TouchableOpacity>
         </View>

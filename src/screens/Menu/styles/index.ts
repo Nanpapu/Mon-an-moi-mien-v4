@@ -89,16 +89,18 @@ export const createStyles = (theme: Theme) =>
       justifyContent: 'space-between',
       paddingHorizontal: theme.spacing.md,
       paddingVertical: theme.spacing.sm,
-      backgroundColor: theme.colors.background.paper,
+      backgroundColor: theme.colors.error.light,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.divider,
       ...theme.shadows.sm,
     },
     selectionButton: {
       padding: theme.spacing.sm,
+      borderRadius: theme.spacing.sm,
     },
     deleteButton: {
       padding: theme.spacing.sm,
+      borderRadius: theme.spacing.sm,
     },
     checkboxContainer: {
       position: 'absolute',

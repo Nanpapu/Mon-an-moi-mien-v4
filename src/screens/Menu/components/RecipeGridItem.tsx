@@ -88,7 +88,10 @@ export const RecipeGridItem = ({
 
   return (
     <TouchableOpacity
-      style={styles.container}
+      style={[
+        styles.container,
+        isSelected && styles.containerSelected,
+      ]}
       onPress={handlePress}
       onLongPress={onLongPress}
       activeOpacity={0.7}
@@ -99,7 +102,11 @@ export const RecipeGridItem = ({
           <Ionicons
             name={isSelected ? 'checkbox' : 'square-outline'}
             size={24}
-            color={isSelected ? theme.colors.primary.main : theme.colors.text.secondary}
+            color={
+              isSelected 
+                ? theme.colors.primary.main 
+                : theme.colors.text.secondary
+            }
           />
         </View>
       )}
@@ -189,6 +196,11 @@ const createStyles = (
       overflow: 'hidden',
       ...theme.shadows.sm,
       margin: config.spacing / 2,
+      transform: [{ scale: 1 }],
+    },
+    containerSelected: {
+      transform: [{ scale: 0.95 }],
+      opacity: 0.8,
     },
     image: {
       width: '100%',
@@ -239,7 +251,7 @@ const createStyles = (
     checkboxContainer: {
       position: 'absolute',
       top: theme.spacing.sm,
-      right: theme.spacing.sm,
+      left: theme.spacing.sm,
       zIndex: 1,
       backgroundColor: theme.colors.background.paper,
       borderRadius: 20,
