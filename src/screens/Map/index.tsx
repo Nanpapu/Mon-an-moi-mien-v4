@@ -147,17 +147,6 @@ export default function MapScreen({ navigation }: { navigation: any }) {
         onRegionChange={(newRegion) => {
           setRegion(newRegion);
           const newZoom = calculateZoom(newRegion.latitudeDelta);
-
-          // Debug log for map zoom
-          console.log('---Debug Map Zoom---');
-          console.log('Zoom level:', newZoom);
-          console.log('latitudeDelta:', newRegion.latitudeDelta);
-          console.log(
-            'Visible markers:',
-            regions.filter((r) => shouldShowMarker(r.id, newZoom)).length
-          );
-          console.log('------------------');
-
           setCurrentZoom(newZoom);
         }}
         onMapReady={() => {
