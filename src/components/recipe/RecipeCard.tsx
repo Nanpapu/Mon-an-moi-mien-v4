@@ -20,6 +20,7 @@ import { Typography } from '../shared';
 import { onSnapshot, doc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { COLLECTIONS } from '../../constants';
+import { ImageUtils } from '../../utils/imageUtils';
 
 interface Props {
   recipe: Recipe;
@@ -46,6 +47,17 @@ export function RecipeCard({
   const [showReviewsList, setShowReviewsList] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [allReviews, setAllReviews] = useState<Review[]>([]);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadImage = async () => {
+      if (recipe.image) {
+        const url = await ImageUtils.getRecipeImageUrl(recipe.image);
+        setImageUrl(url);
+      }
+    };
+    loadImage();
+  }, [recipe.image]);
 
   useEffect(() => {
     if (showReviews) {
@@ -114,7 +126,8 @@ export function RecipeCard({
   return (
     <View style={styles.card}>
       <Image
-        source={recipe.image}
+        //Placeholder.png
+        source={imageUrl || require('../../../assets/default-avatar.png')}
         style={styles.image}
         contentFit="cover"
         transition={200}

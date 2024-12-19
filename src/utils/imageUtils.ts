@@ -1,4 +1,6 @@
 import * as ImageManipulator from 'expo-image-manipulator';
+import { ref, getDownloadURL } from 'firebase/storage';
+import { storage } from '../config/firebase';
 
 export const ImageUtils = {
   /**
@@ -20,4 +22,43 @@ export const ImageUtils = {
       throw error;
     }
   },
+
+  /**
+   * Lấy đường dẫn storage cho ảnh công thức
+   * @param regionId ID của vùng miền (01, 02, 03)
+   * @param recipeId ID của công thức (01_01, 01_02, 01_03)
+   * @returns Đường dẫn trong storage
+   */
+  getRecipeImagePath: (regionId: string, recipeId: string) => {
+    return `recipes/images/${regionId}/${recipeId}.jpg`;
+  },
+
+  /**
+   * Lấy URL download của ảnh công thức
+   * @param imagePath Đường dẫn tương đối của ảnh
+   * @returns URL download của ảnh
+   */
+  getRecipeImageUrl: async (imagePath: string) => {
+    try {
+      // Nếu là URL đầy đủ thì trả về luôn
+      if (imagePath.startsWith('http')) {
+        return imagePath;
+      }
+      const storageRef = ref(storage, `recipes/${imagePath}`);
+      return await getDownloadURL(storageRef);
+    } catch (error) {
+      console.error('Lỗi khi lấy URL ảnh:', error);
+      return null;
+    }
+  },
+
+  /**
+   * Tạo đường dẫn tương đối cho ảnh công thức
+   * @param regionId ID của vùng miền
+   * @param recipeId ID của công thức
+   * @returns Đường dẫn tương đối để lưu vào Firestore
+   */
+  getRecipeImageRelativePath: (regionId: string, recipeId: string) => {
+    return `images/${regionId}/${recipeId}.jpg`;
+  }
 };

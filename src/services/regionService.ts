@@ -19,6 +19,7 @@ import { Region, Recipe } from '../types';
 import { regions } from '../data/regions';
 import { COLLECTIONS } from '../constants/collections';
 import { CacheService, CACHE_KEYS, CACHE_EXPIRY } from './cacheService';
+import { ImageUtils } from '../utils/imageUtils';
 
 /**
  * Service quản lý thông tin vùng miền
@@ -141,10 +142,14 @@ export const RegionService = {
 
         // 3. Tạo documents cho recipes và recipeStats
         for (const recipe of regionRecipes) {
-          // Tạo recipe document
+          // Tạo đường dẫn tương đối cho ảnh
+          const imagePath = ImageUtils.getRecipeImageRelativePath(region.id, recipe.id);
+
+          // Tạo recipe document với đường dẫn ảnh mới
           const recipeRef = doc(db, COLLECTIONS.RECIPES, recipe.id);
           batch.set(recipeRef, {
             ...recipe,
+            image: imagePath,  // Lưu đường dẫn tương đối
             regionId: region.id,
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
@@ -168,8 +173,8 @@ export const RegionService = {
       console.log('Import dữ liệu thành công!');
       return true;
     } catch (error) {
-      console.error('Lỗi khi import dữ liệu:', error);
-      return false;
+      console.error('Lỗi khi import data:', error);
+      throw error;
     }
   },
 

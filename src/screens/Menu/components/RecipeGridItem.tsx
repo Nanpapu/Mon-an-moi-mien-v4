@@ -10,6 +10,7 @@ import { onSnapshot, doc } from 'firebase/firestore';
 import { db } from '../../../config/firebase';
 import { COLLECTIONS } from '../../../constants';
 import { FavoriteButton } from '../../../components/buttons';
+import { ImageUtils } from '../../../utils/imageUtils';
 
 interface Props {
   recipe: Recipe;
@@ -29,6 +30,7 @@ export const RecipeGridItem = ({
   const { theme } = useTheme();
   const styles = createStyles(theme, width, config);
   const [stats, setStats] = useState({ averageRating: 0, totalReviews: 0 });
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -45,6 +47,16 @@ export const RecipeGridItem = ({
     );
     return () => unsubscribe();
   }, [recipe.id]);
+
+  useEffect(() => {
+    const loadImage = async () => {
+      if (recipe.image) {
+        const url = await ImageUtils.getRecipeImageUrl(recipe.image);
+        setImageUrl(url);
+      }
+    };
+    loadImage();
+  }, [recipe.image]);
 
   const renderStars = () => {
     return [...Array(5)].map((_, index) => (
@@ -66,8 +78,8 @@ export const RecipeGridItem = ({
     >
       <FavoriteButton recipe={recipe} onToggle={onFavoriteChange} />
       <Image
-        source={recipe.image}
-        style={styles.image}
+        source={imageUrl || require('../../../../assets/default-avatar.png')}
+        style={[styles.image, { width, height: width }]}
         contentFit="cover"
         transition={200}
       />
