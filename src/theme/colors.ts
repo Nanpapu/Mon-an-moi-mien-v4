@@ -1,4 +1,4 @@
-// Định nghĩa màu sắc cho theme sáng
+// Định nghĩa màu sắc cho theme sáng, dùng làm template cho các theme khác
 export const lightColors = {
   primary: {
     main: '#007AFF', // Màu chính của ứng dụng
@@ -51,67 +51,11 @@ export const lightColors = {
   },
   info: {
     main: '#0EA5E9', // Sky blue
-    light: '#38BDF8',
-    dark: '#0284C7',
-    contrast: '#FFFFFF',
+    light: '#38BDF8', // Sky blue nhạt
+    dark: '#0284C7', // Sky blue đậm
+    contrast: '#FFFFFF', // Màu chữ tương phản trên nền info
   },
 };
 
-// Định nghĩa màu sắc cho theme tối
-export const darkColors = {
-  primary: {
-    main: '#3B82F6',     // Xanh dương nhạt hơn
-    light: '#60A5FA',    // Xanh dương sáng
-    dark: '#1D4ED8',     // Xanh dương đậm
-    contrast: '#FFFFFF',  // Chữ trắng trên nền primary
-  },
-  secondary: {
-    main: '#64748B',     // Xám trung tính
-    light: '#94A3B8',    // Xám nhạt
-    dark: '#475569',     // Xám đậm
-    contrast: '#FFFFFF',  // Chữ trắng trên nền secondary
-  },
-  error: {
-    main: '#DC2626',     // Đỏ lỗi
-    light: '#EF4444',    // Đỏ nhạt
-    dark: '#B91C1C',     // Đỏ đậm
-    contrast: '#FFFFFF',  // Chữ trắng trên nền error
-  },
-  warning: {
-    main: '#D97706',     // Cam cảnh báo
-    light: '#F59E0B',    // Cam nhạt
-    dark: '#B45309',     // Cam đậm
-    contrast: '#FFFFFF',  // Chữ trắng trên nền warning
-  },
-  success: {
-    main: '#059669',     // Xanh lá thành công
-    light: '#10B981',    // Xanh lá nhạt
-    dark: '#047857',     // Xanh lá đậm
-    contrast: '#FFFFFF',  // Chữ trắng trên nền success
-  },
-  background: {
-    default: '#0F172A',  // Nền chính - xanh đen đậm
-    paper: '#1E293B',    // Nền thành phần - xanh đen nhạt hơn
-    contrast: '#F8FAFC', // Nền tương phản - gần như trắng
-  },
-  text: {
-    primary: '#E2E8F0',   // Chữ chính - xám trắng dịu
-    secondary: '#94A3B8', // Chữ phụ - xám nhạt
-    disabled: '#475569',  // Chữ vô hiệu - xám đậm
-    contrast: '#0F172A',  // Chữ tương phản - xanh đen đậm
-  },
-  divider: '#334155',    // Đường phân cách - xanh đen nhạt
-  border: '#475569',     // Viền - xám đậm
-  shadow: '#000000',     // Bóng đổ - đen
-  action: {
-    disabled: '#475569', // Nút vô hiệu - xám đậm
-    hover: 'rgba(255, 255, 255, 0.05)',  // Hover nhẹ hơn
-    active: 'rgba(255, 255, 255, 0.08)', // Active nhẹ hơn
-  },
-  info: {
-    main: '#0EA5E9',     // Xanh dương thông tin
-    light: '#38BDF8',    // Xanh dương nhạt
-    dark: '#0284C7',     // Xanh dương đậm
-    contrast: '#FFFFFF',  // Chữ trắng trên nền info
-  },
-};
+// Export type để sử dụng cho các theme khác
+export type ColorType = typeof lightColors;

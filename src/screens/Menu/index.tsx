@@ -53,7 +53,9 @@ export default function MenuScreen() {
   } = useGridZoom();
 
   const [isSelectionMode, setIsSelectionMode] = useState(false);
-  const [selectedRecipes, setSelectedRecipes] = useState<Set<string>>(new Set());
+  const [selectedRecipes, setSelectedRecipes] = useState<Set<string>>(
+    new Set()
+  );
 
   const handleLongPress = (recipeId: string) => {
     setIsSelectionMode(true);
@@ -66,7 +68,7 @@ export default function MenuScreen() {
   };
 
   const handleToggleSelect = (recipeId: string) => {
-    setSelectedRecipes(prev => {
+    setSelectedRecipes((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(recipeId)) {
         newSet.delete(recipeId);
@@ -84,7 +86,7 @@ export default function MenuScreen() {
       [
         {
           text: 'Hủy',
-          style: 'cancel'
+          style: 'cancel',
         },
         {
           text: 'Xóa',
@@ -104,8 +106,8 @@ export default function MenuScreen() {
             } finally {
               setIsLoading(false);
             }
-          }
-        }
+          },
+        },
       ]
     );
   };
@@ -130,15 +132,15 @@ export default function MenuScreen() {
                 color={theme.colors.error.main}
               />
             </TouchableOpacity>
-            <Typography 
-              variant="h3" 
+            <Typography
+              variant="h3"
               style={[styles.selectionText, { marginLeft: theme.spacing.md }]}
             >
               Đã chọn{' '}
               <Typography variant="h3" style={styles.selectionCount}>
                 {selectedRecipes.size}
-              </Typography>
-              {' '}công thức
+              </Typography>{' '}
+              công thức
             </Typography>
           </View>
           <TouchableOpacity
