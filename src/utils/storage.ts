@@ -1,26 +1,25 @@
 // Module xử lý lưu trữ dữ liệu local sử dụng AsyncStorage
 // Bao gồm các hàm để lưu, lấy và xóa công thức nấu ăn
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Recipe } from '../types';
+import { Recipe, Region } from '../types';
 
 // Khóa lưu trữ cho danh sách công thức
 const SAVED_RECIPES_KEY = '@saved_recipes';
 
 // FUNCTIONS
 // Lưu một công thức mới vào storage
-export const saveRecipe = async (recipe: Recipe) => {
+export const saveRecipe = async (recipe: Recipe, region: Region) => {
   try {
     const savedRecipes = await getSavedRecipes();
-    
+
     // Lấy regionId từ id của recipe (vd: "01_01" -> "01")
-    const regionId = recipe.id.split('_')[0];
-    
+    const regionId = region.id;
+
     const updatedRecipe = {
       ...recipe,
-      regionId,
-      image: recipe.image.startsWith('http') 
+      image: recipe.image.startsWith('http')
         ? `recipes/images/${regionId}/${recipe.id}.jpg`
-        : recipe.image
+        : recipe.image,
     };
 
     if (!savedRecipes.find((r) => r.id === recipe.id)) {
@@ -81,15 +80,15 @@ export const removeRecipe = async (recipeId: string): Promise<boolean> => {
 export const migrateSavedRecipes = async () => {
   try {
     const savedRecipes = await getSavedRecipes();
-    
-    const updatedRecipes = savedRecipes.map(recipe => {
+
+    const updatedRecipes = savedRecipes.map((recipe) => {
       const regionId = recipe.id.split('_')[0];
       return {
         ...recipe,
         regionId,
-        image: recipe.image.startsWith('http') 
+        image: recipe.image.startsWith('http')
           ? `recipes/images/${regionId}/${recipe.id}.jpg`
-          : recipe.image
+          : recipe.image,
       };
     });
 
