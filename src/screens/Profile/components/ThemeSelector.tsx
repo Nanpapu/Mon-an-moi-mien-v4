@@ -11,6 +11,39 @@ import { Typography } from '../../../components/shared';
 import { useTheme } from '../../../theme/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../../context/AuthContext';
+import { useToast } from '../../../hooks/useToast';
+
+// Helper function để kiểm tra theme hiện tại có được chọn không
+const isCurrentTheme = (themeId: string, currentThemeId: string) => {
+  return themeId === currentThemeId;
+};
+
+// Helper function để kiểm tra theme có phải là theme mặc định không
+const isDefaultTheme = (themeId: string, defaultLightId: string, defaultDarkId: string) => {
+  if (themeId.includes('-special')) return false;
+  return themeId === defaultLightId || themeId === defaultDarkId;
+};
+
+// Helper function để lấy style cho theme button
+const getThemeButtonStyle = (theme: any, currentThemeId: string) => {
+  return {
+    backgroundColor: theme.colors.background.default,
+    borderWidth: isCurrentTheme(theme.id, currentThemeId) ? 2 : 1,
+    borderColor: isCurrentTheme(theme.id, currentThemeId)
+      ? theme.colors.primary.main
+      : theme.colors.border,
+  };
+};
+
+// Component hiển thị chấm theme mặc định
+const DefaultThemeDot = ({ theme }: { theme: any }) => (
+  <View
+    style={[
+      styles.defaultDot,
+      { backgroundColor: theme.colors.primary.main },
+    ]}
+  />
+);
 
 export const ThemeSelector = () => {
   const {
@@ -22,6 +55,7 @@ export const ThemeSelector = () => {
     setDefaultTheme,
   } = useTheme();
   const { user } = useAuth();
+  const { showToast } = useToast();
   const [expanded, setExpanded] = useState(false);
   const animatedHeight = useRef(new Animated.Value(0)).current;
   const contentHeight = useRef(0);
@@ -46,20 +80,22 @@ export const ThemeSelector = () => {
     }
   };
 
-  const lightThemes = availableThemes.filter(t => !t.id.includes('dark') && !t.id.includes('-special'));
-  const darkThemes = availableThemes.filter(t => t.id.includes('dark') && !t.id.includes('-special'));
-  const specialThemes = availableThemes.filter(t => t.id.includes('-special'));
+  const lightThemes = availableThemes.filter(
+    (t) => !t.id.includes('dark') && !t.id.includes('-special')
+  );
+  const darkThemes = availableThemes.filter(
+    (t) => t.id.includes('dark') && !t.id.includes('-special')
+  );
+  const specialThemes = availableThemes.filter((t) =>
+    t.id.includes('-special')
+  );
 
-  const renderThemeButton = (theme: any, isDefaultTheme: boolean) => (
+  const renderThemeButton = (theme: any) => (
     <TouchableOpacity
       key={theme.id}
       style={[
         styles.themeButton,
-        {
-          backgroundColor: theme.colors.background.default,
-          borderColor: theme.colors.border,
-          borderWidth: 1,
-        },
+        getThemeButtonStyle(theme, currentTheme.id),
       ]}
       onPress={() => handleThemePress(theme)}
     >
@@ -71,20 +107,12 @@ export const ThemeSelector = () => {
       />
       <Typography
         variant="caption"
-        style={[
-          styles.themeName,
-          { color: theme.colors.text.primary },
-        ]}
+        style={[styles.themeName, { color: theme.colors.text.primary }]}
       >
         {theme.name}
       </Typography>
-      {isDefaultTheme && (
-        <View
-          style={[
-            styles.defaultDot,
-            { backgroundColor: theme.colors.primary.main },
-          ]}
-        />
+      {isDefaultTheme(theme.id, defaultLightTheme, defaultDarkTheme) && (
+        <DefaultThemeDot theme={theme} />
       )}
     </TouchableOpacity>
   );
@@ -92,9 +120,21 @@ export const ThemeSelector = () => {
   const handleThemePress = (theme: any) => {
     if (theme.id.includes('-special')) {
       setTheme(theme.id);
+      showToast(
+        'info',
+        `Đã chuyển sang giao diện ${theme.name}\nTheme đặc biệt sẽ không được lưu làm mặc định`
+      );
     } else {
       setTheme(theme.id);
       setDefaultTheme(theme.id);
+      showToast(
+        'success',
+        `Đã chuyển sang giao diện ${theme.name}\n${
+          theme.id.includes('dark')
+            ? 'Đã lưu làm giao diện tối mặc định'
+            : 'Đã lưu làm giao diện sáng mặc định'
+        }`
+      );
     }
   };
 
@@ -167,9 +207,7 @@ export const ThemeSelector = () => {
               </Typography>
             </View>
             <View style={styles.themeGrid}>
-              {lightThemes.map((theme) =>
-                renderThemeButton(theme, theme.id === defaultLightTheme)
-              )}
+              {lightThemes.map((theme) => renderThemeButton(theme))}
             </View>
           </View>
 
@@ -192,9 +230,7 @@ export const ThemeSelector = () => {
               </Typography>
             </View>
             <View style={styles.themeGrid}>
-              {darkThemes.map((theme) =>
-                renderThemeButton(theme, theme.id === defaultDarkTheme)
-              )}
+              {darkThemes.map((theme) => renderThemeButton(theme))}
             </View>
           </View>
 
@@ -218,9 +254,7 @@ export const ThemeSelector = () => {
                 </Typography>
               </View>
               <View style={styles.themeGrid}>
-                {specialThemes.map((theme) =>
-                  renderThemeButton(theme, false)
-                )}
+                {specialThemes.map((theme) => renderThemeButton(theme))}
               </View>
             </View>
           )}
