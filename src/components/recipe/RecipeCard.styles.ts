@@ -274,4 +274,10 @@ export const createStyles = (theme: Theme) =>
       flex: 1,
       color: theme.colors.text.primary,
     },
+    savedButton: {
+      backgroundColor: theme.colors.success.main,
+    },
+    wasSavedButton: {
+      backgroundColor: theme.colors.primary.light,
+    },
   });

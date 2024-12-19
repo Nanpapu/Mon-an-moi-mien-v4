@@ -55,18 +55,25 @@ export default function MapScreen({ navigation }: { navigation: any }) {
 
   const handleSaveRecipe = async (recipe: Recipe) => {
     try {
-      const region = regions.find(r => r.recipes.some(rcp => rcp.id === recipe.id));
+      const region = regions.find((r) =>
+        r.recipes.some((rcp) => rcp.id === recipe.id)
+      );
       if (!region) {
         throw new Error('Không tìm thấy vùng miền của công thức');
       }
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       const success = await saveRecipe(recipe, region);
       if (success) {
         showToast('success', 'Đã lưu công thức');
       } else {
         showToast('info', 'Công thức đã được lưu trước đó');
       }
+      return success;
     } catch (error) {
       showToast('error', 'Không thể lưu công thức');
+      return false;
     }
   };
 

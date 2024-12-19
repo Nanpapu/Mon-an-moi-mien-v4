@@ -25,7 +25,7 @@ import { ImageCacheService } from '../../services/imageCacheService';
 
 interface Props {
   recipe: Recipe;
-  onSave?: () => void;
+  onSave?: () => Promise<boolean>;
   onDelete?: (recipe: Recipe) => void;
   showActions?: boolean;
   showReviews?: boolean;
@@ -49,6 +49,10 @@ export function RecipeCard({
   const [showDetails, setShowDetails] = useState(false);
   const [allReviews, setAllReviews] = useState<Review[]>([]);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
+  const [wasSaved, setWasSaved] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
     const loadImage = async () => {
@@ -216,9 +220,38 @@ export function RecipeCard({
         {showActions && (
           <View style={styles.actions}>
             {onSave && (
-              <TouchableOpacity style={styles.saveButton} onPress={onSave}>
+              <TouchableOpacity 
+                style={[
+                  styles.saveButton,
+                  justSaved && styles.savedButton,
+                  (wasSaved || isSaved) && styles.wasSavedButton
+                ]} 
+                onPress={async () => {
+                  if (isSaving) return;
+                  
+                  setIsSaving(true);
+                  if (onSave) {
+                    const success = await onSave();
+                    if (success) {
+                      // Công thức mới được lưu - chỉ hiện "Đã lưu!"
+                      setJustSaved(true);
+                      setTimeout(() => {
+                        setJustSaved(false);
+                      }, 2000);
+                    } else {
+                      // Công thức đã lưu trước đó
+                      setWasSaved(true);
+                      setTimeout(() => {
+                        setWasSaved(false);
+                      }, 2000);
+                    }
+                  }
+                  setIsSaving(false);
+                }}
+                disabled={isSaving}
+              >
                 <Ionicons
-                  name="bookmark-outline"
+                  name={justSaved ? "checkmark" : (wasSaved || isSaved) ? "bookmark" : "bookmark-outline"}
                   size={20}
                   color={theme.colors.background.default}
                 />
@@ -226,8 +259,18 @@ export function RecipeCard({
                   variant="body1"
                   style={{ color: theme.colors.background.default }}
                 >
-                  Lưu công thức
+                  {isSaving ? "Đang lưu..." : 
+                   justSaved ? "Đã lưu!" :
+                   (wasSaved || isSaved) ? "Đã lưu trước đó" :
+                   "Lưu công thức"}
                 </Typography>
+                {isSaving && (
+                  <ActivityIndicator 
+                    size="small" 
+                    color={theme.colors.background.default}
+                    style={{marginLeft: 8}}
+                  />
+                )}
               </TouchableOpacity>
             )}
             {onDelete && (
