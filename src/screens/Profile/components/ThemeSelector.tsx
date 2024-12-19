@@ -45,45 +45,92 @@ export const ThemeSelector = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { borderRadius: 16, overflow: 'hidden' }]}>
       <TouchableOpacity 
-        style={styles.header}
+        style={[
+          styles.header,
+          { 
+            backgroundColor: currentTheme.colors.background.paper,
+          }
+        ]}
         onPress={() => setExpanded(!expanded)}
       >
-        <Typography variant="h3">Bộ màu</Typography>
+        <View style={styles.headerContent}>
+          <Ionicons 
+            name="color-palette-outline" 
+            size={20} 
+            color={currentTheme.colors.primary.main}
+            style={{ marginRight: 8 }}
+          />
+          <Typography 
+            variant="h3" 
+            style={{ 
+              color: currentTheme.colors.text.primary,
+              fontSize: 16,
+              fontWeight: '600'
+            }}
+          >
+            Tùy chỉnh giao diện
+          </Typography>
+        </View>
         <Ionicons
           name={expanded ? "chevron-up" : "chevron-down"}
-          size={24}
-          color={currentTheme.colors.text.primary}
+          size={20}
+          color={currentTheme.colors.text.secondary}
         />
       </TouchableOpacity>
 
       {expanded && (
-        <>
+        <View style={[
+          styles.content,
+          { backgroundColor: currentTheme.colors.background.paper }
+        ]}>
           <View style={styles.section}>
-            <Typography 
-              variant="subtitle1" 
-              style={[styles.sectionTitle, { color: currentTheme.colors.text.primary }]}
-            >
-              Chế độ sáng
-            </Typography>
+            <View style={styles.sectionHeader}>
+              <Ionicons 
+                name="sunny-outline" 
+                size={18} 
+                color={currentTheme.colors.text.primary}
+                style={{ marginRight: 6 }}
+              />
+              <Typography 
+                variant="subtitle1" 
+                style={[
+                  styles.sectionTitle,
+                  { color: currentTheme.colors.text.primary }
+                ]}
+              >
+                Chế độ sáng
+              </Typography>
+            </View>
             <View style={styles.themeGrid}>
               {lightThemes.map(theme => renderThemeButton(theme, theme.id === defaultLightTheme))}
             </View>
           </View>
 
-          <View style={styles.section}>
-            <Typography 
-              variant="subtitle1" 
-              style={[styles.sectionTitle, { color: currentTheme.colors.text.primary }]}
-            >
-              Chế độ tối
-            </Typography>
+          <View style={[styles.section, styles.darkSection]}>
+            <View style={styles.sectionHeader}>
+              <Ionicons 
+                name="moon-outline" 
+                size={18} 
+                color={currentTheme.colors.text.primary}
+                style={{ marginRight: 6 }}
+              />
+              <Typography 
+                variant="subtitle1" 
+                style={[
+                  styles.sectionTitle,
+                  { color: currentTheme.colors.text.primary }
+                ]}
+              >
+                Chế độ tối
+              </Typography>
+            </View>
             <View style={styles.themeGrid}>
               {darkThemes.map(theme => renderThemeButton(theme, theme.id === defaultDarkTheme))}
             </View>
           </View>
-        </>
+        </View>
       )}
     </View>
   );
@@ -91,19 +138,46 @@ export const ThemeSelector = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'transparent',
+    marginBottom: 16,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
+    padding: 16,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  content: {
+    padding: 16,
   },
   section: {
-    marginTop: 16,
+    marginBottom: 16,
+  },
+  darkSection: {
+    marginTop: 24,
+    marginBottom: 0,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
   },
   sectionTitle: {
-    marginBottom: 12,
+    fontSize: 14,
     fontWeight: '600',
   },
   themeGrid: {

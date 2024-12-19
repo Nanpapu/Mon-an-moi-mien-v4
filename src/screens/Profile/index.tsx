@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from '../../theme/ThemeContext';
 import { Loading, Typography } from '../../components/shared';
 import { AuthForm } from './components/AuthForm';
@@ -11,6 +11,8 @@ import { useAuthAnimation } from './hooks/useAuthAnimation';
 import { useProfileActions } from './hooks/useProfileActions';
 import { ResetPasswordModal } from './components/ResetPasswordModal';
 import { useToast } from '../../hooks/useToast';
+import { Card, Button } from '../../components/shared';
+import { ThemeSelector } from './components/ThemeSelector';
 
 export default function ProfileScreen() {
   const { theme } = useTheme();
@@ -100,72 +102,121 @@ export default function ProfileScreen() {
   };
 
   return (
-    <ScrollView 
-      style={{
-        flex: 1,
-        backgroundColor: theme.colors.background.default,
-      }}
-      contentContainerStyle={{
-        padding: theme.spacing.lg,
-        flexGrow: 1,
-      }}
-      showsVerticalScrollIndicator={false}
-    >
-      {isLoading ? (
-        <Loading text="Đang tải..." />
-      ) : user ? (
-        <UserProfile
-          user={user}
-          displayName={displayName}
-          isEditing={isEditing}
-          onDisplayNameChange={setDisplayName}
-          onEditPress={handleStartEditing}
-          onSavePress={handleSaveProfile}
-          onCancelPress={handleCancelEditing}
-          onPickImage={pickImage}
-          onLogout={handleLogout}
-          onImportData={
-            user.email === '21521059@gm.uit.edu.vn'
-              ? handleImportData
-              : undefined
-          }
-          photoURL={photoURL}
-          isUploading={isUploading}
-          isImporting={isImporting}
-        />
-      ) : (
-        <>
-          <AuthForm
-            isRegistering={isRegistering}
-            email={email}
-            password={password}
-            confirmPassword={confirmPassword}
-            showPassword={showPassword}
-            showConfirmPassword={showConfirmPassword}
-            errors={errors}
-            fadeAnim={fadeAnim}
-            slideAnim={slideAnim}
-            onEmailChange={setEmail}
-            onPasswordChange={setPassword}
-            onConfirmPasswordChange={setConfirmPassword}
-            onTogglePassword={() => setShowPassword(!showPassword)}
-            onToggleConfirmPassword={() =>
-              setShowConfirmPassword(!showConfirmPassword)
-            }
-            onSubmit={isRegistering ? handleRegister : handleLogin}
-            onForgotPassword={() => setShowResetPassword(true)}
-            onToggleAuthMode={toggleAuthMode}
-          />
-          <GoogleSignInButton onPress={signInWithGoogle} />
-          <ResetPasswordModal
-            visible={showResetPassword}
-            email={resetEmail}
-            onEmailChange={setResetEmail}
-            onClose={() => setShowResetPassword(false)}
-            onSubmit={handleResetPassword}
-          />
-        </>
-      )}
-    </ScrollView>
+    <>
+      <ResetPasswordModal
+        visible={showResetPassword}
+        email={resetEmail}
+        onEmailChange={setResetEmail}
+        onClose={() => setShowResetPassword(false)}
+        onSubmit={handleResetPassword}
+      />
+      
+      <ScrollView 
+        style={{
+          flex: 1,
+          backgroundColor: theme.colors.background.default,
+        }}
+        contentContainerStyle={{
+          padding: theme.spacing.lg,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        {isLoading ? (
+          <Loading text="Đang tải..." />
+        ) : user ? (
+          <View style={styles.container}>
+            <Card style={[
+              styles.profileCard, 
+              {
+                backgroundColor: theme.colors.background.paper,
+                ...theme.shadows.md,
+              }
+            ]}>
+              <UserProfile
+                user={user}
+                displayName={displayName}
+                isEditing={isEditing}
+                onDisplayNameChange={setDisplayName}
+                onEditPress={handleStartEditing}
+                onSavePress={handleSaveProfile}
+                onCancelPress={handleCancelEditing}
+                onPickImage={pickImage}
+                onLogout={handleLogout}
+                onImportData={
+                  user.email === '21521059@gm.uit.edu.vn'
+                    ? handleImportData
+                    : undefined
+                }
+                photoURL={photoURL}
+                isUploading={isUploading}
+                isImporting={isImporting}
+              />
+            </Card>
+
+            <ThemeSelector />
+
+            <Card style={[
+              styles.logoutCard,
+              {
+                backgroundColor: theme.colors.background.paper,
+                ...theme.shadows.md,
+              }
+            ]}>
+              <Button
+                variant="secondary"
+                icon="log-out-outline"
+                onPress={handleLogout}
+                style={styles.logoutButton}
+              >
+                Đăng xuất
+              </Button>
+            </Card>
+          </View>
+        ) : (
+          <>
+            <AuthForm
+              isRegistering={isRegistering}
+              email={email}
+              password={password}
+              confirmPassword={confirmPassword}
+              showPassword={showPassword}
+              showConfirmPassword={showConfirmPassword}
+              errors={errors}
+              fadeAnim={fadeAnim}
+              slideAnim={slideAnim}
+              onEmailChange={setEmail}
+              onPasswordChange={setPassword}
+              onConfirmPasswordChange={setConfirmPassword}
+              onTogglePassword={() => setShowPassword(!showPassword)}
+              onToggleConfirmPassword={() =>
+                setShowConfirmPassword(!showConfirmPassword)
+              }
+              onSubmit={isRegistering ? handleRegister : handleLogin}
+              onForgotPassword={() => setShowResetPassword(true)}
+              onToggleAuthMode={toggleAuthMode}
+            />
+            <GoogleSignInButton onPress={signInWithGoogle} />
+          </>
+        )}
+      </ScrollView>
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    gap: 16,
+  },
+  profileCard: {
+    borderRadius: 16,
+    padding: 16,
+  },
+  logoutCard: {
+    borderRadius: 16,
+    padding: 16,
+  },
+  logoutButton: {
+    width: '100%',
+  },
+});

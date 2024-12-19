@@ -123,10 +123,6 @@ export const UserProfile = ({
           </View>
         )}
 
-        <View style={{ width: '100%', marginTop: theme.spacing.xl }}>
-          <ThemeSelector />
-        </View>
-
         <Button
           variant="secondary"
           icon="log-out-outline"
