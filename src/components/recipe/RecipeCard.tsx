@@ -21,6 +21,7 @@ import { onSnapshot, doc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { COLLECTIONS } from '../../constants';
 import { ImageUtils } from '../../utils/imageUtils';
+import { ImageCacheService } from '../../services/imageCacheService';
 
 interface Props {
   recipe: Recipe;
@@ -52,7 +53,7 @@ export function RecipeCard({
   useEffect(() => {
     const loadImage = async () => {
       if (recipe.image) {
-        const url = await ImageUtils.getRecipeImageUrl(recipe.image);
+        const url = await ImageCacheService.getImageUrl(recipe.image);
         setImageUrl(url);
       }
     };
@@ -131,6 +132,7 @@ export function RecipeCard({
         style={styles.image}
         contentFit="cover"
         transition={200}
+        cachePolicy="memory-disk"
       />
 
       <View style={styles.content}>
