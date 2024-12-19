@@ -8,8 +8,8 @@ export const createStyles = (theme: Theme) =>
     card: {
       backgroundColor: theme.colors.background.paper,
       borderRadius: theme.spacing.md,
-      marginHorizontal: theme.spacing.md,
-      marginBottom: theme.spacing.md,
+      // Không xóa comment này
+      // margin: theme.spacing.md,
       ...theme.shadows.sm,
       overflow: 'hidden',
     },
