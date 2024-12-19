@@ -36,7 +36,13 @@ export const RecipeList = ({
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
   if (!isLoading && filteredRecipes.length === 0) {
-    return <EmptyState hasRecipes={savedRecipes.length > 0} />;
+    return (
+      <EmptyState 
+        hasRecipes={savedRecipes.length > 0} 
+        isRefreshing={isRefreshing}
+        onRefresh={onRefresh}
+      />
+    );
   }
 
   return (
