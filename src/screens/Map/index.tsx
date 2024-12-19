@@ -80,21 +80,56 @@ export default function MapScreen({ navigation }: { navigation: any }) {
   const handleRandomRecipe = (
     latitude: number,
     longitude: number,
-    recipes: Recipe[]
+    recipes: Recipe[],
+    shouldAnimate = false
   ) => {
-    const newRegion: MapRegion = {
-      latitude,
-      longitude,
-      latitudeDelta: 0.5,
-      longitudeDelta: 0.5,
-    };
+    if (shouldAnimate) {
+      // Tạo 4 điểm ngẫu nhiên với zoom level xa hơn
+      const randomPoints = Array(4).fill(0).map(() => ({
+        latitude: 8 + Math.random() * 16, // Trong phạm vi Việt Nam
+        longitude: 102 + Math.random() * 8,
+        latitudeDelta: 6, // Zoom level xa hơn
+        longitudeDelta: 6,
+      }));
 
-    mapRef.current?.animateToRegion(newRegion, 1000);
+      // Di chuyển qua từng điểm với thời gian lâu hơn
+      let delay = 0;
+      randomPoints.forEach((point, index) => {
+        setTimeout(() => {
+          mapRef.current?.animateToRegion(point, 600); // Tăng thời gian animation
+        }, delay);
+        delay += 600; // Tăng delay giữa các điểm
+      });
 
-    setTimeout(() => {
-      setSelectedRecipes(recipes);
-      setModalVisible(true);
-    }, 1000);
+      // Cuối cùng di chuyển đến điểm đích với zoom level vừa phải
+      setTimeout(() => {
+        mapRef.current?.animateToRegion({
+          latitude,
+          longitude,
+          latitudeDelta: 2, // Zoom level vừa phải
+          longitudeDelta: 2,
+        }, 800);
+      }, delay);
+
+      // Hiện modal sau khi animation hoàn tất
+      setTimeout(() => {
+        setSelectedRecipes(recipes);
+        setModalVisible(true);
+      }, delay + 800);
+    } else {
+      // Xử lý như cũ nếu không cần animation
+      mapRef.current?.animateToRegion({
+        latitude,
+        longitude,
+        latitudeDelta: 2, // Giữ nhất quán với zoom level mới
+        longitudeDelta: 2,
+      }, 1000);
+
+      setTimeout(() => {
+        setSelectedRecipes(recipes);
+        setModalVisible(true);
+      }, 1000);
+    }
   };
 
   const onSearch = async (query: string) => {

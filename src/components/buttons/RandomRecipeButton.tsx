@@ -8,7 +8,7 @@ import { Tooltip } from '../shared/Tooltip';
 
 interface Props {
   regions: Region[];
-  onRandomSelect: (latitude: number, longitude: number, recipes: any[]) => void;
+  onRandomSelect: (latitude: number, longitude: number, recipes: any[], shouldAnimate?: boolean) => void;
   disabled?: boolean;
 }
 
@@ -30,7 +30,7 @@ export function RandomRecipeButton({ regions, onRandomSelect, disabled }: Props)
     setIsLoading(true);
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
-    // Animation khi nhấn
+    // Animation nút
     Animated.sequence([
       Animated.spring(scaleValue, {
         toValue: 0.8,
@@ -46,7 +46,7 @@ export function RandomRecipeButton({ regions, onRandomSelect, disabled }: Props)
       })
     ]).start();
 
-    // Animation xoay liên tục
+    // Animation xoay
     Animated.loop(
       Animated.timing(spinValue, {
         toValue: 1,
@@ -56,13 +56,18 @@ export function RandomRecipeButton({ regions, onRandomSelect, disabled }: Props)
       })
     ).start();
 
+    // Delay nhẹ 200ms
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    const randomRegion = allRegions[Math.floor(Math.random() * allRegions.length)];
+    onRandomSelect(
+      randomRegion.coordinate.latitude,
+      randomRegion.coordinate.longitude,
+      randomRegion.recipes,
+      true // flag để trigger animation
+    );
+
     setTimeout(() => {
-      const randomRegion = allRegions[Math.floor(Math.random() * allRegions.length)];
-      onRandomSelect(
-        randomRegion.coordinate.latitude,
-        randomRegion.coordinate.longitude,
-        randomRegion.recipes
-      );
       setIsLoading(false);
       spinValue.setValue(0);
     }, 1000);
