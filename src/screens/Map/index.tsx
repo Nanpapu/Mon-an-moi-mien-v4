@@ -55,7 +55,11 @@ export default function MapScreen({ navigation }: { navigation: any }) {
 
   const handleSaveRecipe = async (recipe: Recipe) => {
     try {
-      const success = await saveRecipe(recipe);
+      const region = regions.find(r => r.recipes.some(rcp => rcp.id === recipe.id));
+      if (!region) {
+        throw new Error('Không tìm thấy vùng miền của công thức');
+      }
+      const success = await saveRecipe(recipe, region);
       if (success) {
         showToast('success', 'Đã lưu công thức');
       } else {
