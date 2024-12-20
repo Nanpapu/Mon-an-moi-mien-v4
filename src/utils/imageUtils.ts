@@ -40,14 +40,36 @@ export const ImageUtils = {
    */
   getRecipeImageUrl: async (imagePath: string) => {
     try {
-      // Nếu là URL đầy đủ thì trả về luôn
+      // Log để debug
+      console.log('Getting URL for path:', imagePath);
+
+      // Nếu là URL đầy đủ thì trả về luôn  
       if (imagePath.startsWith('http')) {
         return imagePath;
       }
-      const storageRef = ref(storage, `recipes/${imagePath}`);
-      return await getDownloadURL(storageRef);
-    } catch (error) {
-      console.error('Lỗi khi lấy URL ảnh:', error);
+
+      // Đảm bảo đường dẫn bắt đầu đúng
+      const fullPath = imagePath.startsWith('recipes/images/') 
+        ? imagePath 
+        : `recipes/images/${imagePath}`;
+      
+      console.log('Full storage path:', fullPath);
+      
+      const storageRef = ref(storage, fullPath);
+      console.log('Storage reference:', storageRef.fullPath);
+      
+      const url = await getDownloadURL(storageRef);
+      console.log('Download URL:', url);
+      
+      return url;
+    } catch (error: any) {
+      // Log chi tiết lỗi
+      console.error('Detailed error:', {
+        path: imagePath,
+        error: error.message,
+        code: error.code,
+        serverResponse: error.serverResponse
+      });
       return null;
     }
   },
@@ -59,6 +81,6 @@ export const ImageUtils = {
    * @returns Đường dẫn tương đối để lưu vào Firestore
    */
   getRecipeImageRelativePath: (regionId: string, recipeId: string) => {
-    return `images/${regionId}/${recipeId}.jpg`;
+    return `recipes/images/${regionId}/${recipeId}.jpg`;
   }
 };

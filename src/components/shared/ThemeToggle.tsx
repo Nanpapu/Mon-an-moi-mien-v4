@@ -15,7 +15,7 @@ export const ThemeToggle = () => {
       }}
     >
       <Ionicons
-        name={theme.isDark ? "sunny" : "moon"}
+        name={theme.isDark ? "sunny-outline" : "moon-outline"}
         size={24}
         color={theme.colors.text.primary}
       />

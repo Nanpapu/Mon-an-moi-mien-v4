@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { Recipe } from '../../../types';
-import { removeRecipe } from '../../../utils/storage';
+import { removeRecipe, migrateSavedRecipes } from '../../../utils/storage';
 import { useRecipes } from '../../../context/RecipeContext';
 import { useToast } from '../../../hooks/useToast';
 
@@ -17,8 +17,15 @@ export const useMenuData = () => {
 
   const loadData = async () => {
     setIsLoading(true);
-    await refreshSavedRecipes();
-    setIsLoading(false);
+    try {
+      await migrateSavedRecipes();
+      await refreshSavedRecipes();
+    } catch (error) {
+      console.error('Lỗi khi load dữ liệu:', error);
+      showToast('error', 'Không thể tải dữ liệu');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDeleteRecipe = async (recipe: Recipe) => {
@@ -60,6 +67,7 @@ export const useMenuData = () => {
     savedRecipes,
     isRefreshing,
     isLoading,
+    setIsLoading,
     refreshSavedRecipes,
     handleDeleteRecipe,
   };

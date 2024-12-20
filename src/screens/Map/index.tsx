@@ -16,6 +16,7 @@ import * as Location from 'expo-location';
 import { RegionService } from '../../services/regionService';
 import { ViewVietnamButton } from './components/ViewVietnamButton';
 import { useToast } from '../../hooks/useToast';
+import { useRandomRecipeAnimation } from './hooks/useRandomRecipeAnimation';
 
 export default function MapScreen({ navigation }: { navigation: any }) {
   const { theme } = useTheme();
@@ -38,6 +39,7 @@ export default function MapScreen({ navigation }: { navigation: any }) {
   } = useMapInteraction();
 
   const { showToast } = useToast();
+  const { animateRandomSearch } = useRandomRecipeAnimation(mapRef);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -55,35 +57,52 @@ export default function MapScreen({ navigation }: { navigation: any }) {
 
   const handleSaveRecipe = async (recipe: Recipe) => {
     try {
-      const success = await saveRecipe(recipe);
+      const region = regions.find((r) =>
+        r.recipes.some((rcp) => rcp.id === recipe.id)
+      );
+      if (!region) {
+        throw new Error('Không tìm thấy vùng miền của công thức');
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const success = await saveRecipe(recipe, region);
       if (success) {
         showToast('success', 'Đã lưu công thức');
       } else {
         showToast('info', 'Công thức đã được lưu trước đó');
       }
+      return success;
     } catch (error) {
       showToast('error', 'Không thể lưu công thức');
+      return false;
     }
   };
 
   const handleRandomRecipe = (
     latitude: number,
     longitude: number,
-    recipes: Recipe[]
+    recipes: Recipe[],
+    shouldAnimate = false
   ) => {
-    const newRegion: MapRegion = {
-      latitude,
-      longitude,
-      latitudeDelta: 0.5,
-      longitudeDelta: 0.5,
-    };
+    if (shouldAnimate) {
+      animateRandomSearch(latitude, longitude, recipes, (recipes) => {
+        setSelectedRecipes(recipes);
+        setModalVisible(true);
+      });
+    } else {
+      mapRef.current?.animateToRegion({
+        latitude,
+        longitude,
+        latitudeDelta: 2,
+        longitudeDelta: 2,
+      }, 1000);
 
-    mapRef.current?.animateToRegion(newRegion, 1000);
-
-    setTimeout(() => {
-      setSelectedRecipes(recipes);
-      setModalVisible(true);
-    }, 1000);
+      setTimeout(() => {
+        setSelectedRecipes(recipes);
+        setModalVisible(true);
+      }, 1000);
+    }
   };
 
   const onSearch = async (query: string) => {
@@ -147,17 +166,6 @@ export default function MapScreen({ navigation }: { navigation: any }) {
         onRegionChange={(newRegion) => {
           setRegion(newRegion);
           const newZoom = calculateZoom(newRegion.latitudeDelta);
-
-          // Debug log for map zoom
-          console.log('---Debug Map Zoom---');
-          console.log('Zoom level:', newZoom);
-          console.log('latitudeDelta:', newRegion.latitudeDelta);
-          console.log(
-            'Visible markers:',
-            regions.filter((r) => shouldShowMarker(r.id, newZoom)).length
-          );
-          console.log('------------------');
-
           setCurrentZoom(newZoom);
         }}
         onMapReady={() => {

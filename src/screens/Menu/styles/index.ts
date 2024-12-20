@@ -1,8 +1,9 @@
 import { StyleSheet } from 'react-native';
 import { Theme } from '../../../theme/ThemeContext';
+import { EdgeInsets } from 'react-native-safe-area-context';
 
-export const createStyles = (theme: Theme) =>
-  StyleSheet.create({
+export const createStyles = (theme: Theme, insets: EdgeInsets) => {
+  return StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: theme.colors.background.default,
@@ -83,4 +84,60 @@ export const createStyles = (theme: Theme) =>
     zoomButtonDisabled: {
       opacity: 0.5,
     },
+    selectionHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: theme.spacing.md,
+      paddingVertical: theme.spacing.sm,
+      backgroundColor: theme.colors.error.light,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.divider,
+      paddingTop: insets.top + theme.spacing.sm,
+      ...theme.shadows.md,
+    },
+    selectionButton: {
+      padding: theme.spacing.sm,
+      borderRadius: theme.spacing.lg,
+      backgroundColor: 'rgba(255,255,255,0.9)',
+      ...theme.shadows.sm,
+      width: 40,
+      height: 40,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    deleteButton: {
+      padding: theme.spacing.sm,
+      borderRadius: theme.spacing.lg,
+      backgroundColor: theme.colors.error.main,
+      ...theme.shadows.sm,
+      width: 40,
+      height: 40,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    selectionText: {
+      color: 'white',
+      fontWeight: '600',
+      fontSize: 16,
+      textShadowColor: 'rgba(255,255,255,0.3)',
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 2,
+    },
+    selectionCount: {
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: 18,
+    },
+    checkboxContainer: {
+      position: 'absolute',
+      top: theme.spacing.sm,
+      right: theme.spacing.sm,
+      zIndex: 1,
+      backgroundColor: theme.colors.background.paper,
+      borderRadius: 20,
+      padding: 4,
+      ...theme.shadows.sm,
+    },
   });
+};
