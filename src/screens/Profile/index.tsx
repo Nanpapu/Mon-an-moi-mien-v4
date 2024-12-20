@@ -157,7 +157,7 @@ export default function ProfileScreen() {
 
             <ThemeSelector />
 
-            <Card
+            {/* <Card
               style={[
                 styles.logoutCard,
                 {
@@ -174,7 +174,7 @@ export default function ProfileScreen() {
               >
                 Đăng xuất
               </Button>
-            </Card>
+            </Card> */}
           </View>
         ) : (
           <>
