@@ -1,0 +1,13 @@
+{
+    "source": {
+      "include": ["src"],
+      "includePattern": ".+\\.ts(x)?$"
+    },
+    "plugins": ["plugins/markdown"],
+    "opts": {
+      "encoding": "utf8",
+      "destination": "./docs/generated",
+      "recurse": true,
+      "verbose": true
+    }
+  }
